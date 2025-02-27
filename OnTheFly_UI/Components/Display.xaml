@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="OnTheFly_UI.Components.Display"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OnTheFly_UI.Components"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" x:Name="main">
+
+         <Grid x:Name="border"  ClipToBounds="True" MouseMove="main_MouseMove"  MouseWheel="main_MouseWheel" MouseLeftButtonDown="main_MouseLeftButtonDown" MouseLeftButtonUp="border_MouseLeftButtonUp" MouseRightButtonDown="border_MouseRightButtonDown" Width="{Binding ElementName=main, Path=ActualWidth}" Height="{Binding ElementName=main, Path=ActualHeight}" Background="Transparent">
+            <Canvas x:Name="objectCanvas" RenderTransformOrigin="0.5,0.5" >
+            <Image  x:Name="displayImage" Width="{Binding ElementName=objectCanvas, Path=ActualWidth}" Height="{Binding ElementName=objectCanvas, Path=ActualHeight}"  Source="{Binding ElementName=main, Path=Source, UpdateSourceTrigger=PropertyChanged}" Canvas.Top="0" Canvas.Left="0" ></Image>
+            </Canvas>    
+        </Grid>
+    
+    
+        <!--<Border x:Name="border"  ClipToBounds="True" MouseMove="main_MouseMove"  MouseWheel="main_MouseWheel" MouseLeftButtonDown="main_MouseLeftButtonDown" MouseLeftButtonUp="border_MouseLeftButtonUp" MouseRightButtonDown="border_MouseRightButtonDown" Width="{Binding ElementName=main, Path=ActualWidth}" Height="{Binding ElementName=main, Path=ActualHeight}" Background="Transparent">
+            <StackPanel> 
+            </StackPanel>
+        </Border>-->
+
+</UserControl>

@@ -1,0 +1,23 @@
+﻿using OnTheFly_UI.Modules.DTOs;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+
+namespace OnTheFly_UI.Components.Converters
+{
+    public class SlidebarDataTemplateSelector : DataTemplateSelector
+    {
+        public   DataTemplate ImageTemplate { get; set; }
+        public  DataTemplate VideoTemplate { get; set; }
+        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        {
+            var request = item as RequestObject;
+
+            return request.SourceType == RequestSourceType.Image ? ImageTemplate : VideoTemplate;
+        }   
+    }
+}

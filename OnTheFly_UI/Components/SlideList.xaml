@@ -1,0 +1,173 @@
+﻿<UserControl x:Class="OnTheFly_UI.Components.SlideList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OnTheFly_UI.Components"
+             xmlns:converters="clr-namespace:OnTheFly_UI.Components.Converters"
+             xmlns:dto="clr-namespace:OnTheFly_UI.Modules.DTOs"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="800"
+             x:Name="slidebar"
+           >
+
+    <UserControl.Resources>
+        <converters:DoubleConverter x:Key="doubleConverter"/>
+        <converters:PreviewConverter x:Key="previewConverter"/>
+        <converters:NameMultiValueConverter x:Key="multi"/>
+
+        <DataTemplate x:Key="videoTemplate" DataType="dto:RequestObject" >
+                <Canvas Name="canvas" Width="{Binding ElementName=testimage, Path=ActualWidth}" >
+                 <Image Canvas.Left="0" Canvas.Top="0" Source="{Binding ., Converter={StaticResource previewConverter}}"
+                    x:Name="testimage"  Height="{Binding ElementName=canvas, Path=ActualHeight}"
+                 ></Image>
+
+                <Ellipse Width="{Binding ElementName=canvas, Path=ActualWidth,Converter={StaticResource doubleConverter},ConverterParameter=0.3}"
+                    Height="{Binding ElementName=canvas, Path=ActualWidth,Converter={StaticResource doubleConverter},ConverterParameter=0.3}"
+                    Fill="{StaticResource Background_Light}" Opacity="0.75" x:Name="elp" Stroke="{StaticResource Background_Dark}" StrokeThickness="10">
+
+                        <Canvas.Left>
+                            <MultiBinding Converter="{StaticResource multi}" >
+                                <Binding ElementName="canvas" Path="ActualWidth"></Binding>
+                                <Binding ElementName="elp" Path="ActualWidth"></Binding>
+                            </MultiBinding>
+                        </Canvas.Left>
+
+                        <Canvas.Top>
+                            <MultiBinding Converter="{StaticResource multi}" >
+                                <Binding ElementName="canvas" Path="ActualHeight"></Binding>
+                                <Binding ElementName="elp" Path="ActualHeight"></Binding>
+                            </MultiBinding>
+                        </Canvas.Top>
+                    </Ellipse>
+
+                    <Path x:Name="triangle" Width="{Binding ElementName=elp, Path=ActualWidth,Converter={StaticResource doubleConverter},ConverterParameter=0.35}"
+                     Height="{Binding ElementName=elp, Path=ActualWidth,Converter={StaticResource doubleConverter},ConverterParameter=0.5}" Stretch="Fill" 
+                     Stroke="{StaticResource Foreground_Dark}" Fill="{StaticResource Foreground_Light}" Opacity="0.75"
+                     Data="F1 M 319.344,237.333L 287.328,218.849L 287.328,255.818L 319.344,237.333 Z ">
+                        <Canvas.Left>
+                            <MultiBinding Converter="{StaticResource multi}" >
+                                <Binding ElementName="canvas" Path="ActualWidth"></Binding>
+                                <Binding ElementName="triangle" Path="ActualWidth"></Binding>
+                            </MultiBinding>
+                        </Canvas.Left>
+
+                        <Canvas.Top>
+                            <MultiBinding Converter="{StaticResource multi}" >
+                                <Binding ElementName="canvas" Path="ActualHeight"></Binding>
+                                <Binding ElementName="triangle" Path="ActualHeight"></Binding>
+                            </MultiBinding>
+                        </Canvas.Top>
+
+                    </Path>
+                </Canvas>
+        </DataTemplate>
+
+        <DataTemplate x:Key="imgTemplate"  DataType="dto:RequestObject" >
+            <Image Source="{Binding ., Converter={StaticResource previewConverter}}"></Image>
+        </DataTemplate>
+
+        <converters:SlidebarDataTemplateSelector x:Key="slidebarDataTemplateSelector" ImageTemplate="{StaticResource imgTemplate}" VideoTemplate="{StaticResource videoTemplate}"/>
+
+
+
+        <Style TargetType="Border" x:Key="border_style" >
+
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"></Setter>
+
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX ="1"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleY ="1"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard >
+                            <Storyboard  >
+                                <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleX)" To="1.2" Duration="0:0:0.2" ></DoubleAnimation>
+                                <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)"  To="1.2" Duration="0:0:0.2" ></DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard  >
+                                <DoubleAnimation  Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleX)" To="1"  Duration="0:0:0.2" ></DoubleAnimation>
+                                <DoubleAnimation  Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)" To="1"  Duration="0:0:0.2" ></DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+
+            </Style.Triggers>
+        </Style>
+
+
+        <Style TargetType="ListBox" x:Key="listbox_style">
+            <Setter Property="Background" Value="Transparent"></Setter>
+            <Setter Property="BorderThickness" Value="0"></Setter>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility"  Value="Disabled"></Setter>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"  Value="Hidden"></Setter>
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"></Setter>
+
+                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+
+                                    <Border Name="Border"  Style="{StaticResource border_style}" 
+                                         Padding="{TemplateBinding Padding}"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         BorderBrush="{TemplateBinding BorderBrush}">
+
+                                        <ContentPresenter  x:Name="content" />
+
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Panel.ZIndex" Value="100"></Setter>
+                                            <Setter TargetName="Border" Property="Background" Value="{StaticResource Foreground_Dark }"/>
+
+                                        </Trigger>
+
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="Border" Property="Background" Value="{StaticResource Foreground_Light }"/>
+
+                                        </Trigger>
+
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <StackPanel  Orientation="Horizontal" MouseWheel="StackPanel_MouseWheel" Margin="20" ></StackPanel>
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </UserControl.Resources>
+
+
+    <Canvas  Width="{Binding ElementName=slidebar, Path=ActualWidth}" Height="{Binding ElementName=slidebar, Path=ActualHeight}"  >
+        <ListBox  x:Name="listBox"  Grid.Row="1" SelectionChanged="listBox_SelectionChanged" Style="{StaticResource listbox_style}"   ItemsSource="{Binding Values}"
+            Width="{Binding ElementName=slidebar, Path=ActualWidth}"  Height="{Binding ElementName=slidebar, Path=ActualHeight}" ItemTemplateSelector="{StaticResource slidebarDataTemplateSelector}" >
+        </ListBox>
+    </Canvas>
+</UserControl>
