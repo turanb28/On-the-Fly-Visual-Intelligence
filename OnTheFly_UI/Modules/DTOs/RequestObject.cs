@@ -14,7 +14,7 @@ namespace OnTheFly_UI.Modules.DTOs
         public int FPS { get; set; } = int.MaxValue;
         public RequestStatus Status { get; set; } = RequestStatus.Failed;
         public RequestSourceType SourceType {  get; set; } = RequestSourceType.None;
-        public List<YoloResult> Result { get; set; } = []; // Think of making it Span in case of peak memory while adding new items
+        public List<YoloResult> Result { get; set; } = new  List<YoloResult>(); // Think of making it Span in case of peak memory while adding new items
         public RequestObject() { }
         public RequestObject(string source,RequestSourceType sourceType) 
         {

@@ -52,8 +52,8 @@
                 <MenuItem Header="Save All" ></MenuItem>
             </MenuItem>
             <MenuItem Header="Model" Width="{Binding ElementName=menubar, Path=ActualHeight}" Height="{Binding ElementName=menubar, Path=ActualHeight}" >
-                <MenuItem Header="Select Models" Click="AddStream_Click" ></MenuItem>
-                
+                <MenuItem Header="Add Model" Click="Add_Model" ></MenuItem>
+                <MenuItem Header="Select Model" Click="Select_Model" ItemsSource="{Binding Path=ProcessingModule.Models}"> </MenuItem>
             </MenuItem>
         </Menu>
 

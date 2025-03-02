@@ -27,72 +27,49 @@ namespace OnTheFly_UI
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private string modelPath = "C:\\Users\\PC\\Projects\\Visdrone Dataset -Yolo 11\\Training";
         private BitmapSource _selectedImage { get; set; } = null;
         public BitmapSource SelectedImage { get { return _selectedImage; } set { _selectedImage = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedImage")); } }
-
         public CancellationTokenSource CancellationTokenSource { get; set; } = new CancellationTokenSource();
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private string selectedModelPath = string.Empty;
-
         public DataAcquisitionModule DataAcquisitionModule { get; set; }
-        public ProcessingModule ProcessingModule;
+        public ProcessingModule ProcessingModule { get; set; }
         public VisualizationModule VisualizationModule;
         public MainWindow()
         {
             InitializeComponent();
-
             DataContext = this;
-
-            selectedModelPath = @"C:\Users\PC\Projects\Visdrone Dataset -Yolo 11\Training\yolo11m-seg.onnx";
-            selectedModelPath = @"C:\Users\PC\Projects\Visdrone Dataset -Yolo 11\Training\runs\detect\train\weights\best_full.onnx";
-
             DataAcquisitionModule = new DataAcquisitionModule();
-
-            ProcessingModule = new ProcessingModule(selectedModelPath, DataAcquisitionModule.PreprocessingBuffer);
-
-
+            ProcessingModule = new ProcessingModule(DataAcquisitionModule.PreprocessingBuffer);
             VisualizationModule = new VisualizationModule(ProcessingModule.PostProcessingBuffer, ProcessingModule.Metadata);
-
             DataAcquisitionModule.DataAcquired += () => { ProcessingModule.StartProcess(); VisualizationModule.StartProcess(); };
-
             VisualizationModule.displayFrameFucntion = ShowFrame;
-
             sidebar.Values = DataAcquisitionModule.Requests;
-            
         }
-
-
-
 
         private async void AddImage_Click(object sender, RoutedEventArgs e)
         {
-            var a = SelectedImageControl.Source;
             OpenFileDialog file = new OpenFileDialog();
             file.InitialDirectory = "C:\\Desktop";
             file.Filter = "Image  | *.png;*.jpg;*.jpeg:*.bmp";
             file.FilterIndex = 1;
             file.Multiselect = true;
             file.ShowDialog();
-
             DataAcquisitionModule.RequestImage(file.FileNames.Take(2000).ToArray());
         }
 
         private void AddVideo_Click(object sender, RoutedEventArgs e)
         {
-            var a = SelectedImageControl.Source;
             OpenFileDialog file = new OpenFileDialog();
             file.InitialDirectory = "C:\\Desktop";
             file.Filter = "Video |*.mp4";
             file.FilterIndex = 0;
             file.Multiselect = false;
             file.ShowDialog();
-
             if(string.IsNullOrEmpty(file.FileName))
                 return;
-
             DataAcquisitionModule.RequestVideo(file.FileName);
         }
 
@@ -103,27 +80,39 @@ namespace OnTheFly_UI
 
         private void AddStream_Click(object sender, RoutedEventArgs e)
         {
-            //DataAcquisitionModule.ReadUDPStream("udp://127.0.0.1:6666");
-
-            //TestList.Add(new RequestObject(@"C:\Users\PC\Projects\Visdrone Dataset -Yolo 11\Training\VisDrone2019-DET-test-dev\images\0000006_05168_d_0000013.jpg", RequestSourceType.Image));
-
-            ProcessingModule.SelectModel(@"C:\Users\PC\Projects\Visdrone Dataset -Yolo 11\Training\runs\detect\train\weights\best_full.onnx");
-            //CancellationTokenSource.Cancel();
-            //MessageBox.Show(DataAcquisitionModule.PreprocessingBuffer.Count.ToString());
-
         }
+
+        private void Add_Model(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog file = new OpenFileDialog();
+            file.InitialDirectory = "C:\\Desktop";
+            file.Filter = "Model File |*.onnx";
+            file.FilterIndex = 0;
+            file.Multiselect = false;
+            file.ShowDialog();
+
+            if (string.IsNullOrEmpty(file.FileName))
+                return;
+
+            ProcessingModule.AddModel(file.FileName);
+        }
+
+        private void Select_Model(object sender, RoutedEventArgs e)
+        {
+            var c = e.OriginalSource as MenuItem;
+            ProcessingModule.SelectModel(c.Header.ToString());
+        }
+
 
         private void sidebar_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             CancellationTokenSource.Cancel();
             CancellationTokenSource = new CancellationTokenSource();
-            var index = DataAcquisitionModule.Requests.IndexOf(e.AddedItems[0] as RequestObject);
 
+            var index = DataAcquisitionModule.Requests.IndexOf(e.AddedItems[0] as RequestObject);
             if (index < 0)
                 return;
-
             var a = DataAcquisitionModule.Requests[index];
-
             DataAcquisitionModule.RequestWithID(a.Id);
 
         

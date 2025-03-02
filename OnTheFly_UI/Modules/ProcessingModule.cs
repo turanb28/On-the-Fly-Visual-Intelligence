@@ -6,6 +6,7 @@ using OnTheFly_UI.Modules.DTOs;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -17,15 +18,26 @@ namespace OnTheFly_UI.Modules
 {
     public class ProcessingModule
     {
-        public YoloPredictor Model;
+        public YoloPredictor Model = null;
+        public ObservableCollection<string> Models { get; set; } = new ObservableCollection<string>();
         public TimeSpan Timeout = TimeSpan.FromMilliseconds(2000);
-
         public YoloMetadata Metadata;
         public int BufferLimit = 5;
         public ConcurrentQueue<ProcessObject> PreProcessingBuffer;
 
         public ConcurrentQueue<ProcessObject> PostProcessingBuffer = new ConcurrentQueue<ProcessObject>();
         public CancellationToken CancellationToken;
+
+
+        public ProcessingModule( ConcurrentQueue<ProcessObject> ProcessingBuffer)
+        {
+           
+            if (ProcessingBuffer == null)
+                throw new Exception("Processing buffer cannot be null");
+
+            PreProcessingBuffer = ProcessingBuffer;
+
+        }
 
         public ProcessingModule(string model, ConcurrentQueue<ProcessObject> ProcessingBuffer) 
         {
@@ -43,6 +55,8 @@ namespace OnTheFly_UI.Modules
             Model = new YoloPredictor(model,b);
             Metadata = Model.Metadata;
 
+            
+
             if(ProcessingBuffer == null)
                 throw new Exception("Processing buffer cannot be null");
 
@@ -50,10 +64,20 @@ namespace OnTheFly_UI.Modules
         
         }
 
+        public void AddModel(string model)
+        {
+            //if (!File.Exists(model))
+            //    throw new Exception($"The model, {model}, does not exist.");
+            if (Models.Contains(model))
+                return;
+            Models.Add(model);
+        }   
+
         public void SelectModel(string model)
         {
             if (!File.Exists(model))
                 throw new Exception($"The model, {model}, does not exist.");
+
             Model = new YoloPredictor(model);
             Metadata = Model.Metadata;
         }
@@ -61,6 +85,8 @@ namespace OnTheFly_UI.Modules
         bool isThreadAlive = false;
         public void StartProcess()
         {
+            if(Model == null)
+                return;
 
             if (!isThreadAlive)
             {
@@ -96,11 +122,11 @@ namespace OnTheFly_UI.Modules
 
                 processObject.Request.Status = RequestStatus.OnProcessing;
 
-                if (processObject.Result != null)
-                {
-                    PostProcessingBuffer.Enqueue(processObject);
-                    continue;
-                }
+                //if (processObject.Result != null)
+                //{
+                //    PostProcessingBuffer.Enqueue(processObject);
+                //    continue;
+                //}
 
 
                 YoloResult? result = null;
@@ -132,6 +158,8 @@ namespace OnTheFly_UI.Modules
 
                 if(result == null)
                     return;
+
+                processObject.Task = Metadata.Task;
 
                 processObject.Request.Result.Add(result);
                 processObject.Result = result;

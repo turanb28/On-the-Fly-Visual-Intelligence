@@ -1,4 +1,5 @@
 ﻿using Compunet.YoloSharp.Data;
+using Compunet.YoloSharp.Metadata;
 using Emgu.CV;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,8 @@ namespace OnTheFly_UI.Modules.DTOs
     public sealed class ProcessObject
     {
         public byte[] Frame { get; set; } = null;
+        public string ModelName { get; set; } = string.Empty;
+        public YoloTask Task { get; set; } = YoloTask.Obb;
         public RequestObject Request { get; set; }
         public YoloResult Result { get; set; } = null;
         public ProcessObject() { }
