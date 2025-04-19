@@ -166,7 +166,7 @@
 
 
     <Canvas  Width="{Binding ElementName=slidebar, Path=ActualWidth}" Height="{Binding ElementName=slidebar, Path=ActualHeight}"  >
-        <ListBox  x:Name="listBox"  Grid.Row="1" SelectionChanged="listBox_SelectionChanged" Style="{StaticResource listbox_style}"   ItemsSource="{Binding Values}"
+        <ListBox  x:Name="listBox"  Grid.Row="1"   SelectionChanged="listBox_SelectionChanged" Style="{StaticResource listbox_style}"   ItemsSource="{Binding Values}"
             Width="{Binding ElementName=slidebar, Path=ActualWidth}"  Height="{Binding ElementName=slidebar, Path=ActualHeight}" ItemTemplateSelector="{StaticResource slidebarDataTemplateSelector}" >
         </ListBox>
     </Canvas>

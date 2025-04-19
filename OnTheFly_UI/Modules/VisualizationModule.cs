@@ -87,7 +87,7 @@ namespace OnTheFly_UI.Modules
                     else
                         continue;
                 }
-                processObject.Request.Status = RequestStatus.OnRendering;
+                processObject.Request.Status = RequestStatus.OnRendering; // Think of making it a property of the process object
 
 
 

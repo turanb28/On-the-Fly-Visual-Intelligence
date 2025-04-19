@@ -104,6 +104,7 @@ namespace OnTheFly_UI
         }
 
 
+
         private void sidebar_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             CancellationTokenSource.Cancel();

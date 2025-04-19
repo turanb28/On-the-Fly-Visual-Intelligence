@@ -143,7 +143,7 @@ namespace OnTheFly_UI.Modules.Handlers
             frame.UnlockBits(bitmapData);
 
 
-            foreach (var obj in result)
+            foreach (var obj in result) // Why do we need to draw the rectangles again? Indstead of just use plot detection?
             {
                 if (obj.Confidence < 0.6)
                     continue;

@@ -12,7 +12,7 @@ namespace OnTheFly_UI.Modules.DTOs
         public Guid Id { get; private set; } = Guid.NewGuid();
         public string Source {  get; set; } = string.Empty;
         public int FPS { get; set; } = int.MaxValue;
-        public RequestStatus Status { get; set; } = RequestStatus.Failed;
+        public RequestStatus Status { get; set; } = RequestStatus.Failed; 
         public RequestSourceType SourceType {  get; set; } = RequestSourceType.None;
         public List<YoloResult> Result { get; set; } = new  List<YoloResult>(); // Think of making it Span in case of peak memory while adding new items
         public RequestObject() { }

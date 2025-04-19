@@ -28,6 +28,7 @@ namespace OnTheFly_UI.Components
         {
             InitializeComponent();
             DataContext = this;
+        
         }
 
         private void StackPanel_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -40,6 +41,10 @@ namespace OnTheFly_UI.Components
 
             a.ScrollToHorizontalOffset(a.HorizontalOffset - (Math.Sign(e.Delta)));
         }
+
+        
+
+
 
         private void listBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

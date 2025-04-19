@@ -16,6 +16,7 @@ namespace OnTheFly_UI.Modules
         public TimeSpan Timeout = TimeSpan.FromMilliseconds(2000);
 
         public DataFlowtHandler? DataAcquired;
+
         public ConcurrentQueue<ProcessObject> PreprocessingBuffer = new ConcurrentQueue<ProcessObject>();
 
         public ObservableCollection<RequestObject> Requests = new ObservableCollection<RequestObject>();
@@ -73,7 +74,7 @@ namespace OnTheFly_UI.Modules
 
             AddRequest(request);
             
-            if(!isThreadAlive)
+            if(!isThreadAlive)  //////
                 StartReading();
         }
 

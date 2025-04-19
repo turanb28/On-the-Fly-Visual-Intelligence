@@ -29,6 +29,9 @@ namespace OnTheFly_UI.Modules
         public CancellationToken CancellationToken;
 
 
+        public delegate void ModelLoadedHandler();
+        public ModelLoadedHandler? ModelLoaded;
+
         public ProcessingModule( ConcurrentQueue<ProcessObject> ProcessingBuffer)
         {
            
@@ -57,7 +60,7 @@ namespace OnTheFly_UI.Modules
 
             
 
-            if(ProcessingBuffer == null)
+            if(ProcessingBuffer == null) // make it first
                 throw new Exception("Processing buffer cannot be null");
 
             PreProcessingBuffer = ProcessingBuffer;
@@ -69,7 +72,7 @@ namespace OnTheFly_UI.Modules
             //if (!File.Exists(model))
             //    throw new Exception($"The model, {model}, does not exist.");
             if (Models.Contains(model))
-                return;
+                return; // give a warning
             Models.Add(model);
         }   
 
@@ -78,8 +81,13 @@ namespace OnTheFly_UI.Modules
             if (!File.Exists(model))
                 throw new Exception($"The model, {model}, does not exist.");
 
-            Model = new YoloPredictor(model);
-            Metadata = Model.Metadata;
+            Task.Run(() =>
+            {
+                Model = new YoloPredictor(model);
+                Metadata = Model.Metadata;
+                ModelLoaded?.Invoke();
+            });
+           
         }
 
         bool isThreadAlive = false;
@@ -114,7 +122,7 @@ namespace OnTheFly_UI.Modules
 
                 if (!ret)
                 {
-                    if (!SpinWait.SpinUntil(() => { return PreProcessingBuffer.Count > 0 && !CancellationToken.IsCancellationRequested; }, Timeout))
+                    if (!SpinWait.SpinUntil(() => { return PreProcessingBuffer.Count > 0 && !CancellationToken.IsCancellationRequested; }, Timeout)) // Tp keep the thread alive while there is no data
                         break;
                     else
                         continue;
@@ -159,7 +167,7 @@ namespace OnTheFly_UI.Modules
                 if(result == null)
                     return;
 
-                processObject.Task = Metadata.Task;
+                processObject.Task = Metadata.Task; // Think of making it again
 
                 processObject.Request.Result.Add(result);
                 processObject.Result = result;

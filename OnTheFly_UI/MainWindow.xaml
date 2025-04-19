@@ -72,7 +72,7 @@ Content="&#128469;"  FontSize="10" Foreground="{StaticResource Foreground_Dark}"
         <Components:SlideList Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="10" x:Name="sidebar" SelectionChanged="sidebar_SelectionChanged"  ></Components:SlideList>
 
         <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="10" Background="Black" Opacity="0.1"></Border>
-        <Components:Display Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="20" x:Name="SelectedImageControl" Source="{Binding SelectedImage}" ></Components:Display>
+        <Components:Display Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="20" x:Name="SelectedImageControl" Source="{Binding SelectedImage}"  ></Components:Display>
 
 
         <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="10" Background="{StaticResource Background_Light}" ></Border>

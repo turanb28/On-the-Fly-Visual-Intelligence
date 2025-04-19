@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -61,7 +61,7 @@ namespace OnTheFly_UI.Modules.Handlers
                 case System.Drawing.Imaging.PixelFormat.Format32bppRgb:
                     return System.Windows.Media.PixelFormats.Bgr32;
                 default:
-                    return System.Windows.Media.PixelFormats.Bgr24;
+                    return System.Windows.Media.PixelFormats.Bgr24; // Default to Bgr24 if the format is not recognized
             }
         }
     }

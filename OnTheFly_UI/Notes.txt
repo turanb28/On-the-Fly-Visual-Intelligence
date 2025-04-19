@@ -1,0 +1,15 @@
+﻿1 - Add a notification for the beginning of the program to warn the user that a model is not selected.
+
+2 - Show selected model.
+
+3 - When the user add a model, the program should automatically select the model.
+
+4 - Add a file for models to load before
+
+5 - Add different layers for different objects and cabability to select the layer shown
+
+6 - Think again states of processing.
+
+7 - Counting and displaying the number of objects in the scene.
+
+8 - Video duration and jumping.
