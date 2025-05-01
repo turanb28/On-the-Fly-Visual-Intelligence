@@ -19,10 +19,10 @@ namespace OnTheFly_UI.Modules.Handlers
     public static class PlotHandler
     {
 
-        public static void Plot<T>(YoloResult<T> result ) where T : IYoloPrediction<T>
-        {
-            var a = result;
-        }
+        //public static void Plot<T>(YoloResult<T> result ) where T : IYoloPrediction<T>
+        //{
+        //    var a = result;
+        //}
 
         public static BitmapSource PlotDetection(byte[] frame, YoloResult<Detection> result,PlotConfiguration? configuration = null)
         {
@@ -185,6 +185,21 @@ namespace OnTheFly_UI.Modules.Handlers
 
             return bitmapSource;
 
+        }
+
+        public static BitmapSource Plot(byte[] frame)
+        {
+            using (var stream = new MemoryStream(frame))
+            {
+                var bitmap = new System.Drawing.Bitmap(stream);
+                return Plot(bitmap);
+            }
+        }
+
+        public static BitmapSource Plot(Bitmap frame)
+        {
+            var bitmapSource = BitmapConvertHandler.ToBitmapSourceFast(frame);
+            return bitmapSource;
         }
 
     }

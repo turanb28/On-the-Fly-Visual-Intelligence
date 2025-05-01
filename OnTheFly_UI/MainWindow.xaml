@@ -35,7 +35,7 @@
             <ColumnDefinition Width="auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition x:Name="topRow" Height="0.4*"></RowDefinition>
+            <RowDefinition x:Name="topRow" Height="0.5*"></RowDefinition>
             <RowDefinition Height="2*"></RowDefinition>
             <RowDefinition Height="9*"></RowDefinition>
             <RowDefinition Height="0.4*"></RowDefinition>
@@ -45,13 +45,13 @@
 
 
         <Menu x:Name="menubar" Grid.Row="0" Grid.Column="1" Background="Transparent" >
-            <MenuItem Header="File" Width="{Binding ElementName=menubar, Path=ActualHeight}" Height="{Binding ElementName=menubar, Path=ActualHeight}" >
+            <MenuItem Header="File" FontSize="13" Width="{Binding ElementName=menubar, Path=ActualHeight}" Height="{Binding ElementName=menubar, Path=ActualHeight}" >
                 <MenuItem Header="Open Image" Click="AddImage_Click" ></MenuItem>
                 <MenuItem Header="Open Video" Click="AddVideo_Click" ></MenuItem>
                 <MenuItem Header="Save"     ></MenuItem>
                 <MenuItem Header="Save All" ></MenuItem>
             </MenuItem>
-            <MenuItem Header="Model" Width="{Binding ElementName=menubar, Path=ActualHeight}" Height="{Binding ElementName=menubar, Path=ActualHeight}" >
+            <MenuItem Header="Model" FontSize="13" Height="{Binding ElementName=menubar, Path=ActualHeight}" >
                 <MenuItem Header="Add Model" Click="Add_Model" ></MenuItem>
                 <MenuItem Header="Select Model" Click="Select_Model" ItemsSource="{Binding Path=ProcessingModule.Models}"> </MenuItem>
             </MenuItem>
@@ -75,7 +75,10 @@ Content="&#128469;"  FontSize="10" Foreground="{StaticResource Foreground_Dark}"
         <Components:Display Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="20" x:Name="SelectedImageControl" Source="{Binding SelectedImage}"  ></Components:Display>
 
 
-        <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="10" Background="{StaticResource Background_Light}" ></Border>
+
+        <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="10" Background="{StaticResource Background_Light}">
+        </Border>
+        <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" x:Name="UIMessage" Text="" HorizontalAlignment="Left" VerticalAlignment="Center" TextAlignment="Center" FontSize="15" Foreground="{StaticResource Foreground_Dark}" ></TextBlock>
 
 
     </Grid>

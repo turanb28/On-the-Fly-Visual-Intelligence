@@ -19,18 +19,25 @@ namespace OnTheFly_UI.Modules
     public class ProcessingModule
     {
         public YoloPredictor Model = null;
-        public ObservableCollection<string> Models { get; set; } = new ObservableCollection<string>();
         public TimeSpan Timeout = TimeSpan.FromMilliseconds(2000);
         public YoloMetadata Metadata;
         public int BufferLimit = 5;
+        public CancellationToken CancellationToken;
+
+        public ObservableCollection<string> Models { get; set; } = new ObservableCollection<string>();
+  
         public ConcurrentQueue<ProcessObject> PreProcessingBuffer;
 
         public ConcurrentQueue<ProcessObject> PostProcessingBuffer = new ConcurrentQueue<ProcessObject>();
-        public CancellationToken CancellationToken;
 
-
+        #region Events
         public delegate void ModelLoadedHandler();
         public ModelLoadedHandler? ModelLoaded;
+
+        public delegate void ProcessingExceptionHandler(string? message);
+        public ProcessingExceptionHandler? ProcessingException;
+
+        #endregion
 
         public ProcessingModule( ConcurrentQueue<ProcessObject> ProcessingBuffer)
         {
@@ -39,6 +46,7 @@ namespace OnTheFly_UI.Modules
                 throw new Exception("Processing buffer cannot be null");
 
             PreProcessingBuffer = ProcessingBuffer;
+           
 
         }
 
@@ -79,7 +87,10 @@ namespace OnTheFly_UI.Modules
         public void SelectModel(string model)
         {
             if (!File.Exists(model))
-                throw new Exception($"The model, {model}, does not exist.");
+            {
+                ProcessingException?.Invoke("The model is not loaded.");
+                return;
+            }
 
             Task.Run(() =>
             {
@@ -94,7 +105,7 @@ namespace OnTheFly_UI.Modules
         public void StartProcess()
         {
             if(Model == null)
-                return;
+                ProcessingException?.Invoke("The model is not loaded.");
 
             if (!isThreadAlive)
             {
@@ -139,7 +150,13 @@ namespace OnTheFly_UI.Modules
 
                 YoloResult? result = null;
 
-                switch(Metadata.Task)
+                if(Model == null)
+                {
+                    PostProcessingBuffer.Enqueue(processObject);
+                    continue;
+                }
+
+                switch (Metadata.Task)
                 {
                     case YoloTask.Detect:
                         result = Model.Detect(processObject.Frame);
@@ -162,9 +179,9 @@ namespace OnTheFly_UI.Modules
 
                 //var result = Model.Detect(processObject.Frame);
 
-                
 
-                if(result == null)
+
+                if (result == null)
                     return;
 
                 processObject.Task = Metadata.Task; // Think of making it again

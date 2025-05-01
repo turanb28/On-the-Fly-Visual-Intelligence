@@ -44,7 +44,9 @@ namespace OnTheFly_UI
             DataAcquisitionModule = new DataAcquisitionModule();
             ProcessingModule = new ProcessingModule(DataAcquisitionModule.PreprocessingBuffer);
             VisualizationModule = new VisualizationModule(ProcessingModule.PostProcessingBuffer, ProcessingModule.Metadata);
-            DataAcquisitionModule.DataAcquired += () => { ProcessingModule.StartProcess(); VisualizationModule.StartProcess(); };
+            DataAcquisitionModule.DataAcquired += () => { ProcessingModule.StartProcess();  }; // VisualizationModule.StartProcess();
+            ProcessingModule.ModelLoaded += () => { UIMessageBoxHandler.Show("Idle"); };
+            ProcessingModule.ProcessingException += (e) => { UIMessageBoxHandler.Show(e); };
             VisualizationModule.displayFrameFucntion = ShowFrame;
             sidebar.Values = DataAcquisitionModule.Requests;
         }
@@ -115,8 +117,8 @@ namespace OnTheFly_UI
                 return;
             var a = DataAcquisitionModule.Requests[index];
             DataAcquisitionModule.RequestWithID(a.Id);
+            VisualizationModule.StartProcess();
 
-        
         }
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {

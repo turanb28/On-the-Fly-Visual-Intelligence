@@ -97,10 +97,14 @@ namespace OnTheFly_UI.Modules
                     bitmapSource = PlotHandler.PlotDetection(processObject.Frame, (YoloResult<Detection>)processObject.Result);
                 else if (processObject.Task == YoloTask.Segment)
                     bitmapSource = PlotHandler.PlotSegmentatation(processObject.Frame, (YoloResult<Segmentation>)processObject.Result);
+                else
+                    bitmapSource = PlotHandler.Plot(processObject.Frame);
+
+
                 //PlotHandler.Plot<typeof(>( processObject.Result);
                 //BitmapSource bitmapSource = PlotHandler.PlotSegmentatation(processObject.Frame, (YoloResult<Segmentation>)processObject.Result);
 
-                if(bitmapSource == null)
+                if (bitmapSource == null)
                 {
                     processObject.Request.Status = RequestStatus.Failed;
                     continue;
