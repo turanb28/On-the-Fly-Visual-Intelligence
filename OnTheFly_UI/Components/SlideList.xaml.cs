@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,15 +23,32 @@ namespace OnTheFly_UI.Components
     /// </summary>
     public partial class SlideList : UserControl
     {
-        public ObservableCollection<RequestObject> Values { get; set; } = new ObservableCollection<RequestObject>();
+        private ObservableCollection<RequestObject> _values;
+
+        public ObservableCollection<RequestObject> Values { get { return _values; } set {
+                value.CollectionChanged += Value_CollectionChanged; _values = value; } }
+
+        private void Value_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            listBox.Dispatcher.BeginInvoke(
+            new Action(
+                () => 
+                {
+                    listBox.SelectedIndex = listBox.Items.Count - 1;
+                    listBox.ScrollIntoView(listBox.Items[listBox.Items.Count - 1]);
+                }),
+                        System.Windows.Threading.DispatcherPriority.Input
+                        );
+        }
 
         public event SelectionChangedEventHandler SelectionChanged;
         public SlideList()
         {
             InitializeComponent();
             DataContext = this;
-        
+
         }
+
 
         private void StackPanel_MouseWheel(object sender, MouseWheelEventArgs e)
         {
@@ -40,6 +59,8 @@ namespace OnTheFly_UI.Components
 
 
             a.ScrollToHorizontalOffset(a.HorizontalOffset - (Math.Sign(e.Delta)));
+
+
         }
 
         
@@ -49,6 +70,7 @@ namespace OnTheFly_UI.Components
         private void listBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SelectionChanged?.Invoke(this,e);
+            
         }
 
         public static DependencyObject GetScrollViewer(DependencyObject o)
