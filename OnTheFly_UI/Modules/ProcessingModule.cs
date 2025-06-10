@@ -2,6 +2,7 @@
 using Compunet.YoloSharp.Data;
 using Compunet.YoloSharp.Metadata;
 using Emgu.CV;
+using Emgu.CV.Dnn;
 using OnTheFly_UI.Modules.DTOs;
 using System;
 using System.Collections.Concurrent;
@@ -24,7 +25,7 @@ namespace OnTheFly_UI.Modules
         public int BufferLimit = 5;
         public CancellationToken CancellationToken;
 
-        public ObservableCollection<string> Models { get; set; } = new ObservableCollection<string>();
+        public ObservableCollection<ModelObject> Models { get; set; } = new ObservableCollection<ModelObject>();
   
         public ConcurrentQueue<ProcessObject> PreProcessingBuffer;
 
@@ -47,7 +48,7 @@ namespace OnTheFly_UI.Modules
 
             PreProcessingBuffer = ProcessingBuffer;
            
-
+           
         }
 
         public ProcessingModule(string model, ConcurrentQueue<ProcessObject> ProcessingBuffer) 
@@ -77,16 +78,28 @@ namespace OnTheFly_UI.Modules
 
         public void AddModel(string model)
         {
-            //if (!File.Exists(model))
-            //    throw new Exception($"The model, {model}, does not exist.");
-            if (Models.Contains(model))
-                return; // give a warning
-            Models.Add(model);
-        }   
+            if (Models.Where(x => x.Path == model).Count() > 0)
+            {
+                ProcessingException?.Invoke("The model is already added.");
+                return;
+            }
 
-        public void SelectModel(string model)
+            var modelObject = new ModelObject()
+            {
+                Name = Path.GetFileName(model),
+                Path = model,
+            };
+            Models.Add(modelObject);
+        }
+        
+        public ModelObject? GetModel(string modelPath)
         {
-            if (!File.Exists(model))
+            return Models.Where(x => x.Path == modelPath).FirstOrDefault();
+        }
+
+        public void SelectModel(string modelPath)
+        {
+            if (Models.Where(x => x.Path == modelPath).Count() < 0)
             {
                 ProcessingException?.Invoke("The model is not loaded.");
                 return;
@@ -94,12 +107,30 @@ namespace OnTheFly_UI.Modules
 
             Task.Run(() =>
             {
-                Model = new YoloPredictor(model);
+                Model = new YoloPredictor(modelPath);
                 Metadata = Model.Metadata;
                 ModelLoaded?.Invoke();
+                foreach(var item in Models)
+                {
+                    if (item.Path == modelPath)
+                       item.IsSelected = true;
+                    else
+                        item.IsSelected = false;
+                }
             });
            
         }
+
+        public void UnselectModel(string modelPath)
+        {
+            if (Models.Where(x => x.Path == modelPath).Count() > 0)
+            {
+                var model = Models.Where(x => x.Path == modelPath).First();
+                model.IsSelected = false;
+                Model = null;
+            }
+        } // Fix this part. The unselected model runs after adding new model
+
 
         bool isThreadAlive = false;
         public void StartProcess()

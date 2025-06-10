@@ -45,6 +45,12 @@ namespace OnTheFly_UI.Modules.Handlers
             var pen = new System.Drawing.Pen(System.Drawing.Color.Cyan, 3);
             var rect = new System.Drawing.Rectangle(50, 50, 100, 100);
 
+
+        
+
+            //string formattedString = string.Join(Environment.NewLine, a.Select(x => $"{x.Key} - {x.Count()}")); // Draw a background with the number of objects detected
+
+
             foreach (var obj in result)
             {
                 rect.Width = obj.Bounds.Width;
@@ -72,6 +78,13 @@ namespace OnTheFly_UI.Modules.Handlers
                 g.DrawString(text, configuration.Font, new System.Drawing.SolidBrush(configuration.FontColor),point);
 
             }
+
+            //frame = PlotResultTable(frame, result, configuration);
+
+            //g.DrawString(formattedString, configuration.Font, new System.Drawing.SolidBrush(configuration.FontColor), new System.Drawing.Point(10, 10));
+
+
+            frame = PlotResultTable(frame, result, configuration);
 
             BitmapSource bitmapSource = BitmapConvertHandler.ToBitmapSourceFast(frame);
 
@@ -186,6 +199,40 @@ namespace OnTheFly_UI.Modules.Handlers
             return bitmapSource;
 
         }
+
+        public static Bitmap PlotResultTable(byte[] frame, YoloResult<Detection> result, PlotConfiguration? configuration = null)
+        {
+            using (var stream = new MemoryStream(frame))
+            {
+                var bitmap = new System.Drawing.Bitmap(stream);
+                return PlotResultTable(bitmap, result, configuration);
+            }
+        }
+
+        public static Bitmap PlotResultTable(Bitmap frame, YoloResult<Detection> result, PlotConfiguration? configuration = null) // Make it better and bid it display component
+        {
+            if (result.Count == 0)
+                return frame;
+
+            if (configuration == null)
+                configuration = new PlotConfiguration();
+
+
+            var g = System.Drawing.Graphics.FromImage(frame);
+            var pen = new System.Drawing.Pen(System.Drawing.Color.Cyan, 3);
+
+            var rect = new System.Drawing.Rectangle(50, 50, 100, 100);
+
+            var resultGroup = result.GroupBy(x => x.Name.Name).ToList();
+
+            string formattedString = string.Join(Environment.NewLine, resultGroup.Select(x => $"{x.Key} - {x.Count()}"));
+
+            g.DrawString(formattedString, configuration.Font, new System.Drawing.SolidBrush(configuration.FontColor), new System.Drawing.Point(10, 10));
+
+
+            return frame;
+        }
+
 
         public static BitmapSource Plot(byte[] frame)
         {

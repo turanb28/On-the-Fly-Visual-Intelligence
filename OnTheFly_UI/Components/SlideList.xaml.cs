@@ -25,8 +25,18 @@ namespace OnTheFly_UI.Components
     {
         private ObservableCollection<RequestObject> _values;
 
-        public ObservableCollection<RequestObject> Values { get { return _values; } set {
-                value.CollectionChanged += Value_CollectionChanged; _values = value; } }
+        public ObservableCollection<RequestObject> Values
+        {
+            get => _values;
+            set
+            {
+                if (_values != null)
+                    _values.CollectionChanged -= Value_CollectionChanged;
+                _values = value;
+                if (_values != null)
+                    _values.CollectionChanged += Value_CollectionChanged;
+            }
+        }
 
         private void Value_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {

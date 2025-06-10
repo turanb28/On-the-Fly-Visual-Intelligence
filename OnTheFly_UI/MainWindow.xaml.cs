@@ -27,8 +27,19 @@ namespace OnTheFly_UI
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private BitmapSource _selectedImage { get; set; } = null;
-        public BitmapSource SelectedImage { get { return _selectedImage; } set { _selectedImage = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedImage")); } }
+        private BitmapSource _selectedImage;
+        public BitmapSource SelectedImage
+        {
+            get => _selectedImage;
+            set
+            {
+                if (_selectedImage != value)
+                {
+                    _selectedImage = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedImage)));
+                }
+            }
+        }
         public CancellationTokenSource CancellationTokenSource { get; set; } = new CancellationTokenSource();
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -49,6 +60,16 @@ namespace OnTheFly_UI
             ProcessingModule.ProcessingException += (e) => { UIMessageBoxHandler.Show(e); };
             VisualizationModule.displayFrameFucntion = ShowFrame;
             sidebar.Values = DataAcquisitionModule.Requests;
+
+            var a = RecentFileHandler.GetRecentFiles();
+
+            foreach (var item in a)
+            {
+                if (!File.Exists(item))
+                    continue;
+                ProcessingModule.AddModel(item);
+            }
+
         }
 
         private async void AddImage_Click(object sender, RoutedEventArgs e)
@@ -82,6 +103,7 @@ namespace OnTheFly_UI
 
         private void AddStream_Click(object sender, RoutedEventArgs e)
         {
+            
         }
 
         private void Add_Model(object sender, RoutedEventArgs e)
@@ -95,14 +117,8 @@ namespace OnTheFly_UI
 
             if (string.IsNullOrEmpty(file.FileName))
                 return;
-
+            RecentFileHandler.AddRecentFile(file.FileName);
             ProcessingModule.AddModel(file.FileName);
-        }
-
-        private void Select_Model(object sender, RoutedEventArgs e)
-        {
-            var c = e.OriginalSource as MenuItem;
-            ProcessingModule.SelectModel(c.Header.ToString());
         }
 
 
@@ -139,5 +155,27 @@ namespace OnTheFly_UI
         {
             this.WindowState = WindowState.Minimized;
         }
+
+        private void MenuItem_Checked(object sender, RoutedEventArgs e)
+        {
+            var modelPath = ((MenuItem)sender).ToolTip.ToString();
+
+            var model = ProcessingModule.GetModel(modelPath);
+
+            if (model == null)
+            {
+                UIMessageBoxHandler.Show($"The model is not found in path {modelPath}.");
+                return;
+            }
+            else
+            {
+                if (model.IsSelected)
+                    ProcessingModule.UnselectModel(model.Path);
+                else 
+                    ProcessingModule.SelectModel(model.Path);
+            }
+            
+        }
+
     }
 }

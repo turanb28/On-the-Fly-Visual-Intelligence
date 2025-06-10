@@ -25,6 +25,7 @@
             <Setter Property="Margin" Value="5"></Setter>
             <Setter Property="BorderThickness" Value="0"></Setter>
         </Style>
+      
 
     </Window.Resources>
     <Grid>
@@ -44,34 +45,46 @@
         <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="10" Background="{StaticResource Background_Light}" IsHitTestVisible="False" ></Border>
 
 
-        <Menu x:Name="menubar" Grid.Row="0" Grid.Column="1" Background="Transparent" >
+        <Menu x:Name="menubar" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="5" Background="Transparent" >
             <MenuItem Header="File" FontSize="13" Width="{Binding ElementName=menubar, Path=ActualHeight}" Height="{Binding ElementName=menubar, Path=ActualHeight}" >
                 <MenuItem Header="Open Image" Click="AddImage_Click" ></MenuItem>
                 <MenuItem Header="Open Video" Click="AddVideo_Click" ></MenuItem>
-                <MenuItem Header="Save"     ></MenuItem>
-                <MenuItem Header="Save All" ></MenuItem>
+                <MenuItem Header="Open Stream"  Click="AddStream_Click"    ></MenuItem>
+                <MenuItem Header="Save All"  ></MenuItem>
+
             </MenuItem>
-            <MenuItem Header="Model" FontSize="13" Height="{Binding ElementName=menubar, Path=ActualHeight}" >
-                <MenuItem Header="Add Model" Click="Add_Model" ></MenuItem>
-                <MenuItem Header="Select Model" Click="Select_Model" ItemsSource="{Binding Path=ProcessingModule.Models}"> </MenuItem>
+            <MenuItem Header="Model" FontSize="13"  Height="{Binding ElementName=menubar, Path=ActualHeight}" >
+                <MenuItem Header="Add Model" Click="Add_Model"  ></MenuItem>
+                <MenuItem Header="Select Model "  ItemsSource="{Binding ProcessingModule.Models}" >
+                    <MenuItem.ItemContainerStyle>
+                        <Style TargetType="MenuItem">
+                            <Setter Property="Header" Value="{Binding Name}"></Setter>
+                            <Setter Property="IsCheckable" Value="True"></Setter>
+                            <Setter Property="IsChecked" Value="{Binding IsSelected, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></Setter>
+                            <Setter Property="ToolTip" Value="{Binding Path}"></Setter>
+                            <EventSetter Event="Click" Handler="MenuItem_Checked"></EventSetter>
+                        </Style>
+                    </MenuItem.ItemContainerStyle>
+                </MenuItem>
             </MenuItem>
         </Menu>
 
 
         <StackPanel Grid.Column="3"  Background="{StaticResource Background_Light}"  Orientation="Horizontal" HorizontalAlignment="Right">
             <Button  x:Name="MinimizeApp" Click="MinimizeApp_Click" HorizontalAlignment="Right" Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"
-Background="Transparent" ToolTip="Minimize Application" BorderBrush="Transparent"
-Content="&#128469;"  FontSize="10" Foreground="{StaticResource Foreground_Dark}" >
+                Background="Transparent" ToolTip="Minimize Application" BorderBrush="Transparent"
+                Content="&#128469;"  FontSize="10" Foreground="{StaticResource Foreground_Dark}" >
             </Button>
             <Button  x:Name="CloseApp" Click="CloseApp_Click" Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"
-    Background="Transparent" ToolTip="Close Application" BorderBrush="Transparent"
-    Content="&#x274C;" FontSize="10" Foreground="{StaticResource Foreground_Dark}" >
+                Background="Transparent" ToolTip="Close Application" BorderBrush="Transparent"
+                Content="&#x274C;" FontSize="10" Foreground="{StaticResource Foreground_Dark}" >
             </Button>
         </StackPanel>
 
         <Components:SlideList Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="10" x:Name="sidebar" SelectionChanged="sidebar_SelectionChanged"  ></Components:SlideList>
 
         <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="10" Background="Black" Opacity="0.1"></Border>
+       
         <Components:Display Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="20" x:Name="SelectedImageControl" Source="{Binding SelectedImage}"  ></Components:Display>
 
 

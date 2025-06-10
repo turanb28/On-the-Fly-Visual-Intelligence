@@ -130,7 +130,7 @@
                                          Padding="{TemplateBinding Padding}"
                                          BorderThickness="{TemplateBinding BorderThickness}"
                                          BorderBrush="{TemplateBinding BorderBrush}"
-                                            Background="Red">
+                                            Background="Transparent">
 
                                         <ContentPresenter  x:Name="content" />
 
