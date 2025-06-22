@@ -10,6 +10,7 @@ using OnTheFly_UI.Modules.DTOs;
 using OnTheFly_UI.Modules.Handlers;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
@@ -40,6 +41,21 @@ namespace OnTheFly_UI
                 }
             }
         }
+
+
+        private Dictionary<string, int> _CurrentResultTable;
+
+        public Dictionary<string, int> CurrentResultTable
+        {
+            get { return _CurrentResultTable; }
+            set {
+                _CurrentResultTable = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentResultTable)));
+            }
+        }
+
+
+
         public CancellationTokenSource CancellationTokenSource { get; set; } = new CancellationTokenSource();
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -96,9 +112,10 @@ namespace OnTheFly_UI
             DataAcquisitionModule.RequestVideo(file.FileName);
         }
 
-        public void ShowFrame(BitmapSource bitmap)
+        public void ShowFrame(BitmapSource bitmap,Dictionary<string,int> ResultTable)
         {
             SelectedImage = bitmap;
+            CurrentResultTable = ResultTable;
         }
 
         private void AddStream_Click(object sender, RoutedEventArgs e)

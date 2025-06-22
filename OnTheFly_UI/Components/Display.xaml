@@ -10,14 +10,9 @@
          <Grid x:Name="border"  ClipToBounds="True" MouseMove="main_MouseMove"  MouseWheel="main_MouseWheel" MouseLeftButtonDown="main_MouseLeftButtonDown" MouseLeftButtonUp="border_MouseLeftButtonUp" MouseRightButtonDown="border_MouseRightButtonDown" Width="{Binding ElementName=main, Path=ActualWidth}" Height="{Binding ElementName=main, Path=ActualHeight}" Background="Transparent">
              <Canvas x:Name="objectCanvas" RenderTransformOrigin="0.5,0.5" >
             <Image  x:Name="displayImage" Width="{Binding ElementName=objectCanvas, Path=ActualWidth}" Height="{Binding ElementName=objectCanvas, Path=ActualHeight}"  Source="{Binding ElementName=main, Path=Source, UpdateSourceTrigger=PropertyChanged}" Canvas.Top="0" Canvas.Left="0" ></Image>
-        </Canvas>    
-            <ListBox Width="100" VerticalAlignment="Top"  HorizontalAlignment="Left" Background="Transparent" BorderThickness="0" Opacity="0.2"> 
-                <ListBoxItem Content="Item 1" />
-                <ListBoxItem Content="Item 1" />
-                <ListBoxItem Content="Item 1" />
-                <ListBoxItem Content="Item 1" />
-                <ListBoxItem Content="Item 1" />
-                <ListBoxItem Content="Item 1" />
+        </Canvas>
+        <ListBox Width="100" VerticalAlignment="Top"  HorizontalAlignment="Left" Background="White" BorderThickness="0" Opacity="0.8" ItemsSource="{Binding ElementName=main, Path=ResultTable}">  
+               
         </ListBox>
         </Grid>
     

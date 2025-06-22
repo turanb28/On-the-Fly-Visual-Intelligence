@@ -26,7 +26,7 @@ namespace OnTheFly_UI.Modules
 {
     public class VisualizationModule
     {
-        public delegate void DisplayFrameDelegate(BitmapSource frame);
+        public delegate void DisplayFrameDelegate(BitmapSource frame,Dictionary<string,int> ResultTable);
         public DisplayFrameDelegate displayFrameFucntion;
         
         public TimeSpan Timeout = TimeSpan.FromMilliseconds(2000);
@@ -104,6 +104,9 @@ namespace OnTheFly_UI.Modules
                 //PlotHandler.Plot<typeof(>( processObject.Result);
                 //BitmapSource bitmapSource = PlotHandler.PlotSegmentatation(processObject.Frame, (YoloResult<Segmentation>)processObject.Result);
 
+
+
+
                 if (bitmapSource == null)
                 {
                     processObject.Request.Status = RequestStatus.Failed;
@@ -117,7 +120,7 @@ namespace OnTheFly_UI.Modules
 
                 Thread.Sleep(waitTime);
                 Trace.WriteLine("FPS= " + (1000/sw.ElapsedMilliseconds).ToString());
-                displayFrameFucntion?.Invoke(bitmapSource);
+                displayFrameFucntion?.Invoke(bitmapSource,processObject.Request.ResultTable);
                 processObject.Request.Status = RequestStatus.Sucess;
 
             }

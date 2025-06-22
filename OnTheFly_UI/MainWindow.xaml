@@ -84,8 +84,8 @@
         <Components:SlideList Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="10" x:Name="sidebar" SelectionChanged="sidebar_SelectionChanged"  ></Components:SlideList>
 
         <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="10" Background="Black" Opacity="0.1"></Border>
-       
-        <Components:Display Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="20" x:Name="SelectedImageControl" Source="{Binding SelectedImage}"  ></Components:Display>
+
+        <Components:Display Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="20" x:Name="SelectedImageControl" Source="{Binding SelectedImage}" ResultTable="{Binding CurrentResultTable, UpdateSourceTrigger=PropertyChanged}"  ></Components:Display>
 
 
 

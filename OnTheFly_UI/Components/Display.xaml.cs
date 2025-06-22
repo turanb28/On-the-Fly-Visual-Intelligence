@@ -9,6 +9,7 @@ using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -42,13 +43,29 @@ namespace OnTheFly_UI.Components
         public ImageSource Source
         {
             get { return (ImageSource)GetValue(SourceProperty); }
-            set { SetValue(SourceProperty, value);}
+            set { 
+                SetValue(SourceProperty, value);
+            }
         }
 
         // Using a DependencyProperty as the backing store for Source.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SourceProperty =
             DependencyProperty.Register("Source", typeof(ImageSource), typeof(Display));
 
+
+
+
+        public Dictionary<string, int> ResultTable // It didn't work 
+        {
+            get { return (Dictionary<string, int>)GetValue(ResultTableProperty); }
+            set { 
+                SetValue(ResultTableProperty, value); 
+            }
+        }
+
+        // Using a DependencyProperty as the backing store for ResultTable.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ResultTableProperty =
+            DependencyProperty.Register("ResultTable", typeof(Dictionary<string, int>), typeof(Display));
 
 
 
