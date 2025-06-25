@@ -74,7 +74,7 @@ namespace OnTheFly_UI.Modules
 
             AddRequest(request);
             
-            if(!isThreadAlive)  //////
+            if(!isThreadAlive) 
                 StartReading();
         }
 

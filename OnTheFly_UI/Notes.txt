@@ -25,3 +25,5 @@
 14- Fix the bug when the user selects a model, the program is frozen.(DONE)
 
 15 - UI cannot response when screen resizes.
+
+16 - Find a better way to keep result instead of YoloResult

@@ -191,29 +191,41 @@ namespace OnTheFly_UI.Modules
                 {
                     case YoloTask.Detect:
                         result = Model.Detect(processObject.Frame);
+                        if (result == null)
+                            return;
+                        processObject.Request.ResultTable = ((YoloResult<Detection>)result).GroupBy(x => x.Name.Name).ToDictionary(x => x.Key, x => x.Count());
+
                         break;
                     case YoloTask.Classify:
+                        if (result == null)
+                            return;
                         result = Model.Classify(processObject.Frame);
+                        processObject.Request.ResultTable = ((YoloResult<Classification>)result).GroupBy(x => x.Name.Name).ToDictionary(x => x.Key, x => x.Count());
                         break;
                     case YoloTask.Segment:
+                        if (result == null)
+                            return;
                         result = Model.Segment(processObject.Frame);
+                        processObject.Request.ResultTable = ((YoloResult<Segmentation>)result).GroupBy(x => x.Name.Name).ToDictionary(x => x.Key, x => x.Count());
+
                         break;
                     case YoloTask.Obb:
+                        if (result == null)
+                            return;
                         result = Model.DetectObb(processObject.Frame);
+                        processObject.Request.ResultTable = ((YoloResult<ObbDetection>)result).GroupBy(x => x.Name.Name).ToDictionary(x => x.Key, x => x.Count());
                         break;
                     case YoloTask.Pose:
+                        if (result == null)
+                            return;
                         result = Model.Pose(processObject.Frame);
+                        processObject.Request.ResultTable = ((YoloResult<Pose>)result).GroupBy(x => x.Name.Name).ToDictionary(x => x.Key, x => x.Count());
                         break;
                     default:
-                        break;
+                        return; // Unsupported task
                 }
 
                 //var result = Model.Detect(processObject.Frame);
-
-
-
-                if (result == null)
-                    return;
 
                 processObject.Task = Metadata.Task; // Think of making it again
 
