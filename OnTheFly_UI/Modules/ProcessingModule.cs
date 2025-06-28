@@ -25,6 +25,7 @@ namespace OnTheFly_UI.Modules
         public int BufferLimit = 5;
         public CancellationToken CancellationToken;
 
+        public List<string> Names = new List<string>();
         public ObservableCollection<ModelObject> Models { get; set; } = new ObservableCollection<ModelObject>();
   
         public ConcurrentQueue<ProcessObject> PreProcessingBuffer;
@@ -66,6 +67,7 @@ namespace OnTheFly_UI.Modules
 
             Model = new YoloPredictor(model,b);
             Metadata = Model.Metadata;
+
 
             
 
@@ -109,6 +111,13 @@ namespace OnTheFly_UI.Modules
             {
                 Model = new YoloPredictor(modelPath);
                 Metadata = Model.Metadata;
+
+                Names.Clear();
+                foreach (var yoloname in Model.Metadata.Names)
+                {
+                    Names.Add(yoloname.Name);
+                }
+
                 ModelLoaded?.Invoke();
                 foreach(var item in Models)
                 {
@@ -186,6 +195,7 @@ namespace OnTheFly_UI.Modules
                     PostProcessingBuffer.Enqueue(processObject);
                     continue;
                 }
+                var newDict = Names.ToDictionary(x => x, x => 0); // Initialize the dictionary with all names and zero count
 
                 switch (Metadata.Task)
                 {
@@ -193,33 +203,41 @@ namespace OnTheFly_UI.Modules
                         result = Model.Detect(processObject.Frame);
                         if (result == null)
                             return;
-                        processObject.Request.ResultTable = ((YoloResult<Detection>)result).GroupBy(x => x.Name.Name).ToDictionary(x => x.Key, x => x.Count());
+
+                        ((YoloResult<Detection>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => newDict[x.Key] = x.Count()); 
+                        processObject.Request.ResultTable = newDict;
+
 
                         break;
                     case YoloTask.Classify:
+                        result = Model.Classify(processObject.Frame);
                         if (result == null)
                             return;
-                        result = Model.Classify(processObject.Frame);
-                        processObject.Request.ResultTable = ((YoloResult<Classification>)result).GroupBy(x => x.Name.Name).ToDictionary(x => x.Key, x => x.Count());
+
+                        ((YoloResult<Classification>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => newDict[x.Key] = x.Count());
+                        processObject.Request.ResultTable = newDict;
                         break;
                     case YoloTask.Segment:
+                        result = Model.Segment(processObject.Frame);
                         if (result == null)
                             return;
-                        result = Model.Segment(processObject.Frame);
-                        processObject.Request.ResultTable = ((YoloResult<Segmentation>)result).GroupBy(x => x.Name.Name).ToDictionary(x => x.Key, x => x.Count());
+                        ((YoloResult<Segmentation>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => newDict[x.Key] = x.Count());
+                        processObject.Request.ResultTable = newDict;
 
                         break;
                     case YoloTask.Obb:
+                        result = Model.DetectObb(processObject.Frame);
                         if (result == null)
                             return;
-                        result = Model.DetectObb(processObject.Frame);
-                        processObject.Request.ResultTable = ((YoloResult<ObbDetection>)result).GroupBy(x => x.Name.Name).ToDictionary(x => x.Key, x => x.Count());
+                        ((YoloResult<ObbDetection>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => newDict[x.Key] = x.Count());
+                        processObject.Request.ResultTable = newDict;
                         break;
                     case YoloTask.Pose:
+                        result = Model.Pose(processObject.Frame); 
                         if (result == null)
                             return;
-                        result = Model.Pose(processObject.Frame);
-                        processObject.Request.ResultTable = ((YoloResult<Pose>)result).GroupBy(x => x.Name.Name).ToDictionary(x => x.Key, x => x.Count());
+                        ((YoloResult<Pose>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => newDict[x.Key] = x.Count());
+                        processObject.Request.ResultTable = newDict;
                         break;
                     default:
                         return; // Unsupported task
