@@ -85,11 +85,11 @@
 
         <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="10" Background="Black" Opacity="0.1"></Border>
 
-        <Components:Display Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="20" x:Name="SelectedImageControl" Source="{Binding SelectedImage}" ResultTable="{Binding CurrentResultTable, UpdateSourceTrigger=PropertyChanged}"  ></Components:Display>
+        <Components:Display Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="14" x:Name="SelectedImageControl" Source="{Binding SelectedImage}" ResultTable="{Binding CurrentResultTable, UpdateSourceTrigger=PropertyChanged}"  ></Components:Display>
 
 
 
-        <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="10" Background="{StaticResource Background_Light}">
+        <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="14" Background="{StaticResource Background_Light}">
         </Border>
         <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" x:Name="UIMessage" Text="" HorizontalAlignment="Left" VerticalAlignment="Center" TextAlignment="Center" FontSize="15" Foreground="{StaticResource Foreground_Dark}" ></TextBlock>
 

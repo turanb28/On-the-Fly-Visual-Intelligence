@@ -104,6 +104,7 @@ namespace OnTheFly_UI.Modules
                 //PlotHandler.Plot<typeof(>( processObject.Result);
                 //BitmapSource bitmapSource = PlotHandler.PlotSegmentatation(processObject.Frame, (YoloResult<Segmentation>)processObject.Result);
 
+                Trace.WriteLine($"Visualization Module = {sw.ElapsedMilliseconds}");
 
 
 

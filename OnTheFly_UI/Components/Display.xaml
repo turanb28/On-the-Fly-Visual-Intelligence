@@ -4,16 +4,132 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OnTheFly_UI.Components"
+             xmlns:converters="clr-namespace:OnTheFly_UI.Components.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" x:Name="main">
+
+    <UserControl.Resources>
+
+        <Style x:Key="styleListBoxItem" TargetType="{x:Type ListBoxItem}">
+            <Setter Property="OverridesDefaultStyle" Value="True"></Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Grid x:Name="grid"  >
+
+                            <Border x:Name="background" BorderThickness="0" Opacity="1" Background="{StaticResource Foreground_Dark}" ></Border>
+
+                            <ContentPresenter Margin="10"  ></ContentPresenter>
+
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <!--<Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="background" Property="Background" Value="{StaticResource Foreground_Light}" ></Setter>
+                            </Trigger>-->
+
+
+                            <EventTrigger RoutedEvent="ListBoxItem.MouseEnter">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                     
+                                        <ColorAnimation Storyboard.TargetName="background" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="{StaticResource Color_Foreground_Light}" Duration="0:0:0.1"  />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            <EventTrigger RoutedEvent="ListBoxItem.MouseLeave">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="background" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="{StaticResource Color_Foreground_Dark}" Duration="0:0:0.1"  />
+                                    </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <!--<Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Opacity" Value="0.9"/>
+    </Trigger>-->
+
+
+                            <!--<Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="background"
+                                Property="Opacity"
+                                Value="0.7">
+                                </Setter>
+                            </Trigger>-->
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ResultTableListBoxStyle" TargetType="{x:Type ListBox}" >
+
+            <Setter Property="Opacity" Value="0.4"></Setter>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="ListBox.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.1" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="ListBox.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.4" Duration="0:0:0.1" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <!--<Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.9"/>
+                </Trigger>-->
+               
+            </Style.Triggers>
+        </Style>
+
+
+        <Style x:Key="listitemTextBlock" TargetType="{x:Type TextBlock}">
+            <Setter Property="FontWeight" Value="Medium"  ></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"  ></Setter>
+            <Setter Property="Background" Value="Transparent"  ></Setter>
+            <Setter Property="Foreground" Value="White"  ></Setter>
+
+        </Style>
+
+        <converters:DoubleConverter x:Key="doubleConverter"/>
+
+    </UserControl.Resources>
 
          <Grid x:Name="border"  ClipToBounds="True" MouseMove="main_MouseMove"  MouseWheel="main_MouseWheel" MouseLeftButtonDown="main_MouseLeftButtonDown" MouseLeftButtonUp="border_MouseLeftButtonUp" MouseRightButtonDown="border_MouseRightButtonDown" Width="{Binding ElementName=main, Path=ActualWidth}" Height="{Binding ElementName=main, Path=ActualHeight}" Background="Transparent">
              <Canvas x:Name="objectCanvas" RenderTransformOrigin="0.5,0.5" >
             <Image  x:Name="displayImage" Width="{Binding ElementName=objectCanvas, Path=ActualWidth}" Height="{Binding ElementName=objectCanvas, Path=ActualHeight}"  Source="{Binding ElementName=main, Path=Source, UpdateSourceTrigger=PropertyChanged}" Canvas.Top="0" Canvas.Left="0" ></Image>
         </Canvas>
-        <ListBox Width="100" VerticalAlignment="Top"  HorizontalAlignment="Left" Background="White" BorderThickness="0" Opacity="0.8" ItemsSource="{Binding ElementName=main, Path=ResultTable}">  
-               
+             
+             
+        <ListBox Name="resultTableListbox"  VerticalAlignment="Top" HorizontalAlignment="Left" ItemContainerStyle="{StaticResource styleListBoxItem}"
+                 BorderThickness="0"   Margin="5" Style="{StaticResource ResultTableListBoxStyle}"  Background="{StaticResource Foreground_Dark}"
+                 ItemsSource="{Binding ElementName=main, Path=ResultTable}">
+     
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+
+                    <Grid x:Name="itemGrid" Width="{Binding ElementName=border, Path=ActualWidth, Converter={StaticResource doubleConverter},ConverterParameter=0.12}"  >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{Binding Name,UpdateSourceTrigger=PropertyChanged}"    TextAlignment="Left"    Style="{StaticResource listitemTextBlock}" />
+                        <TextBlock Grid.Column="1" Text="{Binding Count,UpdateSourceTrigger=PropertyChanged}"  TextAlignment="Center"  Style="{StaticResource listitemTextBlock}" />
+
+                        <Button Grid.Column="2" Background="Red" VerticalAlignment="Center" Click="Button_Click" 
+                                Width="{Binding ElementName=border, Path=ActualWidth, Converter={StaticResource doubleConverter},ConverterParameter=0.01}" Height="{Binding ElementName=border, Path=ActualWidth, Converter={StaticResource doubleConverter},ConverterParameter=0.01}" ></Button>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+
+
         </ListBox>
+             
+             
         </Grid>
     
     

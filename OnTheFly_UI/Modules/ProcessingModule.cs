@@ -163,7 +163,6 @@ namespace OnTheFly_UI.Modules
             {
 
                 SpinWait.SpinUntil(() => { return PostProcessingBuffer.Count < BufferLimit; });
-                sw.Restart();
 
 
                 if (CancellationToken.IsCancellationRequested)
@@ -178,6 +177,7 @@ namespace OnTheFly_UI.Modules
                     else
                         continue;
                 }
+                sw.Restart();
 
                 processObject.Request.Status = RequestStatus.OnProcessing;
 
@@ -200,6 +200,7 @@ namespace OnTheFly_UI.Modules
                 switch (Metadata.Task)
                 {
                     case YoloTask.Detect:
+
                         result = Model.Detect(processObject.Frame);
                         if (result == null)
                             return;
@@ -251,8 +252,8 @@ namespace OnTheFly_UI.Modules
                 processObject.Result = result;
                 PostProcessingBuffer.Enqueue(processObject);
 
-                
-                Trace.WriteLine($"processing segmentation {sw.ElapsedMilliseconds}");
+                Trace.WriteLine($"processing Module = {sw.ElapsedMilliseconds}");
+
 
             }
 

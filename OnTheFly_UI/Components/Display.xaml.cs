@@ -2,8 +2,10 @@
 using Compunet.YoloSharp.Metadata;
 using Emgu.CV;
 using Emgu.CV.Rapid;
+using OnTheFly_UI.Modules.DTOs;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.Common;
 using System.Diagnostics;
@@ -54,10 +56,9 @@ namespace OnTheFly_UI.Components
 
 
 
-
-        public Dictionary<string, int> ResultTable // It didn't work 
+        public ObservableCollection<ResultTableItem> ResultTable 
         {
-            get { return (Dictionary<string, int>)GetValue(ResultTableProperty); }
+            get { return (ObservableCollection<ResultTableItem>)GetValue(ResultTableProperty); }
             set { 
                 SetValue(ResultTableProperty, value); 
             }
@@ -65,7 +66,7 @@ namespace OnTheFly_UI.Components
 
         // Using a DependencyProperty as the backing store for ResultTable.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ResultTableProperty =
-            DependencyProperty.Register("ResultTable", typeof(Dictionary<string, int>), typeof(Display));
+            DependencyProperty.Register("ResultTable", typeof(ObservableCollection<ResultTableItem>), typeof(Display));
 
 
 
@@ -82,6 +83,8 @@ namespace OnTheFly_UI.Components
 
         private void main_MouseMove(object sender, MouseEventArgs e)
         {
+            if (e.Source.GetType() == typeof(ListBox) )
+                return;
 
             if (e.LeftButton == MouseButtonState.Pressed)
             {
@@ -108,6 +111,10 @@ namespace OnTheFly_UI.Components
 
         private void main_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+
+            if (e.Source.GetType() == typeof(ListBox))
+                return;
+
             var pos = e.GetPosition(border);
             panStart = pos;
             currentTransform.X = displayImageTranslateTransform.X;
@@ -216,6 +223,16 @@ namespace OnTheFly_UI.Components
                 default:
                     return System.Windows.Media.PixelFormats.Bgr32;
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var a = sender as Button;
+
+            var item = a.DataContext;
+            string key = "";
+            var b = item.GetType().GetProperty("Name").GetValue(item,null).ToString();
+            MessageBox.Show(b);
         }
     }
 }

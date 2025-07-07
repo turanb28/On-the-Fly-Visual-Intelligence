@@ -13,7 +13,12 @@ namespace OnTheFly_UI.Modules.Handlers
         {
             App.Current.Dispatcher.Invoke(() =>
             {
+                if(Message == null)
+                    return;
                 var a = (MainWindow)App.Current.MainWindow;
+
+                if (a.UIMessage == null)
+                    return;
                 a.UIMessage.Text = Message;
             });
         }

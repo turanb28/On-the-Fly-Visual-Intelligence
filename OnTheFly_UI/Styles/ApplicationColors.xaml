@@ -7,4 +7,12 @@
     <SolidColorBrush x:Key="Foreground_Light">#9F49C6</SolidColorBrush>
     <SolidColorBrush x:Key="Debug_Color" Color="Red"></SolidColorBrush>
 
+
+    <Color x:Key="Color_Background_Dark">#252D33 </Color>
+    <Color x:Key="Color_Background_Light">#0C1519</Color>
+    <Color x:Key="Color_Foreground_Dark">#6B50D9</Color>
+    <Color x:Key="Color_Foreground_Light">#9F49C6</Color>
+    <Color x:Key="Color_Debug_Color">Red</Color>
+
+
 </ResourceDictionary>

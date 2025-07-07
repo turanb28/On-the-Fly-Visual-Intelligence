@@ -43,9 +43,9 @@ namespace OnTheFly_UI
         }
 
 
-        private Dictionary<string, int> _CurrentResultTable;
+        private ObservableCollection<ResultTableItem> _CurrentResultTable;
 
-        public Dictionary<string, int> CurrentResultTable
+        public ObservableCollection<ResultTableItem>  CurrentResultTable
         {
             get { return _CurrentResultTable; }
             set {
@@ -115,7 +115,29 @@ namespace OnTheFly_UI
         public void ShowFrame(BitmapSource bitmap,Dictionary<string,int> ResultTable)
         {
             SelectedImage = bitmap;
-            CurrentResultTable = ResultTable;
+
+            if (CurrentResultTable == null)
+                CurrentResultTable = new ObservableCollection<ResultTableItem>();
+
+
+            foreach (var item in ResultTable)
+            {
+                
+                var existingItem = CurrentResultTable.FirstOrDefault(x => x.Name == item.Key);
+                if (existingItem != null)
+                {
+                    existingItem.Count = item.Value;
+                }
+                else
+                {
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        CurrentResultTable.Add(new ResultTableItem() { Name = item.Key, Count = item.Value });
+                    },System.Windows.Threading.DispatcherPriority.Background);
+                }
+            }
+
+          
         }
 
         private void AddStream_Click(object sender, RoutedEventArgs e)
@@ -188,8 +210,15 @@ namespace OnTheFly_UI
             {
                 if (model.IsSelected)
                     ProcessingModule.UnselectModel(model.Path);
-                else 
+                else
+                {
                     ProcessingModule.SelectModel(model.Path);
+
+                    if (CurrentResultTable == null)
+                        CurrentResultTable = new ObservableCollection<ResultTableItem>();
+                    else
+                        CurrentResultTable.Clear();
+                } 
             }
             
         }
