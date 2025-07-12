@@ -21,6 +21,8 @@ namespace OnTheFly_UI.Modules.DTOs
                 OnPropertyChanged();
             }
         }
+
+
         private int count = 0;
         public  int Count
         {
@@ -32,6 +34,7 @@ namespace OnTheFly_UI.Modules.DTOs
             }
         }
 
+        public bool IsHidden { get; set; } = false;
 
         public ResultTableItem()
         {

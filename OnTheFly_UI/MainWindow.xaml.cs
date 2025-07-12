@@ -26,55 +26,27 @@ namespace OnTheFly_UI
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, INotifyPropertyChanged
+    public partial class MainWindow : Window
     {
-        private BitmapSource _selectedImage;
-        public BitmapSource SelectedImage
-        {
-            get => _selectedImage;
-            set
-            {
-                if (_selectedImage != value)
-                {
-                    _selectedImage = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedImage)));
-                }
-            }
-        }
-
-
-        private ObservableCollection<ResultTableItem> _CurrentResultTable;
-
-        public ObservableCollection<ResultTableItem>  CurrentResultTable
-        {
-            get { return _CurrentResultTable; }
-            set {
-                _CurrentResultTable = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentResultTable)));
-            }
-        }
-
-
-
         public CancellationTokenSource CancellationTokenSource { get; set; } = new CancellationTokenSource();
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        private string selectedModelPath = string.Empty;
         public DataAcquisitionModule DataAcquisitionModule { get; set; }
         public ProcessingModule ProcessingModule { get; set; }
-        public VisualizationModule VisualizationModule;
+        public VisualizationModule VisualizationModule { get; set; }
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = this;
+
+            this.DataContext = this;
             DataAcquisitionModule = new DataAcquisitionModule();
             ProcessingModule = new ProcessingModule(DataAcquisitionModule.PreprocessingBuffer);
             VisualizationModule = new VisualizationModule(ProcessingModule.PostProcessingBuffer, ProcessingModule.Metadata);
+
             DataAcquisitionModule.DataAcquired += () => { ProcessingModule.StartProcess(); VisualizationModule.StartProcess(); }; // VisualizationModule.StartProcess();
             ProcessingModule.ModelLoaded += () => { UIMessageBoxHandler.Show("Idle"); };
             ProcessingModule.ProcessingException += (e) => { UIMessageBoxHandler.Show(e); };
-            VisualizationModule.displayFrameFucntion = ShowFrame;
+            Display.DisplayUserInteraction += VisualizationModule.ReShow;
+
             sidebar.Values = DataAcquisitionModule.Requests;
 
             var a = RecentFileHandler.GetRecentFiles();
@@ -112,33 +84,6 @@ namespace OnTheFly_UI
             DataAcquisitionModule.RequestVideo(file.FileName);
         }
 
-        public void ShowFrame(BitmapSource bitmap,Dictionary<string,int> ResultTable)
-        {
-            SelectedImage = bitmap;
-
-            if (CurrentResultTable == null)
-                CurrentResultTable = new ObservableCollection<ResultTableItem>();
-
-
-            foreach (var item in ResultTable)
-            {
-                
-                var existingItem = CurrentResultTable.FirstOrDefault(x => x.Name == item.Key);
-                if (existingItem != null)
-                {
-                    existingItem.Count = item.Value;
-                }
-                else
-                {
-                    App.Current.Dispatcher.Invoke(() =>
-                    {
-                        CurrentResultTable.Add(new ResultTableItem() { Name = item.Key, Count = item.Value });
-                    },System.Windows.Threading.DispatcherPriority.Background);
-                }
-            }
-
-          
-        }
 
         private void AddStream_Click(object sender, RoutedEventArgs e)
         {
@@ -172,13 +117,17 @@ namespace OnTheFly_UI
                 return;
             var a = DataAcquisitionModule.Requests[index];
             DataAcquisitionModule.RequestWithID(a.Id);
-            //ProcessingModule.StartProcess();
-            //VisualizationModule.StartProcess();
 
         }
+    
+
+      
+
+        #region MainWindow Events
+
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if(e.Source is Display)
+            if (e.Source is Display)
                 return;
 
             if (e.ChangedButton == MouseButton.Left)
@@ -214,14 +163,15 @@ namespace OnTheFly_UI
                 {
                     ProcessingModule.SelectModel(model.Path);
 
-                    if (CurrentResultTable == null)
-                        CurrentResultTable = new ObservableCollection<ResultTableItem>();
-                    else
-                        CurrentResultTable.Clear();
-                } 
+                    //if (CurrentResultTable == null)
+                    //    CurrentResultTable = new ObservableCollection<ResultTableItem>();
+                    //else
+                    //    CurrentResultTable.Clear();
+                }
             }
-            
+
         }
 
+        #endregion
     }
 }

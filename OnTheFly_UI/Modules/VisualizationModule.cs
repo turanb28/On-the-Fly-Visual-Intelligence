@@ -8,6 +8,8 @@ using OnTheFly_UI.Modules.Handlers;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -24,20 +26,47 @@ using System.Xml.Linq;
 
 namespace OnTheFly_UI.Modules
 {
-    public class VisualizationModule
+    public class VisualizationModule: INotifyPropertyChanged
     {
-        public delegate void DisplayFrameDelegate(BitmapSource frame,Dictionary<string,int> ResultTable);
-        public DisplayFrameDelegate displayFrameFucntion;
-        
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
         public TimeSpan Timeout = TimeSpan.FromMilliseconds(2000);
         
         public YoloMetadata Metadata = null;
+        
         public ConcurrentQueue<ProcessObject> PostProcessingBuffer;
 
-    
+        public ObservableCollection<string> HiddenClassNames { get; set; } = new ObservableCollection<string>(); 
 
+        private ObservableCollection<ResultTableItem> _CurrentResultTable = new ObservableCollection<ResultTableItem>();
 
-        //CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        public ObservableCollection<ResultTableItem> CurrentResultTable
+        {
+            get { return _CurrentResultTable; }
+            set
+            {
+                _CurrentResultTable = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentResultTable)));
+            }
+        }
+
+        private BitmapSource _currentImage = null;
+        public BitmapSource CurrentImage
+        {
+            get => _currentImage;
+            set
+            {
+                if (_currentImage != value)
+                {
+                    _currentImage = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentImage)));
+                }
+            }
+        }
+
+        private ProcessObject LastProcessObject;
+
 
         public VisualizationModule(ConcurrentQueue<ProcessObject> ProcessingBuffer, YoloMetadata metadata)
         {
@@ -46,8 +75,6 @@ namespace OnTheFly_UI.Modules
             PostProcessingBuffer = ProcessingBuffer;
 
             Metadata = metadata;
-
-           
         }
 
 
@@ -89,22 +116,19 @@ namespace OnTheFly_UI.Modules
                 }
                 processObject.Request.Status = RequestStatus.OnRendering; // Think of making it a property of the process object
 
-
+                LastProcessObject = processObject; // Save the last process object for re-showing just for image type requests
 
                 BitmapSource bitmapSource = null;
 
+                var hiddenNames = CurrentResultTable.Where(x => x.IsHidden).Select(x => x.Name).ToHashSet();
+
                 if (processObject.Task == YoloTask.Detect)
-                    bitmapSource = PlotHandler.PlotDetection(processObject.Frame, (YoloResult<Detection>)processObject.Result);
+                    bitmapSource = PlotHandler.PlotDetection(processObject.Frame, (YoloResult<Detection>)processObject.Result,hiddenNames: hiddenNames);
                 else if (processObject.Task == YoloTask.Segment)
-                    bitmapSource = PlotHandler.PlotSegmentatation(processObject.Frame, (YoloResult<Segmentation>)processObject.Result);
+                    bitmapSource = PlotHandler.PlotSegmentatation(processObject.Frame, (YoloResult<Segmentation>)processObject.Result, hiddenNames: hiddenNames);
                 else
                     bitmapSource = PlotHandler.Plot(processObject.Frame);
 
-
-                //PlotHandler.Plot<typeof(>( processObject.Result);
-                //BitmapSource bitmapSource = PlotHandler.PlotSegmentatation(processObject.Frame, (YoloResult<Segmentation>)processObject.Result);
-
-                Trace.WriteLine($"Visualization Module = {sw.ElapsedMilliseconds}");
 
 
 
@@ -121,15 +145,58 @@ namespace OnTheFly_UI.Modules
 
                 Thread.Sleep(waitTime);
                 Trace.WriteLine("FPS= " + (1000/sw.ElapsedMilliseconds).ToString());
-                displayFrameFucntion?.Invoke(bitmapSource,processObject.Request.ResultTable);
+
+
+
+
+                ShowFrame(bitmapSource,processObject.Request.ResultTable);
+                
+                
+                Trace.WriteLine($"Visualization Module = {sw.ElapsedMilliseconds}");
                 processObject.Request.Status = RequestStatus.Sucess;
 
             }
         }
 
+        public void ReShow()
+        {
+            if (LastProcessObject.Request.SourceType != RequestSourceType.Image)
+                return;
 
-    
+            PostProcessingBuffer.Enqueue(LastProcessObject);
+            StartProcess();
+        }
 
+
+
+
+        public void ShowFrame(BitmapSource bitmap, Dictionary<string, int> ResultTable)
+        {
+            CurrentImage = bitmap;
+
+            if (CurrentResultTable == null)
+                CurrentResultTable = new ObservableCollection<ResultTableItem>();
+
+
+            foreach (var item in ResultTable)
+            {
+
+                var existingItem = CurrentResultTable.FirstOrDefault(x => x.Name == item.Key);
+                if (existingItem != null)
+                {
+                    existingItem.Count = item.Value;
+                }
+                else
+                {
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        CurrentResultTable.Add(new ResultTableItem() { Name = item.Key, Count = item.Value });
+                    }, System.Windows.Threading.DispatcherPriority.Background);
+                }
+            }
+
+
+        }
 
 
     }

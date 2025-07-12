@@ -24,82 +24,62 @@ namespace OnTheFly_UI.Modules.Handlers
         //    var a = result;
         //}
 
-        public static BitmapSource PlotDetection(byte[] frame, YoloResult<Detection> result,PlotConfiguration? configuration = null)
+        public static BitmapSource PlotDetection(byte[] frame, YoloResult<Detection> result,PlotConfiguration? configuration = null,HashSet<string> hiddenNames = null)
         {
             using (var stream = new MemoryStream(frame))
             {
                 var bitmap = new System.Drawing.Bitmap(stream);
-                return PlotDetection(bitmap, result,configuration);
+                return PlotDetection(bitmap, result,configuration,hiddenNames);
             }
         }
-        public static BitmapSource PlotDetection(Bitmap frame, YoloResult<Detection> result, PlotConfiguration? configuration = null)
+        public static BitmapSource PlotDetection(Bitmap frame, YoloResult<Detection> result, PlotConfiguration? configuration = null, HashSet<string> hiddenNames = null)
         {
             if (result.Count == 0)
                 return BitmapConvertHandler.ToBitmapSourceFast(frame);
-            
+
             if (configuration == null)
                 configuration = new PlotConfiguration();
 
             var g = System.Drawing.Graphics.FromImage(frame);
-
             var pen = new System.Drawing.Pen(System.Drawing.Color.Cyan, 3);
             var rect = new System.Drawing.Rectangle(50, 50, 100, 100);
 
-
-        
-
-            //string formattedString = string.Join(Environment.NewLine, a.Select(x => $"{x.Key} - {x.Count()}")); // Draw a background with the number of objects detected
-
-
             foreach (var obj in result)
             {
+                if (hiddenNames != null && hiddenNames.Contains(obj.Name.Name))
+                    continue;
+
                 rect.Width = obj.Bounds.Width;
                 rect.Height = obj.Bounds.Height;
-
                 rect.X = obj.Bounds.X;
                 rect.Y = obj.Bounds.Y;
 
-                string text = $"{obj.Name.Name} %{Math.Round(obj.Confidence * 100,1)}";
-
+                string text = $"{obj.Name.Name} %{Math.Round(obj.Confidence * 100, 1)}";
                 pen.Width = configuration.BorderThickness;
                 pen.Color = configuration.ObjectColors[obj.Name.Id];
-                    
+
                 g.DrawRectangle(pen, rect);
 
                 var size = g.MeasureString(text, configuration.Font);
-
                 var point = new System.Drawing.Point(obj.Bounds.X, obj.Bounds.Y - (int)size.Height);
-
                 var backgroundFiller = new System.Drawing.Rectangle(point, size.ToSize());
 
-                g.FillRectangle(new System.Drawing.SolidBrush(pen.Color),backgroundFiller);
-
-
-                g.DrawString(text, configuration.Font, new System.Drawing.SolidBrush(configuration.FontColor),point);
-
+                g.FillRectangle(new System.Drawing.SolidBrush(pen.Color), backgroundFiller);
+                g.DrawString(text, configuration.Font, new System.Drawing.SolidBrush(configuration.FontColor), point);
             }
 
-            //frame = PlotResultTable(frame, result, configuration);
-
-            //g.DrawString(formattedString, configuration.Font, new System.Drawing.SolidBrush(configuration.FontColor), new System.Drawing.Point(10, 10));
-
-
-            frame = PlotResultTable(frame, result, configuration);
-
             BitmapSource bitmapSource = BitmapConvertHandler.ToBitmapSourceFast(frame);
-
             return bitmapSource;
-
         }
-        public static BitmapSource PlotSegmentatation(byte[] frame, YoloResult<Segmentation> result, PlotConfiguration? configuration = null)
+        public static BitmapSource PlotSegmentatation(byte[] frame, YoloResult<Segmentation> result, PlotConfiguration? configuration = null, double alpha = 0.3, HashSet<string> hiddenNames = null)
         {
             using (var stream = new MemoryStream(frame))
             {
                 var bitmap = new System.Drawing.Bitmap(stream);
-                return PlotSegmentatation(bitmap, result, configuration);
+                return PlotSegmentatation(bitmap, result, configuration, alpha, hiddenNames);
             }
         }
-        public static BitmapSource PlotSegmentatation(Bitmap frame, YoloResult<Segmentation> result, PlotConfiguration? configuration = null,double alpha = 0.3)
+        public static BitmapSource PlotSegmentatation(Bitmap frame, YoloResult<Segmentation> result, PlotConfiguration? configuration = null,double alpha = 0.3, HashSet<string> hiddenNames = null)
         {
             var sw = new Stopwatch();
             sw.Restart();
@@ -123,7 +103,11 @@ namespace OnTheFly_UI.Modules.Handlers
 
             foreach (var obj in result)
             {
-                if(obj.Confidence < 0.6)
+
+                if (hiddenNames != null && hiddenNames.Contains(obj.Name.Name))
+                    continue;
+
+                if (obj.Confidence < 0.6)
                     continue;
 
                 if (obj.Name.Id > configuration.ObjectColors.Count)
@@ -159,6 +143,9 @@ namespace OnTheFly_UI.Modules.Handlers
             foreach (var obj in result) // Why do we need to draw the rectangles again? Indstead of just use plot detection?
             {
                 if (obj.Confidence < 0.6)
+                    continue;
+
+                if (hiddenNames != null && hiddenNames.Contains(obj.Name.Name))
                     continue;
 
                 if (obj.Name.Id > configuration.ObjectColors.Count)
@@ -198,39 +185,6 @@ namespace OnTheFly_UI.Modules.Handlers
 
             return bitmapSource;
 
-        }
-
-        public static Bitmap PlotResultTable(byte[] frame, YoloResult<Detection> result, PlotConfiguration? configuration = null)
-        {
-            using (var stream = new MemoryStream(frame))
-            {
-                var bitmap = new System.Drawing.Bitmap(stream);
-                return PlotResultTable(bitmap, result, configuration);
-            }
-        }
-
-        public static Bitmap PlotResultTable(Bitmap frame, YoloResult<Detection> result, PlotConfiguration? configuration = null) // Make it better and bid it display component
-        {
-            if (result.Count == 0)
-                return frame;
-
-            if (configuration == null)
-                configuration = new PlotConfiguration();
-
-
-            var g = System.Drawing.Graphics.FromImage(frame);
-            var pen = new System.Drawing.Pen(System.Drawing.Color.Cyan, 3);
-
-            var rect = new System.Drawing.Rectangle(50, 50, 100, 100);
-
-            var resultGroup = result.GroupBy(x => x.Name.Name).ToList();
-
-            string formattedString = string.Join(Environment.NewLine, resultGroup.Select(x => $"{x.Key} - {x.Count()}"));
-
-            g.DrawString(formattedString, configuration.Font, new System.Drawing.SolidBrush(configuration.FontColor), new System.Drawing.Point(10, 10));
-
-
-            return frame;
         }
 
 

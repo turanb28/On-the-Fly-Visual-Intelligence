@@ -85,9 +85,8 @@
 
         <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="10" Background="Black" Opacity="0.1"></Border>
 
-        <Components:Display Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="14" x:Name="SelectedImageControl" Source="{Binding SelectedImage}" ResultTable="{Binding CurrentResultTable, UpdateSourceTrigger=PropertyChanged}"  ></Components:Display>
-
-
+        <Components:Display x:Name="Display" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="14" Source="{Binding VisualizationModule.CurrentImage}" ResultTable="{Binding VisualizationModule.CurrentResultTable}" 
+                            ></Components:Display>
 
         <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="14" Background="{StaticResource Background_Light}">
         </Border>

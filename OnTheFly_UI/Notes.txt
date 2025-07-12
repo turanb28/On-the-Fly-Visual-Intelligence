@@ -6,7 +6,7 @@
 
 4 - Add a file for models to load before (DONE)
 
-5 - Add different layers for different objects and cabability to select the layer shown
+5 - Add different layers for different objects and cabability to select the layer shown (DONE) (with different approach)
 
 6 - Think again states of processing.
 
