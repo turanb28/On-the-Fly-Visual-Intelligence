@@ -154,26 +154,20 @@ namespace OnTheFly_UI.Modules.Handlers
                     pen.Color = configuration.ObjectColors[obj.Name.Id];
 
 
-                    rect.Width = obj.Bounds.Width;
+                rect.Width = obj.Bounds.Width;
                 rect.Height = obj.Bounds.Height;
-
                 rect.X = obj.Bounds.X;
                 rect.Y = obj.Bounds.Y;
 
                 string text = $"{obj.Name.Name} %{Math.Round(obj.Confidence * 100, 1)}";
-
                 pen.Width = configuration.BorderThickness;
-
                 g.DrawRectangle(pen, rect);
 
                 var size = g.MeasureString(text, configuration.Font);
-
                 var point = new System.Drawing.Point(obj.Bounds.X, obj.Bounds.Y - (int)size.Height);
-
                 var backgroundFiller = new System.Drawing.Rectangle(point, size.ToSize());
-
+               
                 g.FillRectangle(new System.Drawing.SolidBrush(pen.Color), backgroundFiller);
-
 
                 g.DrawString(text, configuration.Font, new System.Drawing.SolidBrush(configuration.FontColor), point);
 

@@ -158,7 +158,7 @@ namespace OnTheFly_UI.Modules
             }
         }
 
-        public void ReShow()
+        public void InteractionEventHnadler()
         {
             if (LastProcessObject.Request.SourceType != RequestSourceType.Image)
                 return;
@@ -177,6 +177,10 @@ namespace OnTheFly_UI.Modules
             if (CurrentResultTable == null)
                 CurrentResultTable = new ObservableCollection<ResultTableItem>();
 
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                CurrentResultTable.Clear(); /// make it better
+            });
 
             foreach (var item in ResultTable)
             {

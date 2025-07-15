@@ -45,7 +45,7 @@ namespace OnTheFly_UI
             DataAcquisitionModule.DataAcquired += () => { ProcessingModule.StartProcess(); VisualizationModule.StartProcess(); }; // VisualizationModule.StartProcess();
             ProcessingModule.ModelLoaded += () => { UIMessageBoxHandler.Show("Idle"); };
             ProcessingModule.ProcessingException += (e) => { UIMessageBoxHandler.Show(e); };
-            Display.DisplayUserInteraction += VisualizationModule.ReShow;
+            Display.DisplayUserInteraction += VisualizationModule.InteractionEventHnadler;
 
             sidebar.Values = DataAcquisitionModule.Requests;
 

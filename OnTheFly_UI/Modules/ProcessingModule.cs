@@ -212,10 +212,28 @@ namespace OnTheFly_UI.Modules
                         break;
                     case YoloTask.Classify:
                         result = Model.Classify(processObject.Frame);
+
+                        var a = ((YoloResult<Classification>)result).ToList();
+                        a.ForEach(x =>
+                        {
+                            if (newDict[x.Name.Name] < 5)
+                                newDict.Remove(x.Name.Name);
+
+                            float value = x.Confidence * 100;
+
+                            if (value > 5)
+                                newDict.Add(x.Name.Name, (int)value);
+
+
+
+                        });
+                        //((YoloResult<Classification>)result).ToList().ForEach(x => newDict[x.Name.Name] = (int)x.Confidence);
+
+
                         if (result == null)
                             return;
 
-                        ((YoloResult<Classification>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => newDict[x.Key] = x.Count());
+                        //((YoloResult<Classification>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => newDict[x.Key] = x.Count());
                         processObject.Request.ResultTable = newDict;
                         break;
                     case YoloTask.Segment:

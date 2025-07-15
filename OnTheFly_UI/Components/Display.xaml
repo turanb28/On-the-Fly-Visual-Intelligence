@@ -23,10 +23,6 @@
 
                         </Grid>
                         <ControlTemplate.Triggers>
-                            <!--<Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="background" Property="Background" Value="{StaticResource Foreground_Light}" ></Setter>
-                            </Trigger>-->
-
 
                             <EventTrigger RoutedEvent="ListBoxItem.MouseEnter">
                                     <BeginStoryboard>
@@ -43,17 +39,7 @@
                                     </Storyboard>
                                     </BeginStoryboard>
                                 </EventTrigger>
-                                <!--<Trigger Property="IsMouseOver" Value="True">
-        <Setter Property="Opacity" Value="0.9"/>
-    </Trigger>-->
-
-
-                            <!--<Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="background"
-                                Property="Opacity"
-                                Value="0.7">
-                                </Setter>
-                            </Trigger>-->
+                          
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -78,9 +64,6 @@
                         </Storyboard>
                     </BeginStoryboard>
                 </EventTrigger>
-                <!--<Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Opacity" Value="0.9"/>
-                </Trigger>-->
                
             </Style.Triggers>
         </Style>
@@ -95,6 +78,7 @@
         </Style>
 
         <converters:DoubleConverter x:Key="doubleConverter"/>
+        <converters:PleasantStringConverter x:Key="pleasantStringConverter"/>
 
     </UserControl.Resources>
 
@@ -117,7 +101,7 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{Binding Name,UpdateSourceTrigger=PropertyChanged}"    TextAlignment="Left"    Style="{StaticResource listitemTextBlock}" />
+                        <TextBlock Grid.Column="0" Text="{Binding Name,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource pleasantStringConverter}}"    TextAlignment="Left"    Style="{StaticResource listitemTextBlock}" />
                         <TextBlock Grid.Column="1" Text="{Binding Count,UpdateSourceTrigger=PropertyChanged}"  TextAlignment="Center"  Style="{StaticResource listitemTextBlock}" />
  
                         <Button Grid.Column="2" Background="Red" VerticalAlignment="Center" Click="Button_Click"  
@@ -133,9 +117,5 @@
         </Grid>
     
     
-        <!--<Border x:Name="border"  ClipToBounds="True" MouseMove="main_MouseMove"  MouseWheel="main_MouseWheel" MouseLeftButtonDown="main_MouseLeftButtonDown" MouseLeftButtonUp="border_MouseLeftButtonUp" MouseRightButtonDown="border_MouseRightButtonDown" Width="{Binding ElementName=main, Path=ActualWidth}" Height="{Binding ElementName=main, Path=ActualHeight}" Background="Transparent">
-            <StackPanel> 
-            </StackPanel>
-        </Border>-->
 
 </UserControl>
