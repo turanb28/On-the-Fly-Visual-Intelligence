@@ -174,7 +174,7 @@ namespace OnTheFly_UI.Modules
             using (Mat frame = new Mat())
             using (VideoCapture capture = new VideoCapture(path))
             {
-                requestObject.FPS = (int)capture.Get(Emgu.CV.CvEnum.CapProp.Fps);
+                //requestObject.FPS = (int)capture.Get(Emgu.CV.CvEnum.CapProp.Fps);
 
                 int count = 0;
 

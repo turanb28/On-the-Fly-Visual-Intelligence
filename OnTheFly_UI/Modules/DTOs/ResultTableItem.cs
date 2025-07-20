@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Compunet.YoloSharp.Metadata;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -21,7 +22,6 @@ namespace OnTheFly_UI.Modules.DTOs
                 OnPropertyChanged();
             }
         }
-
 
         private int count = 0;
         public  int Count

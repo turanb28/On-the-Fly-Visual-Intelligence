@@ -195,7 +195,8 @@ namespace OnTheFly_UI.Modules
                     PostProcessingBuffer.Enqueue(processObject);
                     continue;
                 }
-                var newDict = Names.ToDictionary(x => x, x => 0); // Initialize the dictionary with all names and zero count
+                //var newDict = new Dictionary<string, int>();
+                var newDict = new List<ResultTableItem>();
 
                 switch (Metadata.Task)
                 {
@@ -205,58 +206,47 @@ namespace OnTheFly_UI.Modules
                         if (result == null)
                             return;
 
-                        ((YoloResult<Detection>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => newDict[x.Key] = x.Count()); 
-                        processObject.Request.ResultTable = newDict;
+                        ((YoloResult<Detection>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => newDict.Add( new ResultTableItem(x.Key, x.Count() ) ) ) ; 
+                        processObject.ResultTable = newDict;
 
 
                         break;
                     case YoloTask.Classify:
                         result = Model.Classify(processObject.Frame);
+                        if (result == null)
+                            return;
+
 
                         var a = ((YoloResult<Classification>)result).ToList();
                         a.ForEach(x =>
                         {
-                            if (newDict[x.Name.Name] < 5)
-                                newDict.Remove(x.Name.Name);
-
                             float value = x.Confidence * 100;
-
-                            if (value > 5)
-                                newDict.Add(x.Name.Name, (int)value);
-
-
-
+                            newDict.Add(new ResultTableItem(x.Name.Name, (int)value));
                         });
-                        //((YoloResult<Classification>)result).ToList().ForEach(x => newDict[x.Name.Name] = (int)x.Confidence);
+                        processObject.ResultTable = newDict;
 
-
-                        if (result == null)
-                            return;
-
-                        //((YoloResult<Classification>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => newDict[x.Key] = x.Count());
-                        processObject.Request.ResultTable = newDict;
                         break;
                     case YoloTask.Segment:
                         result = Model.Segment(processObject.Frame);
                         if (result == null)
                             return;
-                        ((YoloResult<Segmentation>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => newDict[x.Key] = x.Count());
-                        processObject.Request.ResultTable = newDict;
+                        ((YoloResult<Segmentation>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => newDict.Add(new ResultTableItem(x.Key, x.Count())));
+                        processObject.ResultTable = newDict;
 
                         break;
                     case YoloTask.Obb:
                         result = Model.DetectObb(processObject.Frame);
                         if (result == null)
                             return;
-                        ((YoloResult<ObbDetection>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => newDict[x.Key] = x.Count());
-                        processObject.Request.ResultTable = newDict;
+                        ((YoloResult<ObbDetection>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => newDict.Add(new ResultTableItem(x.Key, x.Count())));
+                        processObject.ResultTable = newDict;
                         break;
                     case YoloTask.Pose:
                         result = Model.Pose(processObject.Frame); 
                         if (result == null)
                             return;
-                        ((YoloResult<Pose>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => newDict[x.Key] = x.Count());
-                        processObject.Request.ResultTable = newDict;
+                        ((YoloResult<Pose>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => newDict.Add(new ResultTableItem(x.Key, x.Count())));
+                        processObject.ResultTable = newDict;
                         break;
                     default:
                         return; // Unsupported task
@@ -270,7 +260,7 @@ namespace OnTheFly_UI.Modules
                 processObject.Result = result;
                 PostProcessingBuffer.Enqueue(processObject);
 
-                Trace.WriteLine($"processing Module = {sw.ElapsedMilliseconds}");
+                //Trace.WriteLine($"processing Module = {sw.ElapsedMilliseconds}");
 
 
             }

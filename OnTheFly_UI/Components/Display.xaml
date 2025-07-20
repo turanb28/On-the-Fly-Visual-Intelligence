@@ -93,9 +93,9 @@
                  ItemsSource="{Binding ElementName=main, Path=ResultTable}">
      
             <ListBox.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate >
 
-                    <Grid x:Name="itemGrid" Width="{Binding ElementName=border, Path=ActualWidth, Converter={StaticResource doubleConverter},ConverterParameter=0.12}"  >
+                    <Grid x:Name="itemGrid" Width="{Binding ElementName=border, Path=ActualWidth, Converter={StaticResource doubleConverter},ConverterParameter=0.12}"  Visibility="Visible" >
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="4*" />
                             <ColumnDefinition Width="*" />

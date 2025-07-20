@@ -29,7 +29,6 @@ namespace OnTheFly_UI
     public partial class MainWindow : Window
     {
         public CancellationTokenSource CancellationTokenSource { get; set; } = new CancellationTokenSource();
-
         public DataAcquisitionModule DataAcquisitionModule { get; set; }
         public ProcessingModule ProcessingModule { get; set; }
         public VisualizationModule VisualizationModule { get; set; }

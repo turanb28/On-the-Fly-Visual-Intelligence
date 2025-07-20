@@ -37,8 +37,6 @@ namespace OnTheFly_UI.Modules
         
         public ConcurrentQueue<ProcessObject> PostProcessingBuffer;
 
-        public ObservableCollection<string> HiddenClassNames { get; set; } = new ObservableCollection<string>(); 
-
         private ObservableCollection<ResultTableItem> _CurrentResultTable = new ObservableCollection<ResultTableItem>();
 
         public ObservableCollection<ResultTableItem> CurrentResultTable
@@ -149,10 +147,10 @@ namespace OnTheFly_UI.Modules
 
 
 
-                ShowFrame(bitmapSource,processObject.Request.ResultTable);
+                ShowFrame(bitmapSource,processObject.ResultTable);
                 
                 
-                Trace.WriteLine($"Visualization Module = {sw.ElapsedMilliseconds}");
+                //Trace.WriteLine($"Visualization Module = {sw.ElapsedMilliseconds}");
                 processObject.Request.Status = RequestStatus.Sucess;
 
             }
@@ -170,36 +168,10 @@ namespace OnTheFly_UI.Modules
 
 
 
-        public void ShowFrame(BitmapSource bitmap, Dictionary<string, int> ResultTable)
+        public void ShowFrame(BitmapSource bitmap, List<ResultTableItem> ResultTable)
         {
             CurrentImage = bitmap;
-
-            if (CurrentResultTable == null)
-                CurrentResultTable = new ObservableCollection<ResultTableItem>();
-
-            App.Current.Dispatcher.Invoke(() =>
-            {
-                CurrentResultTable.Clear(); /// make it better
-            });
-
-            foreach (var item in ResultTable)
-            {
-
-                var existingItem = CurrentResultTable.FirstOrDefault(x => x.Name == item.Key);
-                if (existingItem != null)
-                {
-                    existingItem.Count = item.Value;
-                }
-                else
-                {
-                    App.Current.Dispatcher.Invoke(() =>
-                    {
-                        CurrentResultTable.Add(new ResultTableItem() { Name = item.Key, Count = item.Value });
-                    }, System.Windows.Threading.DispatcherPriority.Background);
-                }
-            }
-
-
+            CurrentResultTable = new ObservableCollection<ResultTableItem>(ResultTable);
         }
 
 

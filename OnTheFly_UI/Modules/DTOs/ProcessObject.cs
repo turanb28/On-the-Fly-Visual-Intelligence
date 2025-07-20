@@ -16,6 +16,7 @@ namespace OnTheFly_UI.Modules.DTOs
         public YoloTask Task { get; set; } = YoloTask.Obb;
         public RequestObject Request { get; set; }
         public YoloResult Result { get; set; } = null; // make it a new class to obtain more information about the result and add them processing modeule.
+        public List<ResultTableItem> ResultTable { get; set; } = new List<ResultTableItem>();   
         public ProcessObject() { }
         public ProcessObject(byte[] frame)
         {

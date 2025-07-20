@@ -15,7 +15,6 @@ namespace OnTheFly_UI.Modules.DTOs
         public RequestStatus Status { get; set; } = RequestStatus.Failed; 
         public RequestSourceType SourceType {  get; set; } = RequestSourceType.None;
         public List<YoloResult> Result { get; set; } = new  List<YoloResult>(); // Think of making it Span in case of peak memory while adding new items
-        public Dictionary<string, int> ResultTable { get; set; } = new Dictionary<string, int>();   
         public RequestObject() { }
         public RequestObject(string source,RequestSourceType sourceType) 
         {
