@@ -45,7 +45,7 @@ namespace OnTheFly_UI.Modules.DTOs
         };
         public int FontSize { get; set; } = 12;
         public int BorderThickness { get; set; } = 2;
-        public System.Drawing.Color FontColor { get; set; } = System.Drawing.Color.Black;
+        public System.Drawing.Color FontColor { get; set; } = System.Drawing.Color.White;
         public System.Drawing.FontFamily FontFamily { get; set; } = System.Drawing.FontFamily.GenericSansSerif;
         public System.Drawing.Font Font { get => new System.Drawing.Font(FontFamily, FontSize);  }
     }
