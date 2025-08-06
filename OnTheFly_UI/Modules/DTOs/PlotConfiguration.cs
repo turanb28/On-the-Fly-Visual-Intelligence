@@ -15,7 +15,7 @@ namespace OnTheFly_UI.Modules.DTOs
             System.Drawing.Color.Purple,         // Pure purple
             System.Drawing.Color.Green,          // Pure green
             System.Drawing.Color.Blue,           // Pure blue
-            System.Drawing.Color.Yellow,         // Pure yellow
+            System.Drawing.Color.YellowGreen,         // Pure yellow
             System.Drawing.Color.Cyan,           // Pure cyan
             System.Drawing.Color.Magenta,        // Pure magenta
             System.Drawing.Color.Orange,         // Strong warm orange
@@ -48,5 +48,9 @@ namespace OnTheFly_UI.Modules.DTOs
         public System.Drawing.Color FontColor { get; set; } = System.Drawing.Color.White;
         public System.Drawing.FontFamily FontFamily { get; set; } = System.Drawing.FontFamily.GenericSansSerif;
         public System.Drawing.Font Font { get => new System.Drawing.Font(FontFamily, FontSize);  }
+        public int Width { get; set; } = 1000;
+        public System.Drawing.Color KeypointColor { get; set; } = System.Drawing.Color.Yellow;
+        public System.Drawing.Color LineColor { get; set; } = System.Drawing.Color.Turquoise;
+        public float MinimumConfidence { get; set; } = 0.6f;
     }
 }

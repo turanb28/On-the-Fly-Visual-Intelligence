@@ -126,6 +126,8 @@ namespace OnTheFly_UI.Modules
                     bitmapSource = PlotHandler.PlotSegmentatation(processObject.Frame, (YoloResult<Segmentation>)processObject.Result, hiddenNames: hiddenNames);
                 else if (processObject.Task == YoloTask.Obb)
                     bitmapSource = PlotHandler.PlotObbDetection(processObject.Frame, (YoloResult<ObbDetection>)processObject.Result, hiddenNames: hiddenNames);
+                else if (processObject.Task == YoloTask.Pose)
+                    bitmapSource = PlotHandler.PlotPose(processObject.Frame, (YoloResult<Pose>)processObject.Result, hiddenNames: hiddenNames);
                 else
                     bitmapSource = PlotHandler.Plot(processObject.Frame);
 
@@ -144,7 +146,15 @@ namespace OnTheFly_UI.Modules
                     waitTime = 0;
 
                 Thread.Sleep(waitTime);
+                try
+                {
                 Trace.WriteLine("FPS= " + (1000/sw.ElapsedMilliseconds).ToString());
+
+                }catch (Exception ex)
+                {
+                    Trace.WriteLine("Error in Visualization Module: " + ex.Message);
+                    processObject.Request.Status = RequestStatus.Failed;
+                }
 
 
 
