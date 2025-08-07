@@ -106,16 +106,16 @@ namespace OnTheFly_UI
 
 
 
-        private void sidebar_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void sidebar_SelectionChanged(object sender, SelectionChangedEventArgs e)// Because of this function, thread runs twice when the photo is uploaded
         {
-            CancellationTokenSource.Cancel();
-            CancellationTokenSource = new CancellationTokenSource();
+            //CancellationTokenSource.Cancel(); 
+            //CancellationTokenSource = new CancellationTokenSource();
 
-            var index = DataAcquisitionModule.Requests.IndexOf(e.AddedItems[0] as RequestObject);
-            if (index < 0)
-                return;
-            var a = DataAcquisitionModule.Requests[index];
-            DataAcquisitionModule.RequestWithID(a.Id);
+            //var index = DataAcquisitionModule.Requests.IndexOf(e.AddedItems[0] as RequestObject);
+            //if (index < 0)
+            //    return;
+            //var a = DataAcquisitionModule.Requests[index];
+            //DataAcquisitionModule.RequestWithID(a.Id);
 
         }
     
@@ -159,14 +159,7 @@ namespace OnTheFly_UI
                 if (model.IsSelected)
                     ProcessingModule.UnselectModel(model.Path);
                 else
-                {
                     ProcessingModule.SelectModel(model.Path);
-
-                    //if (CurrentResultTable == null)
-                    //    CurrentResultTable = new ObservableCollection<ResultTableItem>();
-                    //else
-                    //    CurrentResultTable.Clear();
-                }
             }
 
         }
