@@ -40,9 +40,9 @@ namespace OnTheFly_UI.Components
 
         private void Value_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
-            listBox.Dispatcher.BeginInvoke(
+            listBox.Dispatcher.BeginInvoke(   /// Configurate this part
             new Action(
-                () => 
+                () =>
                 {
                     listBox.SelectedIndex = listBox.Items.Count - 1;
                     listBox.ScrollIntoView(listBox.Items[listBox.Items.Count - 1]);
@@ -79,6 +79,7 @@ namespace OnTheFly_UI.Components
 
         private void listBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+
             SelectionChanged?.Invoke(this,e);
             
         }

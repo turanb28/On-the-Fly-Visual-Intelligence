@@ -226,7 +226,7 @@ namespace OnTheFly_UI.Modules.Handlers
 
                 string text = $"{obj.Name.Name} %{Math.Round(obj.Confidence * 100, 1)}";
 
-                frameSized = DrawDetectionRectangle(frameSized, rect, text, configuration.ObjectColors[obj.Name.Id], configuration.Font, configuration.FontColor, ratio);
+                frameSized = DrawDetectionRectangle(frameSized, rect, text, pen.Color, configuration.Font, configuration.FontColor, ratio);
 
                 //pen.Width = configuration.BorderThickness;
                 //g.DrawRectangle(pen, rect);

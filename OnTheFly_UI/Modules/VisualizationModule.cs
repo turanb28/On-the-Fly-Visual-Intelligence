@@ -168,6 +168,36 @@ namespace OnTheFly_UI.Modules
             }
         }
 
+
+        ///// <summary>
+        ///// This is a concept test function. I will remove tihs later.
+        ///// </summary>
+        ///// <param name="requestObject"></param>
+        //public void Plot_TestFunction(RequestObject requestObject)
+        //{
+
+        //    if (requestObject.SourceType != RequestSourceType.Image)
+        //        throw new NotImplementedException();
+
+        //    var hiddenNames = CurrentResultTable.Where(x => x.IsHidden).Select(x => x.Name).ToHashSet();
+
+
+
+        ////    if (processObject.Task == YoloTask.Detect)
+        ////        bitmapSource = PlotHandler.PlotDetection(processObject.Frame, (YoloResult<Detection>)processObject.Result, hiddenNames: hiddenNames);
+        ////    else if (processObject.Task == YoloTask.Segment)
+        ////        bitmapSource = PlotHandler.PlotSegmentatation(processObject.Frame, (YoloResult<Segmentation>)processObject.Result, hiddenNames: hiddenNames);
+        ////    else if (processObject.Task == YoloTask.Obb)
+        ////        bitmapSource = PlotHandler.PlotObbDetection(processObject.Frame, (YoloResult<ObbDetection>)processObject.Result, hiddenNames: hiddenNames);
+        ////    else if (processObject.Task == YoloTask.Pose)
+        ////        bitmapSource = PlotHandler.PlotPose(processObject.Frame, (YoloResult<Pose>)processObject.Result, hiddenNames: hiddenNames);
+        ////    else
+        ////        bitmapSource = PlotHandler.Plot(processObject.Frame);
+        ////}
+
+
+
+
         public void InteractionEventHnadler()
         {
             if (LastProcessObject.Request.SourceType != RequestSourceType.Image)

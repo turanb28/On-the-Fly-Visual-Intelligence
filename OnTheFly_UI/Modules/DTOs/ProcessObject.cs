@@ -13,7 +13,7 @@ namespace OnTheFly_UI.Modules.DTOs
     {
         public byte[] Frame { get; set; } = null;
         public string ModelName { get; set; } = string.Empty;
-        public YoloTask Task { get; set; } = YoloTask.Obb;
+        public YoloTask Task { get; set; } = YoloTask.Obb; // Think making it a new class to obtain more information about the task
         public RequestObject Request { get; set; }
         public YoloResult Result { get; set; } = null; // make it a new class to obtain more information about the result and add them processing modeule.
         public List<ResultTableItem> ResultTable { get; set; } = new List<ResultTableItem>();   

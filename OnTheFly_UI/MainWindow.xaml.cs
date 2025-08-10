@@ -41,7 +41,7 @@ namespace OnTheFly_UI
             ProcessingModule = new ProcessingModule(DataAcquisitionModule.PreprocessingBuffer);
             VisualizationModule = new VisualizationModule(ProcessingModule.PostProcessingBuffer, ProcessingModule.Metadata);
 
-            DataAcquisitionModule.DataAcquired += () => { ProcessingModule.StartProcess(); VisualizationModule.StartProcess(); }; // VisualizationModule.StartProcess();
+            DataAcquisitionModule.DataAcquired += () => { ProcessingModule.StartProcess(); };// VisualizationModule.StartProcess(); }; 
             ProcessingModule.ModelLoaded += () => { UIMessageBoxHandler.Show("Idle"); };
             ProcessingModule.ProcessingException += (e) => { UIMessageBoxHandler.Show(e); };
             Display.DisplayUserInteraction += VisualizationModule.InteractionEventHnadler;
@@ -106,16 +106,16 @@ namespace OnTheFly_UI
 
 
 
-        private void sidebar_SelectionChanged(object sender, SelectionChangedEventArgs e)// Because of this function, thread runs twice when the photo is uploaded
+        private void sidebar_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //CancellationTokenSource.Cancel(); 
-            //CancellationTokenSource = new CancellationTokenSource();
+            CancellationTokenSource.Cancel();
+            CancellationTokenSource = new CancellationTokenSource();
 
-            //var index = DataAcquisitionModule.Requests.IndexOf(e.AddedItems[0] as RequestObject);
-            //if (index < 0)
-            //    return;
-            //var a = DataAcquisitionModule.Requests[index];
-            //DataAcquisitionModule.RequestWithID(a.Id);
+            var index = DataAcquisitionModule.Requests.IndexOf(e.AddedItems[0] as RequestObject);
+            if (index < 0)
+                return;
+            var a = DataAcquisitionModule.Requests[index];
+            DataAcquisitionModule.RequestWithID(a.Id);
 
         }
     

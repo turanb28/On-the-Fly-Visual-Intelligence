@@ -180,12 +180,14 @@ namespace OnTheFly_UI.Modules
                 sw.Restart();
 
                 processObject.Request.Status = RequestStatus.OnProcessing;
+                Trace.WriteLine(Thread.CurrentThread.ManagedThreadId.ToString());
 
-                //if (processObject.Result != null)
-                //{
-                //    PostProcessingBuffer.Enqueue(processObject);
-                //    continue;
-                //}
+
+                if (processObject.Result != null)
+                {
+                    PostProcessingBuffer.Enqueue(processObject);
+                    continue;
+                }
 
 
                 YoloResult? result = null;
