@@ -1,6 +1,7 @@
 ﻿using Compunet.YoloSharp.Data;
 using Emgu.CV;
 using OnTheFly_UI.Modules.DTOs;
+using OnTheFly_UI.Modules.Enums;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.IO;

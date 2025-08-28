@@ -41,8 +41,8 @@ namespace OnTheFly_UI
             ProcessingModule = new ProcessingModule(DataAcquisitionModule.PreprocessingBuffer);
             VisualizationModule = new VisualizationModule(ProcessingModule.PostProcessingBuffer, ProcessingModule.Metadata);
 
-            DataAcquisitionModule.DataAcquired += () => { ProcessingModule.StartProcess(); };// VisualizationModule.StartProcess(); }; 
-            ProcessingModule.ModelLoaded += () => { UIMessageBoxHandler.Show("Idle"); };
+            DataAcquisitionModule.DataAcquired += () => { ProcessingModule.StartProcess(); VisualizationModule.StartProcess(); }; 
+            ProcessingModule.ModelLoaded += (string m) => { UIMessageBoxHandler.Show($"Idle - {m} is loaded"); };
             ProcessingModule.ProcessingException += (e) => { UIMessageBoxHandler.Show(e); };
             Display.DisplayUserInteraction += VisualizationModule.InteractionEventHnadler;
 
@@ -86,7 +86,9 @@ namespace OnTheFly_UI
 
         private void AddStream_Click(object sender, RoutedEventArgs e)
         {
-            
+            DataAcquisitionModule.Requests.RemoveAt(0);
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
 
         private void Add_Model(object sender, RoutedEventArgs e)

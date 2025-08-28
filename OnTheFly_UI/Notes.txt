@@ -1,29 +1,11 @@
-﻿1 - Add a notification for the beginning of the program to warn the user that a model is not selected. (DONE)
-
-2 - Show selected model.
-
-3 - When the user add a model, the program should automatically select the model. (this is unnecessary)
-
-4 - Add a file for models to load before (DONE)
-
-5 - Add different layers for different objects and cabability to select the layer shown (DONE) (with different approach)
+﻿2 - Show selected model.
 
 6 - Think again states of processing.
 
-7 - Counting and displaying the number of objects in the scene.
-
 8 - Video duration and jumping.
-
-9 - Clear the processing queue when it happens a processing error. (DONE)
-
-10- While processing module is loading a model, give a feedback.(DONE)
-
-11- If there is no model selected, the program should show media with a message to select a model. (DONE)
-
-12- After selecting a model, the program should process previously loaded media (DONE)
-
-14- Fix the bug when the user selects a model, the program is frozen.(DONE)
 
 15 - UI cannot response when screen resizes.
 
 16 - Find a better way to keep result instead of YoloResult
+
+17 - Requesting system doesn't work properly.

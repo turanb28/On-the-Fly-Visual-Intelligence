@@ -1,4 +1,5 @@
 ﻿using Compunet.YoloSharp.Data;
+using Compunet.YoloSharp.Memory;
 using Compunet.YoloSharp.Metadata;
 using Compunet.YoloSharp.Plotting;
 using Emgu.CV.Ocl;
@@ -23,6 +24,9 @@ namespace OnTheFly_UI.Modules.Handlers
 
         public static BitmapSource PlotDetection(byte[] frame, YoloResult<Detection> result,PlotConfiguration? configuration = null,HashSet<string> hiddenNames = null)
         {
+            if(result == null)
+                return BitmapConvertHandler.FromByteArray(frame);
+
             using (var stream = new MemoryStream(frame))
             {
                 var bitmap = new System.Drawing.Bitmap(stream);
@@ -61,20 +65,6 @@ namespace OnTheFly_UI.Modules.Handlers
 
                 DrawDetectionRectangle(frame, rect, text, configuration.ObjectColors[obj.Name.Id], configuration.Font, configuration.FontColor, ratio);
 
-                //pen.Width = configuration.BorderThickness;
-                //pen.Color = configuration.ObjectColors[obj.Name.Id];
-
-                //g.DrawRectangle(pen, rect);
-
-                //var size = g.MeasureString(text, configuration.Font);
-
-                //var point = new System.Drawing.Point((int)(obj.Bounds.X * ratio), (int)((obj.Bounds.Y - (int)size.Height) * ratio));
-
-                //var backgroundFiller = new System.Drawing.Rectangle(point, size.ToSize());
-
-                //g.FillRectangle(new System.Drawing.SolidBrush(pen.Color), backgroundFiller);
-
-                //g.DrawString(text, configuration.Font, new System.Drawing.SolidBrush(configuration.FontColor), point);
             }
 
             BitmapSource bitmapSource = BitmapConvertHandler.ToBitmapSourceFast(frame);
@@ -83,6 +73,9 @@ namespace OnTheFly_UI.Modules.Handlers
 
         public static BitmapSource PlotObbDetection(byte[] frame, YoloResult<ObbDetection> result, PlotConfiguration? configuration = null, HashSet<string> hiddenNames = null)
         {
+            if (result == null)
+                return BitmapConvertHandler.FromByteArray(frame);
+
             using (var stream = new MemoryStream(frame))
             {
                 var bitmap = new System.Drawing.Bitmap(stream);
@@ -133,6 +126,9 @@ namespace OnTheFly_UI.Modules.Handlers
 
         public static BitmapSource PlotSegmentatation(byte[] frame, YoloResult<Segmentation> result, PlotConfiguration? configuration = null, double alpha = 0.3, HashSet<string> hiddenNames = null)
         {
+            if (result == null)
+                return BitmapConvertHandler.FromByteArray(frame);
+
             using (var stream = new MemoryStream(frame))
             {
                 var bitmap = new System.Drawing.Bitmap(stream);
@@ -160,64 +156,54 @@ namespace OnTheFly_UI.Modules.Handlers
             var frameRect = new System.Drawing.Rectangle(0, 0, frame.Width, frame.Height);
 
 
-
-            var bitmapData = frame.LockBits(frameRect, System.Drawing.Imaging.ImageLockMode.ReadWrite, frame.PixelFormat);
-
+            System.Drawing.Imaging.BitmapData bitmapData;
+     
             foreach (var obj in result)
             {
 
-                if (hiddenNames != null && hiddenNames.Contains(obj.Name.Name))
-                    continue;
+                bitmapData = frame.LockBits(frameRect, System.Drawing.Imaging.ImageLockMode.ReadWrite, frame.PixelFormat);
 
-                if (obj.Confidence < configuration.MinimumConfidence) 
+
+                if (hiddenNames != null && hiddenNames.Contains(obj.Name.Name))
+                { 
+                    frame.UnlockBits(bitmapData);
                     continue;
+                }
+                if (obj.Confidence < configuration.MinimumConfidence)
+                {
+                    frame.UnlockBits(bitmapData);
+                    continue;
+                }
 
                 if (obj.Name.Id > configuration.ObjectColors.Count)
                     pen.Color = System.Drawing.Color.Gray;
                 else
                     pen.Color = configuration.ObjectColors[obj.Name.Id];
 
+                int maskWidth = obj.Mask.Width;
+                int maskHeight = obj.Mask.Height;
+                int boundsX = obj.Bounds.X;
+                int boundsY = obj.Bounds.Y;
                 int pixelSize = 3;
+
                 unsafe
                 {
-                    byte* sourceRow;
-
-                    for (var x = 0; x < obj.Mask.Width; x++)
+                    var parallelResult = Parallel.For(0, maskHeight, y =>
                     {
-                        for (var y = 0; y < obj.Mask.Height; y++)
+                        byte* sourceRow = (byte*)bitmapData.Scan0 + ((y + boundsY) * bitmapData.Stride);
+                        for (int x = 0; x < maskWidth; x++)
                         {
                             if (obj.Mask[y, x] > configuration.MinimumConfidence)
                             {
-                                sourceRow = (byte*)bitmapData.Scan0 + ((y + obj.Bounds.Y) * bitmapData.Stride);
-
-                                sourceRow[(x + obj.Bounds.X) * pixelSize + 0] = Convert.ToByte(sourceRow[(x + obj.Bounds.X) * pixelSize + 0] * (1 - alpha) + pen.Color.B * alpha);
-                                sourceRow[(x + obj.Bounds.X) * pixelSize + 1] = Convert.ToByte(sourceRow[(x + obj.Bounds.X) * pixelSize + 1] * (1 - alpha) + pen.Color.G * alpha);
-                                sourceRow[(x + obj.Bounds.X) * pixelSize + 2] = Convert.ToByte(sourceRow[(x + obj.Bounds.X) * pixelSize + 2] * (1 - alpha) + pen.Color.R * alpha);
+                                int pixelIndex = (x + boundsX) * pixelSize;
+                                sourceRow[pixelIndex + 0] = (byte)(sourceRow[pixelIndex + 0] * (1 - alpha) + pen.Color.B * alpha);
+                                sourceRow[pixelIndex + 1] = (byte)(sourceRow[pixelIndex + 1] * (1 - alpha) + pen.Color.G * alpha);
+                                sourceRow[pixelIndex + 2] = (byte)(sourceRow[pixelIndex + 2] * (1 - alpha) + pen.Color.R * alpha);
                             }
-
                         }
-                    }
+                  
+                    });
                 }
-            }
-            frame.UnlockBits(bitmapData);
-
-            var frameSized = new Bitmap(frame, new System.Drawing.Size((int)(frame.Width * ratio), (int)(frame.Height * ratio)));
-
-            var g = System.Drawing.Graphics.FromImage(frameSized);
-
-            foreach (var obj in result)
-            {
-                if (obj.Confidence < configuration.MinimumConfidence) 
-                    continue;
-
-                if (hiddenNames != null && hiddenNames.Contains(obj.Name.Name))
-                    continue;
-
-                if (obj.Name.Id > configuration.ObjectColors.Count)
-                    pen.Color = System.Drawing.Color.Gray;
-                else
-                    pen.Color = configuration.ObjectColors[obj.Name.Id];
-
 
                 rect.Width = obj.Bounds.Width;
                 rect.Height = obj.Bounds.Height;
@@ -225,25 +211,16 @@ namespace OnTheFly_UI.Modules.Handlers
                 rect.Y = obj.Bounds.Y;
 
                 string text = $"{obj.Name.Name} %{Math.Round(obj.Confidence * 100, 1)}";
+               
+                //frame.UnlockBits(bitmapData);
+         
+                var g = System.Drawing.Graphics.FromImage(frame);
 
-                frameSized = DrawDetectionRectangle(frameSized, rect, text, pen.Color, configuration.Font, configuration.FontColor, ratio);
-
-                //pen.Width = configuration.BorderThickness;
-                //g.DrawRectangle(pen, rect);
-
-                //var size = g.MeasureString(text, configuration.Font);
-                //var point = new System.Drawing.Point(obj.Bounds.X, obj.Bounds.Y - (int)size.Height);
-                //var backgroundFiller = new System.Drawing.Rectangle(point, size.ToSize());
-
-                //g.FillRectangle(new System.Drawing.SolidBrush(pen.Color), backgroundFiller);
-
-                //g.DrawString(text, configuration.Font, new System.Drawing.SolidBrush(configuration.FontColor), point);
+                frame = DrawDetectionRectangle(frame, rect, text, pen.Color, configuration.Font, configuration.FontColor,1);
 
             }
 
-
-            Trace.WriteLine($"drawing segmentation {sw.ElapsedMilliseconds}");
-            BitmapSource bitmapSource = BitmapConvertHandler.ToBitmapSourceFast(frameSized);
+            BitmapSource bitmapSource = BitmapConvertHandler.ToBitmapSourceFast(frame);
 
             return bitmapSource;
 
@@ -251,6 +228,9 @@ namespace OnTheFly_UI.Modules.Handlers
 
         public static BitmapSource PlotPose(byte[] frame, YoloResult<Pose> result, PlotConfiguration? configuration = null, HashSet<string> hiddenNames = null)
         {
+            if (result == null)
+                return BitmapConvertHandler.FromByteArray(frame);
+
             using (var stream = new MemoryStream(frame))
             {
                 var bitmap = new System.Drawing.Bitmap(stream);

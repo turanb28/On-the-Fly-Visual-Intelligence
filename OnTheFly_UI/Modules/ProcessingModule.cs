@@ -4,6 +4,7 @@ using Compunet.YoloSharp.Metadata;
 using Emgu.CV;
 using Emgu.CV.Dnn;
 using OnTheFly_UI.Modules.DTOs;
+using OnTheFly_UI.Modules.Enums;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -24,7 +25,14 @@ namespace OnTheFly_UI.Modules
         public YoloMetadata Metadata;
         public int BufferLimit = 5;
         public CancellationToken CancellationToken;
-
+        public RequestTaskType TaskType { 
+                get {
+                    if (Metadata != null)
+                        return YoloTasKToRequestTask(Metadata.Task);
+                    else
+                        return RequestTaskType.None;
+                    }
+            }
         public List<string> Names = new List<string>();
         public ObservableCollection<ModelObject> Models { get; set; } = new ObservableCollection<ModelObject>();
   
@@ -33,7 +41,7 @@ namespace OnTheFly_UI.Modules
         public ConcurrentQueue<ProcessObject> PostProcessingBuffer = new ConcurrentQueue<ProcessObject>();
 
         #region Events
-        public delegate void ModelLoadedHandler();
+        public delegate void ModelLoadedHandler(string modelName = "");
         public ModelLoadedHandler? ModelLoaded;
 
         public delegate void ProcessingExceptionHandler(string? message);
@@ -110,6 +118,7 @@ namespace OnTheFly_UI.Modules
             Task.Run(() =>
             {
                 Model = new YoloPredictor(modelPath);
+                var modelname = Path.GetFileName(modelPath);
                 Metadata = Model.Metadata;
 
                 Names.Clear();
@@ -118,7 +127,7 @@ namespace OnTheFly_UI.Modules
                     Names.Add(yoloname.Name);
                 }
 
-                ModelLoaded?.Invoke();
+                ModelLoaded?.Invoke(modelname);
                 foreach(var item in Models)
                 {
                     if (item.Path == modelPath)
@@ -179,16 +188,22 @@ namespace OnTheFly_UI.Modules
                 }
                 sw.Restart();
 
-                processObject.Request.Status = RequestStatus.OnProcessing;
-                Trace.WriteLine(Thread.CurrentThread.ManagedThreadId.ToString());
 
 
-                if (processObject.Result != null)
+
+                if (((processObject.Result != null)) && (processObject.Request.TaskType == TaskType))
                 {
                     PostProcessingBuffer.Enqueue(processObject);
                     continue;
+
                 }
 
+
+
+
+                processObject.Request.Status = RequestStatus.OnProcessing;
+                processObject.Request.TaskType = TaskType; // Set the task type for the request
+                Trace.WriteLine(Thread.CurrentThread.ManagedThreadId.ToString());
 
                 YoloResult? result = null;
 
@@ -199,10 +214,9 @@ namespace OnTheFly_UI.Modules
                 }
                 //var newDict = new Dictionary<string, int>();
                 var newDict = new List<ResultTableItem>();
-
-                switch (Metadata.Task)
+                switch (TaskType)
                 {
-                    case YoloTask.Detect:
+                    case RequestTaskType.Detect:
 
                         result = Model.Detect(processObject.Frame);
                         if (result == null)
@@ -211,9 +225,8 @@ namespace OnTheFly_UI.Modules
                         ((YoloResult<Detection>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => newDict.Add( new ResultTableItem(x.Key, x.Count() ) ) ) ; 
                         processObject.ResultTable = newDict;
 
-
                         break;
-                    case YoloTask.Classify:
+                    case RequestTaskType.Classify:
                         result = Model.Classify(processObject.Frame);
                         if (result == null)
                             return;
@@ -226,24 +239,22 @@ namespace OnTheFly_UI.Modules
                             newDict.Add(new ResultTableItem(x.Name.Name, (int)value));
                         });
                         processObject.ResultTable = newDict;
-
                         break;
-                    case YoloTask.Segment:
+                    case RequestTaskType.Segment:
                         result = Model.Segment(processObject.Frame);
                         if (result == null)
                             return;
                         ((YoloResult<Segmentation>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => newDict.Add(new ResultTableItem(x.Key, x.Count())));
                         processObject.ResultTable = newDict;
-
                         break;
-                    case YoloTask.Obb:
+                    case RequestTaskType.Obb:
                         result = Model.DetectObb(processObject.Frame);
                         if (result == null)
                             return;
                         ((YoloResult<ObbDetection>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => newDict.Add(new ResultTableItem(x.Key, x.Count())));
                         processObject.ResultTable = newDict;
                         break;
-                    case YoloTask.Pose:
+                    case RequestTaskType.Pose:
                         result = Model.Pose(processObject.Frame); 
                         if (result == null)
                             return;
@@ -254,20 +265,36 @@ namespace OnTheFly_UI.Modules
                         return; // Unsupported task
                 }
 
-                //var result = Model.Detect(processObject.Frame);
 
-                processObject.Task = Metadata.Task; // Think of making it again
+                //processObject.Request.Result.Add(result); 
 
-                processObject.Request.Result.Add(result);
+
                 processObject.Result = result;
                 PostProcessingBuffer.Enqueue(processObject);
-
-                //Trace.WriteLine($"processing Module = {sw.ElapsedMilliseconds}");
 
 
             }
 
         }
 
+
+        private static RequestTaskType YoloTasKToRequestTask(YoloTask task)
+        {
+            switch (task)
+            {
+                case YoloTask.Detect:
+                    return RequestTaskType.Detect;
+                case YoloTask.Classify:
+                    return RequestTaskType.Classify;
+                case YoloTask.Segment:
+                    return RequestTaskType.Segment;
+                case YoloTask.Obb:
+                    return RequestTaskType.Obb;
+                case YoloTask.Pose:
+                    return RequestTaskType.Pose;
+                default:
+                    return RequestTaskType.None;
+            }
+        }
     }
 }

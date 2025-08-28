@@ -1,6 +1,7 @@
 ﻿using Emgu.CV;
 using OnTheFly_UI.Modules;
 using OnTheFly_UI.Modules.DTOs;
+using OnTheFly_UI.Modules.Enums;
 using OnTheFly_UI.Modules.Handlers;
 using System;
 using System.Collections.Generic;
