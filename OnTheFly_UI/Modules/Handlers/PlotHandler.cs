@@ -211,9 +211,9 @@ namespace OnTheFly_UI.Modules.Handlers
                 rect.Y = obj.Bounds.Y;
 
                 string text = $"{obj.Name.Name} %{Math.Round(obj.Confidence * 100, 1)}";
-               
-                //frame.UnlockBits(bitmapData);
-         
+
+                frame.UnlockBits(bitmapData);
+
                 var g = System.Drawing.Graphics.FromImage(frame);
 
                 frame = DrawDetectionRectangle(frame, rect, text, pen.Color, configuration.Font, configuration.FontColor,1);
