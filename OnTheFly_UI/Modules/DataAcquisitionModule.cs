@@ -35,13 +35,13 @@ namespace OnTheFly_UI.Modules
             RequestQueue.Clear();
             RequestQueue.Enqueue(id);
             StartReading();
-            DataAcquired?.Invoke();
+            //DataAcquired?.Invoke();
         }
 
         private void AddRequest(RequestObject request)
         {
             Requests.Add(request);
-            RequestQueue.Enqueue(request.Id);
+            //RequestQueue.Enqueue(request.Id);
             request.Status = RequestStatus.OnWaiting;
 
         }
@@ -74,8 +74,8 @@ namespace OnTheFly_UI.Modules
 
 
             AddRequest(request);
-            
-            if(!isThreadAlive) 
+
+            if (!isThreadAlive)
                 StartReading();
         }
 

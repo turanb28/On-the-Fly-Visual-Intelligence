@@ -7,5 +7,3 @@
 15 - UI cannot response when screen resizes.
 
 16 - Find a better way to keep result instead of YoloResult
-
-17 - Requesting system doesn't work properly.

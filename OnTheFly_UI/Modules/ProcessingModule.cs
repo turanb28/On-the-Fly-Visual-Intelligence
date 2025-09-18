@@ -44,6 +44,9 @@ namespace OnTheFly_UI.Modules
         public delegate void ModelLoadedHandler(string modelName = "");
         public ModelLoadedHandler? ModelLoaded;
 
+        public delegate void ModelUnloadedHandler(string modelName = "");
+        public ModelUnloadedHandler? ModelUnloaded;
+
         public delegate void ProcessingExceptionHandler(string? message);
         public ProcessingExceptionHandler? ProcessingException;
 
@@ -146,15 +149,18 @@ namespace OnTheFly_UI.Modules
                 var model = Models.Where(x => x.Path == modelPath).First();
                 model.IsSelected = false;
                 Model = null;
+                ModelUnloaded?.Invoke(model.Name);
             }
-        } // Fix this part. The unselected model runs after adding new model
+        } 
 
 
         bool isThreadAlive = false;
         public void StartProcess()
         {
-            if(Model == null)
-                ProcessingException?.Invoke("The model is not loaded.");
+            //if(Model == null)
+            //{
+            //    return;
+            //}
 
             if (!isThreadAlive)
             {
@@ -209,6 +215,7 @@ namespace OnTheFly_UI.Modules
 
                 if(Model == null)
                 {
+                    ProcessingException?.Invoke("The model is not loaded.");
                     PostProcessingBuffer.Enqueue(processObject);
                     continue;
                 }

@@ -10,6 +10,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\hide_icon.png" />
+    <None Remove="Resources\show_icon.png" />
+    <None Remove="Styles\hide_icon.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\hide_icon.png" />
+    <Resource Include="Styles\hide_icon.svg" />
+    <Content Include="Resources\show_icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Emgu.CV" Version="4.10.0.5680" />
     <PackageReference Include="Emgu.CV.Bitmap" Version="4.10.0.5680" />
     <PackageReference Include="Emgu.CV.runtime.windows" Version="4.10.0.5680" />

@@ -42,8 +42,17 @@ namespace OnTheFly_UI
             VisualizationModule = new VisualizationModule(ProcessingModule.PostProcessingBuffer, ProcessingModule.Metadata);
 
             DataAcquisitionModule.DataAcquired += () => { ProcessingModule.StartProcess(); VisualizationModule.StartProcess(); }; 
-            ProcessingModule.ModelLoaded += (string m) => { UIMessageBoxHandler.Show($"Idle - {m} is loaded"); };
-            ProcessingModule.ProcessingException += (e) => { UIMessageBoxHandler.Show(e); };
+            ProcessingModule.ModelLoaded += (string m) => { 
+                    UIMessageBox.Show($"Idle - {m} is loaded");
+                if (DataAcquisitionModule.Requests.Count <= 0)
+                    return;
+                DataAcquisitionModule.RequestWithID(DataAcquisitionModule.Requests[sidebar.SelectedIndex].Id);
+            };
+            ProcessingModule.ModelUnloaded += (string m) =>
+            {
+                UIMessageBox.Show($"Idle - {m} is unloaded");
+            };
+            ProcessingModule.ProcessingException += (e) => { UIMessageBox.Show(e); };
             Display.DisplayUserInteraction += VisualizationModule.InteractionEventHnadler;
 
             sidebar.Values = DataAcquisitionModule.Requests;
@@ -55,6 +64,7 @@ namespace OnTheFly_UI
                 if (!File.Exists(item))
                     continue;
                 ProcessingModule.AddModel(item);
+                
             }
 
         }
@@ -63,7 +73,7 @@ namespace OnTheFly_UI
         {
             OpenFileDialog file = new OpenFileDialog();
             file.InitialDirectory = "C:\\Desktop";
-            file.Filter = "Image  | *.png;*.jpg;*.jpeg:*.bmp";
+            file.Filter = "Image  | *.png;*.jpg;*.jpeg;*.bmp";
             file.FilterIndex = 1;
             file.Multiselect = true;
             file.ShowDialog();
@@ -86,9 +96,7 @@ namespace OnTheFly_UI
 
         private void AddStream_Click(object sender, RoutedEventArgs e)
         {
-            DataAcquisitionModule.Requests.RemoveAt(0);
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
+            UIMessageBox.Show("This feature is coming soon!");
         }
 
         private void Add_Model(object sender, RoutedEventArgs e)
@@ -153,7 +161,8 @@ namespace OnTheFly_UI
 
             if (model == null)
             {
-                UIMessageBoxHandler.Show($"The model is not found in path {modelPath}.");
+                //UIMessageBoxHandler.Show($"The model is not found in path {modelPath}.");
+                MessageBox.Show($"The model is not found in path {modelPath}.");
                 return;
             }
             else

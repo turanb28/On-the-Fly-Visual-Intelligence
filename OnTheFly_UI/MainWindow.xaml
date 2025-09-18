@@ -92,6 +92,6 @@
         </Border>
         <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" x:Name="UIMessage" Text="" HorizontalAlignment="Left" VerticalAlignment="Center" TextAlignment="Center" FontSize="15" Foreground="{StaticResource Foreground_Dark}" ></TextBlock>
 
-
+        <Button></Button>
     </Grid>
 </Window>

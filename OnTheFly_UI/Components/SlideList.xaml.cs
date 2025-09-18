@@ -23,6 +23,19 @@ namespace OnTheFly_UI.Components
     /// </summary>
     public partial class SlideList : UserControl
     {
+        public int SelectedIndex
+        {
+            get 
+            {
+                var index = -1;
+                Dispatcher.BeginInvoke(() => 
+                {
+                    index = listBox.SelectedIndex;
+                }).Wait();
+                return index;
+            }
+        }
+
         private ObservableCollection<RequestObject> _values;
 
         public ObservableCollection<RequestObject> Values
