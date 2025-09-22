@@ -35,7 +35,7 @@ namespace OnTheFly_UI.Components
             DataContext = this;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void close_button_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }

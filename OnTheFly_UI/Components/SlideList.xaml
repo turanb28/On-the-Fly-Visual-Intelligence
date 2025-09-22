@@ -24,7 +24,7 @@
 
                 <Ellipse Width="{Binding ElementName=canvas, Path=ActualWidth,Converter={StaticResource doubleConverter},ConverterParameter=0.3}"
                     Height="{Binding ElementName=canvas, Path=ActualWidth,Converter={StaticResource doubleConverter},ConverterParameter=0.3}"
-                    Fill="{StaticResource Background_Light}" Opacity="0.75" x:Name="elp" Stroke="{StaticResource Background_Dark}" StrokeThickness="10">
+                    Fill="{StaticResource Background_Dark}" Opacity="0.75" x:Name="elp" Stroke="{StaticResource Background_Light}" StrokeThickness="10">
 
                         <Canvas.Left>
                             <MultiBinding Converter="{StaticResource multi}" >
@@ -43,7 +43,7 @@
 
                     <Path x:Name="triangle" Width="{Binding ElementName=elp, Path=ActualWidth,Converter={StaticResource doubleConverter},ConverterParameter=0.35}"
                      Height="{Binding ElementName=elp, Path=ActualWidth,Converter={StaticResource doubleConverter},ConverterParameter=0.5}" Stretch="Fill" 
-                     Stroke="{StaticResource Foreground_Dark}" Fill="{StaticResource Foreground_Light}" Opacity="0.75"
+                     Stroke="{StaticResource Foreground_Light}" Fill="{StaticResource Foreground_Dark}" Opacity="0.75"
                      Data="F1 M 319.344,237.333L 287.328,218.849L 287.328,255.818L 319.344,237.333 Z ">
                         <Canvas.Left>
                             <MultiBinding Converter="{StaticResource multi}" >
@@ -138,12 +138,12 @@
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <Setter Property="Panel.ZIndex" Value="100"></Setter>
-                                            <Setter TargetName="Border" Property="Background" Value="{StaticResource Foreground_Dark }"/>
+                                            <Setter TargetName="Border" Property="Background" Value="{StaticResource Foreground_Light }"/>
 
                                         </Trigger>
 
                                         <Trigger Property="IsSelected" Value="True">
-                                            <Setter TargetName="Border" Property="Background" Value="{StaticResource Foreground_Light }"/>
+                                            <Setter TargetName="Border" Property="Background" Value="{StaticResource Foreground_Dark }"/>
                                         </Trigger>
 
 

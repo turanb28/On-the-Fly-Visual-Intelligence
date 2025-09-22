@@ -10,7 +10,7 @@
         Title="MainWindow" Height="1000" Width="1440"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Background="{StaticResource Background_Dark}"
+        Background="{StaticResource Background_Light}"
         WindowStyle="None"
         MouseDown="Window_MouseDown"
         >
@@ -20,7 +20,7 @@
 
 
         <Style  TargetType="Button">
-            <Setter Property="Foreground" Value="{StaticResource Foreground_Dark}"></Setter>
+            <Setter Property="Foreground" Value="{StaticResource Foreground_Light}"></Setter>
             <Setter Property="Background" Value="Transparent"></Setter>
             <Setter Property="Margin" Value="5"></Setter>
             <Setter Property="BorderThickness" Value="0"></Setter>
@@ -42,7 +42,7 @@
             <RowDefinition Height="0.4*"></RowDefinition>
 
         </Grid.RowDefinitions>
-        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="10" Background="{StaticResource Background_Light}" IsHitTestVisible="False" ></Border>
+        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="10" Background="{StaticResource Background_Dark}" IsHitTestVisible="False" ></Border>
 
 
         <Menu x:Name="menubar" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="5" Background="Transparent" >
@@ -70,14 +70,14 @@
         </Menu>
 
 
-        <StackPanel Grid.Column="3"  Background="{StaticResource Background_Light}"  Orientation="Horizontal" HorizontalAlignment="Right">
+        <StackPanel Grid.Column="3"  Background="{StaticResource Background_Dark}"  Orientation="Horizontal" HorizontalAlignment="Right">
             <Button  x:Name="MinimizeApp" Click="MinimizeApp_Click" HorizontalAlignment="Right" Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"
                 Background="Transparent" ToolTip="Minimize Application" BorderBrush="Transparent"
-                Content="&#128469;"  FontSize="10" Foreground="{StaticResource Foreground_Dark}" >
+                Content="&#128469;"  FontSize="10" Foreground="{StaticResource Foreground_Light}" >
             </Button>
             <Button  x:Name="CloseApp" Click="CloseApp_Click" Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"
                 Background="Transparent" ToolTip="Close Application" BorderBrush="Transparent"
-                Content="&#x274C;" FontSize="10" Foreground="{StaticResource Foreground_Dark}" >
+                Content="&#x274C;" FontSize="10" Foreground="{StaticResource Foreground_Light}" >
             </Button>
         </StackPanel>
 
@@ -88,9 +88,9 @@
         <Components:Display x:Name="Display" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="14" Source="{Binding VisualizationModule.CurrentImage}" ResultTable="{Binding VisualizationModule.CurrentResultTable}" 
                             ></Components:Display>
 
-        <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="14" Background="{StaticResource Background_Light}">
+        <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="14" Background="{StaticResource Background_Dark}">
         </Border>
-        <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" x:Name="UIMessage" Text="" HorizontalAlignment="Left" VerticalAlignment="Center" TextAlignment="Center" FontSize="15" Foreground="{StaticResource Foreground_Dark}" ></TextBlock>
+        <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" x:Name="UIMessage" Text="" HorizontalAlignment="Left" VerticalAlignment="Center" TextAlignment="Center" FontSize="15" Foreground="{StaticResource Foreground_Light}" ></TextBlock>
 
         <Button></Button>
     </Grid>

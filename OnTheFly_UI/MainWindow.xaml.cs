@@ -43,14 +43,14 @@ namespace OnTheFly_UI
 
             DataAcquisitionModule.DataAcquired += () => { ProcessingModule.StartProcess(); VisualizationModule.StartProcess(); }; 
             ProcessingModule.ModelLoaded += (string m) => { 
-                    UIMessageBox.Show($"Idle - {m} is loaded");
+                    UIMessageBox.Show($"{m} is loaded");
                 if (DataAcquisitionModule.Requests.Count <= 0)
                     return;
                 DataAcquisitionModule.RequestWithID(DataAcquisitionModule.Requests[sidebar.SelectedIndex].Id);
             };
             ProcessingModule.ModelUnloaded += (string m) =>
             {
-                UIMessageBox.Show($"Idle - {m} is unloaded");
+                UIMessageBox.Show($"{m} is unloaded");
             };
             ProcessingModule.ProcessingException += (e) => { UIMessageBox.Show(e); };
             Display.DisplayUserInteraction += VisualizationModule.InteractionEventHnadler;
@@ -162,7 +162,7 @@ namespace OnTheFly_UI
             if (model == null)
             {
                 //UIMessageBoxHandler.Show($"The model is not found in path {modelPath}.");
-                MessageBox.Show($"The model is not found in path {modelPath}.");
+                UIMessageBox.Show($"The model is not found in path {modelPath}.");
                 return;
             }
             else

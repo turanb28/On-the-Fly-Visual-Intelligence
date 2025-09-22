@@ -17,7 +17,7 @@
                     <ControlTemplate TargetType="{x:Type ListBoxItem}">
                         <Grid x:Name="grid"  >
 
-                            <Border x:Name="background" BorderThickness="0" Opacity="1" Background="{StaticResource Foreground_Dark}" ></Border>
+                            <Border x:Name="background" BorderThickness="0" Opacity="1" Background="{StaticResource Foreground_Light}" ></Border>
 
                             <ContentPresenter Margin="10"  ></ContentPresenter>
 
@@ -28,14 +28,14 @@
                                     <BeginStoryboard>
                                         <Storyboard>
                                      
-                                        <ColorAnimation Storyboard.TargetName="background" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="{StaticResource Color_Foreground_Light}" Duration="0:0:0.1"  />
+                                        <ColorAnimation Storyboard.TargetName="background" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="{StaticResource Color_Foreground_Dark}" Duration="0:0:0.1"  />
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </EventTrigger>
                             <EventTrigger RoutedEvent="ListBoxItem.MouseLeave">
                                     <BeginStoryboard>
                                         <Storyboard>
-                                        <ColorAnimation Storyboard.TargetName="background" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="{StaticResource Color_Foreground_Dark}" Duration="0:0:0.1"  />
+                                        <ColorAnimation Storyboard.TargetName="background" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="{StaticResource Color_Foreground_Light}" Duration="0:0:0.1"  />
                                     </Storyboard>
                                     </BeginStoryboard>
                                 </EventTrigger>
@@ -90,7 +90,7 @@
              
              
         <ListBox Name="resultTableListbox"  VerticalAlignment="Top" HorizontalAlignment="Left" ItemContainerStyle="{StaticResource styleListBoxItem}"
-                 BorderThickness="0"   Margin="5" Style="{StaticResource ResultTableListBoxStyle}"  Background="{StaticResource Foreground_Dark}"
+                 BorderThickness="0"   Margin="5" Style="{StaticResource ResultTableListBoxStyle}"  Background="{StaticResource Foreground_Light}"
                  ItemsSource="{Binding ElementName=main, Path=ResultTable}">
      
             <ListBox.ItemTemplate>
@@ -123,7 +123,7 @@
                                                         <Grid.RowDefinitions>
                                                             <RowDefinition Height="*"></RowDefinition>
                                                         </Grid.RowDefinitions>
-                                                        <Path  Stretch="Uniform"  Fill="{StaticResource Background_Light}" >
+                                                        <Path  Stretch="Uniform"  Fill="{StaticResource Background_Dark}" >
                                                             <Path.Data>
                                                                 <CombinedGeometry>
                                                                     <CombinedGeometry.Geometry1>
@@ -135,7 +135,7 @@
                                                                 </CombinedGeometry>
                                                             </Path.Data>
                                                         </Path>
-                                                        <Path Stretch="Uniform" Fill="{StaticResource Background_Light}" x:Name="hide_icon" Data="m 552.11521,19.567047 a 28.00006,28.00003 0 0 0 -19.79873,8.201311 L 28.315395,531.76895 a 28.00006,28.00003 0 0 0 0,39.59737 28.00006,28.00003 0 0 0 39.597479,0 L 571.91396,67.365795 a 28.00006,28.00003 0 0 0 0,-39.597437 28.00006,28.00003 0 0 0 -19.79875,-8.201311 z"></Path>
+                                                        <Path Stretch="Uniform" Fill="{StaticResource Background_Dark}" x:Name="hide_icon" Data="m 552.11521,19.567047 a 28.00006,28.00003 0 0 0 -19.79873,8.201311 L 28.315395,531.76895 a 28.00006,28.00003 0 0 0 0,39.59737 28.00006,28.00003 0 0 0 39.597479,0 L 571.91396,67.365795 a 28.00006,28.00003 0 0 0 0,-39.597437 28.00006,28.00003 0 0 0 -19.79875,-8.201311 z"></Path>
 
                                                     </Grid>
                                                 </Border>

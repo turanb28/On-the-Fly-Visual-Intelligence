@@ -1,17 +1,17 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <SolidColorBrush x:Key="Background_Dark">#252D33</SolidColorBrush>
-    <SolidColorBrush x:Key="Background_Light">#0C1519</SolidColorBrush>
-    <SolidColorBrush x:Key="Foreground_Dark">#6B50D9</SolidColorBrush>
-    <SolidColorBrush x:Key="Foreground_Light">#9F49C6</SolidColorBrush>
+    <SolidColorBrush x:Key="Background_Light">#252D33</SolidColorBrush>
+    <SolidColorBrush x:Key="Background_Dark">#0C1519</SolidColorBrush>
+    <SolidColorBrush x:Key="Foreground_Light">#6B50D9</SolidColorBrush>
+    <SolidColorBrush x:Key="Foreground_Dark">#9F49C6</SolidColorBrush>
     <SolidColorBrush x:Key="Debug_Color" Color="Red"></SolidColorBrush>
 
 
-    <Color x:Key="Color_Background_Dark">#252D33 </Color>
-    <Color x:Key="Color_Background_Light">#0C1519</Color>
-    <Color x:Key="Color_Foreground_Dark">#6B50D9</Color>
-    <Color x:Key="Color_Foreground_Light">#9F49C6</Color>
+    <Color x:Key="Color_Background_Light">#252D33 </Color>
+    <Color x:Key="Color_Background_Dark">#0C1519</Color>
+    <Color x:Key="Color_Foreground_Light">#6B50D9</Color>
+    <Color x:Key="Color_Foreground_Dark">#9F49C6</Color>
     <Color x:Key="Color_Debug_Color">Red</Color>
 
 
