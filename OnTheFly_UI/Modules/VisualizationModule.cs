@@ -121,17 +121,18 @@ namespace OnTheFly_UI.Modules
 
                 var hiddenNames = CurrentResultTable.Where(x => x.IsHidden).Select(x => x.Name).ToHashSet();
 
-                if (processObject.Task == RequestTaskType.Detect)
-                    bitmapSource = PlotHandler.PlotDetection(processObject.Frame, (YoloResult<Detection>)processObject.Result,hiddenNames: hiddenNames);
-                else if (processObject.Task == RequestTaskType.Segment)
+
+
+                if (processObject.Result.GetType() == typeof(YoloResult<Detection>))
+                        bitmapSource = PlotHandler.PlotDetection(processObject.Frame, (YoloResult<Detection>)processObject.Result,hiddenNames: hiddenNames);
+                else if (processObject.Result.GetType() == typeof(YoloResult<Segmentation>))
                     bitmapSource = PlotHandler.PlotSegmentatation(processObject.Frame, (YoloResult<Segmentation>)processObject.Result, hiddenNames: hiddenNames);
-                else if (processObject.Task == RequestTaskType.Obb)
+                else if (processObject.Result.GetType() == typeof(YoloResult<ObbDetection>))
                     bitmapSource = PlotHandler.PlotObbDetection(processObject.Frame, (YoloResult<ObbDetection>)processObject.Result, hiddenNames: hiddenNames);
-                else if (processObject.Task == RequestTaskType.Pose)
+                else if (processObject.Result.GetType() == typeof(YoloResult<Pose>))
                     bitmapSource = PlotHandler.PlotPose(processObject.Frame, (YoloResult<Pose>)processObject.Result, hiddenNames: hiddenNames);
                 else
                     bitmapSource = PlotHandler.Plot(processObject.Frame);
-
 
 
 

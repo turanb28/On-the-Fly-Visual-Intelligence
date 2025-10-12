@@ -19,25 +19,69 @@ namespace OnTheFly_UI.Components
     /// </summary>
     public partial class UIMessageBox : Window
     {
-        public static void Show(string message)
+        private InformationType _infoType = InformationType.Info;
+
+        public InformationType InfoType { get { return _infoType; } // Make this part more clearer
+                                          private set { 
+                                                switch(value)
+                                                {
+                                                    case InformationType.Info:
+                                                        info_path.Visibility = Visibility.Visible;
+                                                        warning_path.Visibility = Visibility.Collapsed;
+                                                        error_path.Visibility = Visibility.Collapsed;
+                                                        break;
+                                                    case InformationType.Warning:
+                                                        info_path.Visibility = Visibility.Collapsed;
+                                                        warning_path.Visibility = Visibility.Visible;
+                                                        error_path.Visibility = Visibility.Collapsed;
+                                                        break;
+                                                    case InformationType.Error:
+                                                        info_path.Visibility = Visibility.Collapsed;
+                                                        warning_path.Visibility = Visibility.Collapsed;
+                                                        error_path.Visibility = Visibility.Visible;
+                                                        break;
+                                                }
+                                                _infoType = value;
+                                               } 
+                                          }
+        public static void Show(string message, InformationType informationType = 0)
         {
             App.Current.Dispatcher.Invoke(() => {
-                var msgBox = new UIMessageBox();
-                msgBox.Message = message;
+                var msgBox = new UIMessageBox(message,informationType);
                 msgBox.ShowDialog();
             });
             
         }
-        public string Message { get; set; } = string.Empty;
+        public string Message { get; set; } = "string.Empty";
+
+        public UIMessageBox(string message, InformationType informationType)
+        {
+            InitializeComponent();
+            DataContext = this;
+            this.Message = message;
+            this.InfoType = informationType;
+        }
         public UIMessageBox()
         {
             InitializeComponent();
             DataContext = this;
         }
-
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+      
+            if (e.ChangedButton == MouseButton.Left)
+                this.DragMove();
+        }
         private void close_button_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        public enum InformationType
+        {
+            Info = 0,
+            Warning = 1,
+            Error = 2
         }
     }
 }

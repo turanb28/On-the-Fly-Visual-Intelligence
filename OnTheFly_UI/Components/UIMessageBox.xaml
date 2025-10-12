@@ -7,27 +7,46 @@
         mc:Ignorable="d"
         Title="UIMessageBox" Height="300" Width="480"
         WindowStartupLocation="CenterScreen"
-        Background="{DynamicResource Background_Light}"
+        Background="{DynamicResource Background_Dark}"
         WindowStyle="None"
+        MouseDown="Window_MouseDown"
         >
+    <Window.Resources>
+        <Style TargetType="Path" x:Key="svg">
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Stretch" Value="Uniform"/>
+            <Setter Property="Fill" Value="{DynamicResource Foreground_Light}"/>
+            <Setter Property="Margin" Value="20"/>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="3*"></ColumnDefinition>
             <ColumnDefinition Width="36px"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="36"></RowDefinition>
-            <RowDefinition Height="0.2*"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="0.2*"></RowDefinition>
+            <RowDefinition Height="36px"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="36px"></RowDefinition>
         </Grid.RowDefinitions>
         <Button x:Name="close_button"  Grid.Row="0" Grid.Column="2" Content="&#x274C;" FontSize="10" Width="36" Background="Transparent" Foreground="{DynamicResource Foreground_Light}" BorderThickness="0" Height="36" HorizontalAlignment="Center" VerticalAlignment="Center" Click="close_button_Click"/>
-        <Border Grid.Column="0" Grid.Row="1">
-        </Border>
-        <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Message}" Foreground="{DynamicResource Foreground_Light }" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
-        <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Content="OK" Width="100" Background="{DynamicResource Background_Light}" Foreground="{DynamicResource Foreground_Light}" 
+        <Grid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+  
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Path x:Name="warning_path" Style="{StaticResource svg}" Data="M213.333333,3.55271368e-14 C330.943502,3.55271368e-14 426.666667,95.7231591 426.666667,213.333333 C426.666667,330.943502 330.943502,426.666667 213.333333,426.666667 C95.7231591,426.666667 3.55271368e-14,330.943502 3.55271368e-14,213.333333 C3.55271368e-14,95.7231591 95.7231591,3.55271368e-14 213.333333,3.55271368e-14 Z M213.333333,42.6666667 C118.87459,42.6666667 42.6666667,118.87459 42.6666667,213.333333 C42.6666667,307.792077 118.87459,384 213.333333,384 C307.792077,384 384,307.792077 384,213.333333 C384,118.87459 307.792077,42.6666667 213.333333,42.6666667 Z M213.333333,272.042667 C228.571429,272.042667 240,283.306667 240,298.666667 C240,314.026667 228.571429,325.290667 213.333333,325.290667 C197.748918,325.290667 186.666667,314.026667 186.666667,298.325333 C186.666667,283.306667 198.095238,272.042667 213.333333,272.042667 Z M234.666667,85.3333333 L234.666667,234.666667 L192,234.666667 L192,85.3333333 L234.666667,85.3333333 Z"></Path>
+                    <Path x:Name="info_path"   Visibility="Visible" Style="{StaticResource svg}" Data="M213.333333,3.55271368e-14 C95.51296,3.55271368e-14 3.55271368e-14,95.51168 3.55271368e-14,213.333333 C3.55271368e-14,331.153707 95.51296,426.666667 213.333333,426.666667 C331.154987,426.666667 426.666667,331.153707 426.666667,213.333333 C426.666667,95.51168 331.154987,3.55271368e-14 213.333333,3.55271368e-14 Z M213.333333,384 C119.227947,384 42.6666667,307.43872 42.6666667,213.333333 C42.6666667,119.227947 119.227947,42.6666667 213.333333,42.6666667 C307.44,42.6666667 384,119.227947 384,213.333333 C384,307.43872 307.44,384 213.333333,384 Z M240.04672,128 C240.04672,143.46752 228.785067,154.666667 213.55008,154.666667 C197.698773,154.666667 186.713387,143.46752 186.713387,127.704107 C186.713387,112.5536 197.99616,101.333333 213.55008,101.333333 C228.785067,101.333333 240.04672,112.5536 240.04672,128 Z M192.04672,192 L234.713387,192 L234.713387,320 L192.04672,320 L192.04672,192 Z"></Path>
+                    <Path x:Name="error_path"   Style="{StaticResource svg}" Data="M213.333333,3.55271368e-14 C331.136,3.55271368e-14 426.666667,95.5306667 426.666667,213.333333 C426.666667,331.136 331.136,426.666667 213.333333,426.666667 C95.5306667,426.666667 3.55271368e-14,331.136 3.55271368e-14,213.333333 C3.55271368e-14,95.5306667 95.5306667,3.55271368e-14 213.333333,3.55271368e-14 Z M213.333333,42.6666667 C119.232,42.6666667 42.6666667,119.232 42.6666667,213.333333 C42.6666667,307.434667 119.232,384 213.333333,384 C307.434667,384 384,307.434667 384,213.333333 C384,119.232 307.434667,42.6666667 213.333333,42.6666667 Z M262.250667,134.250667 L292.416,164.416 L243.498667,213.333333 L292.416,262.250667 L262.250667,292.416 L213.333333,243.498667 L164.416,292.416 L134.250667,262.250667 L183.168,213.333333 L134.250667,164.416 L164.416,134.250667 L213.333333,183.168 L262.250667,134.250667 Z"></Path>
+                    <TextBlock Grid.Row="0" Grid.Column="1"  Text="{Binding Message}"  Foreground="{DynamicResource Foreground_Light }" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="24"/>
+            </StackPanel>
+        
+            <Button Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="OK" Width="100" Background="{DynamicResource Background_Light}" Foreground="{DynamicResource Foreground_Light}" 
                 BorderBrush="{DynamicResource Foreground_Light}" BorderThickness="1" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center" Click="close_button_Click">
             <Button.Style>
                 <Style TargetType="Button">
@@ -46,10 +65,12 @@
                                         <!--<Setter TargetName="hide_icon" Property="Visibility" Value="Hidden"/>
                                     </DataTrigger>-->
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="border"  Property="Background" Value="{DynamicResource Background_Dark}"/>
+                                        <Setter TargetName="border"  Property="Background" Value="{DynamicResource Background_Light}"/>
+                                        <Setter TargetName="border"  Property="BorderThickness" Value="2"/>
                                     </Trigger>
                                     <Trigger Property="IsMouseOver" Value="False">
-                                        <Setter TargetName="border"  Property="Background" Value="{DynamicResource Background_Light}"/>
+                                        <Setter TargetName="border"  Property="Background" Value="{DynamicResource Background_Dark}"/>
+                                        <Setter TargetName="border"  Property="BorderThickness" Value="1"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -57,6 +78,8 @@
                     </Setter>
                 </Style>
             </Button.Style>
-        </Button>
+            </Button>
+        
+        </Grid>
     </Grid>
 </Window>

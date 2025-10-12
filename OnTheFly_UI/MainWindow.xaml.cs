@@ -52,7 +52,7 @@ namespace OnTheFly_UI
             {
                 UIMessageBox.Show($"{m} is unloaded");
             };
-            ProcessingModule.ProcessingException += (e) => { UIMessageBox.Show(e); };
+            ProcessingModule.ProcessingException += (e) => { UIMessageBox.Show(e,UIMessageBox.InformationType.Error); };
             Display.DisplayUserInteraction += VisualizationModule.InteractionEventHnadler;
 
             sidebar.Values = DataAcquisitionModule.Requests;
