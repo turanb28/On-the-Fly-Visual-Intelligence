@@ -32,6 +32,7 @@ namespace OnTheFly_UI
         public DataAcquisitionModule DataAcquisitionModule { get; set; }
         public ProcessingModule ProcessingModule { get; set; }
         public VisualizationModule VisualizationModule { get; set; }
+        public bool _testing { get; set; } = false;
         public MainWindow()
         {
             InitializeComponent();
@@ -52,7 +53,7 @@ namespace OnTheFly_UI
             {
                 UIMessageBox.Show($"{m} is unloaded");
             };
-            ProcessingModule.ProcessingException += (e) => { UIMessageBox.Show(e,UIMessageBox.InformationType.Error); };
+            ProcessingModule.ProcessingException += (e) => { UIMessageBox.Show(e, UIMessageBox.InformationType.Error); };
             Display.DisplayUserInteraction += VisualizationModule.InteractionEventHnadler;
 
             sidebar.Values = DataAcquisitionModule.Requests;
@@ -96,7 +97,49 @@ namespace OnTheFly_UI
 
         private void AddStream_Click(object sender, RoutedEventArgs e)
         {
-            UIMessageBox.Show("This feature is coming soon!");
+            //UIMessageBox.Show("This feature is coming soon!");
+
+            DataAcquisitionModule.RequestStream("udp://127.0.0.1:23000");
+        }
+
+        private void AddTestStream_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog file = new OpenFileDialog();
+            file.InitialDirectory = "C:\\Desktop";
+            file.Filter = "Video |*.mp4";
+            file.FilterIndex = 0;
+            file.Multiselect = false;
+            file.ShowDialog();
+            if (string.IsNullOrEmpty(file.FileName))
+                return;
+
+            _testing = true;
+            var thread = new Thread(() => {
+                Process cmd = new Process();
+                cmd.StartInfo.FileName = "ffmpeg";
+                cmd.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
+                cmd.StartInfo.WorkingDirectory = @"C:\Users\PC";
+                cmd.StartInfo.RedirectStandardInput = true;
+                cmd.StartInfo.RedirectStandardOutput = true;
+                cmd.StartInfo.CreateNoWindow = false;
+                cmd.StartInfo.UseShellExecute = false;
+                var a = $"""-re -i "{file.FileName}" -v 0 -vcodec mpeg4 -f mpegts udp://127.0.0.1:23000""";
+                cmd.StartInfo.Arguments = a;
+                //cmd.StartInfo.Arguments = """-re -i "C:\Users\PC\Projects\Visdrone Dataset -Yolo 11\Training\Test Files\cut.mp4" -v 0 -vcodec mpeg4 -f mpegts udp://127.0.0.1:23000""";
+                cmd.Start();
+
+                //cmd.Exited += (s, e) => { 
+                //    _testing = true; };
+
+                SpinWait.SpinUntil(() => { return !_testing ;  });
+                cmd.Kill( );
+            });
+
+            thread.IsBackground = true;
+
+            thread.Start();
+
+            AddStream_Click(sender, e);
         }
 
         private void Add_Model(object sender, RoutedEventArgs e)
@@ -120,11 +163,19 @@ namespace OnTheFly_UI
         {
             CancellationTokenSource.Cancel();
             CancellationTokenSource = new CancellationTokenSource();
+            VisualizationModule.PostProcessingBuffer.Clear();
 
             var index = DataAcquisitionModule.Requests.IndexOf(e.AddedItems[0] as RequestObject);
             if (index < 0)
                 return;
             var a = DataAcquisitionModule.Requests[index];
+            if (a.SourceType == Modules.Enums.RequestSourceType.Video) /// Make it better
+            {
+                videoProgessBar.Visibility = Visibility.Visible;  
+            }
+            else
+                videoProgessBar.Visibility = Visibility.Hidden;
+
             DataAcquisitionModule.RequestWithID(a.Id);
 
         }
@@ -145,6 +196,7 @@ namespace OnTheFly_UI
 
         private void CloseApp_Click(object sender, RoutedEventArgs e)
         {
+            _testing = false;
             this.Close();
         }
 
@@ -161,7 +213,6 @@ namespace OnTheFly_UI
 
             if (model == null)
             {
-                //UIMessageBoxHandler.Show($"The model is not found in path {modelPath}.");
                 UIMessageBox.Show($"The model is not found in path {modelPath}.");
                 return;
             }
@@ -176,5 +227,10 @@ namespace OnTheFly_UI
         }
 
         #endregion
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _testing = false;
+        }
     }
 }

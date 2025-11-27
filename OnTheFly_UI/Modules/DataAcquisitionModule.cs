@@ -1,12 +1,19 @@
 ﻿using Compunet.YoloSharp.Data;
 using Emgu.CV;
+using Emgu.CV.CvEnum;
 using OnTheFly_UI.Modules.DTOs;
 using OnTheFly_UI.Modules.Enums;
+using OnTheFly_UI.Modules.Handlers;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace OnTheFly_UI.Modules
@@ -24,7 +31,7 @@ namespace OnTheFly_UI.Modules
         
         private ConcurrentQueue<Guid> RequestQueue = new ConcurrentQueue<Guid>();
 
-        public int BufferLimit = 5;
+        public int BufferLimit = 500;
         public CancellationTokenSource CancellationTokenSource { get; set; } = new CancellationTokenSource();
         public DataAcquisitionModule() { }
         bool IsInterrupt = false;
@@ -35,13 +42,11 @@ namespace OnTheFly_UI.Modules
             RequestQueue.Clear();
             RequestQueue.Enqueue(id);
             StartReading();
-            //DataAcquired?.Invoke();
         }
 
         private void AddRequest(RequestObject request)
         {
             Requests.Add(request);
-            //RequestQueue.Enqueue(request.Id);
             request.Status = RequestStatus.OnWaiting;
 
         }
@@ -100,6 +105,13 @@ namespace OnTheFly_UI.Modules
             StartReading();
         }
 
+        public void RequestStream(string url)
+        {
+            var request = new RequestObject(source: url, sourceType: RequestSourceType.Stream);
+            AddRequest(request);
+            StartReading();
+        }
+
 
         bool isThreadAlive = false;
         private void StartReading()
@@ -145,7 +157,7 @@ namespace OnTheFly_UI.Modules
                         break;
 
                     case RequestSourceType.Stream:
-                        //ReadUDPStream(requestObject.Source, requestObject); 
+                        ReadUDPStream(requestObject.Source, requestObject); 
                         break;
 
                     default:
@@ -159,7 +171,8 @@ namespace OnTheFly_UI.Modules
         {
             using(var frame = CvInvoke.Imread(path)) 
             {
-               
+                requestObject.PreviewImage = BitmapConvertHandler.ToBitmapSourceFast(new Bitmap(requestObject.Source));
+
                 if (requestObject.Result.Count != 0)
                     Enqueue(frame, requestObject, requestObject.Result[0]);
                 else
@@ -175,9 +188,10 @@ namespace OnTheFly_UI.Modules
             using (Mat frame = new Mat())
             using (VideoCapture capture = new VideoCapture(path))
             {
-                //requestObject.FPS = (int)capture.Get(Emgu.CV.CvEnum.CapProp.Fps);
+                requestObject.FPS = (int)capture.Get(Emgu.CV.CvEnum.CapProp.Fps);
 
-                int count = 0;
+                requestObject.FrameCount = (int)capture.Get(Emgu.CV.CvEnum.CapProp.FrameCount);
+                
 
                 while (capture.IsOpened)
                 {
@@ -189,17 +203,23 @@ namespace OnTheFly_UI.Modules
 
                     var ret = SpinWait.SpinUntil(() => { return capture.Read(frame) && !CancellationTokenSource.IsCancellationRequested; }, TimeSpan.FromMilliseconds(1000));
 
+
+                    if(ret &&  requestObject.PreviewImage == null)
+                        requestObject.PreviewImage = BitmapConvertHandler.ToBitmapSourceFast(frame.ToBitmap());
+
+
                     if (ret)
                     {
-                        if (requestObject.Result.Count > count)
-                            Enqueue(frame, requestObject, requestObject.Result[count]);
+                        if (requestObject.Result.Count > requestObject.VideoPosition)
+                            Enqueue(frame, requestObject, requestObject.Result[(int)requestObject.VideoPosition]);
                         else
                             Enqueue(frame, requestObject);
+                        requestObject.VideoPosition = capture.Get(Emgu.CV.CvEnum.CapProp.PosFrames);
+
                     }
                     else
                         break;
 
-                    count++;
                 }
             }
         }
@@ -212,33 +232,58 @@ namespace OnTheFly_UI.Modules
             if(result != null)
                 ppo.Result = result;
 
-            SpinWait.SpinUntil(() => { return PreprocessingBuffer.Count < BufferLimit; });
-            
+            if((requestObject.SourceType == RequestSourceType.Stream) && (PreprocessingBuffer.Count >= BufferLimit))
+                PreprocessingBuffer.TryDequeue(out var discard);
+
+
+            SpinWait.SpinUntil(() => { 
+                return PreprocessingBuffer.Count < BufferLimit; 
+            });
             PreprocessingBuffer.Enqueue(ppo);
 
         }
 
-        //private void ReadUDPStream(string url)
-        //{
-        //    Task.Run(() =>
-        //    {
-        //        DataAcquired?.Invoke();
-        //        using (Mat frame = new Mat())
-        //        using (VideoCapture capture = new VideoCapture(url,VideoCapture.API.Ffmpeg))
-        //        {
-        //            while (capture.IsOpened)
-        //            {
-        //                var ret = SpinWait.SpinUntil(() => { return capture.Read(frame); }, Timeout);
+        private void ReadUDPStream(string url,RequestObject requestObject)
+        {
+            DataAcquired?.Invoke();
+            var test = true;
+            var ret = true;
 
-        //                if (ret)
-        //                    EncodeAndEnqueue(frame);
-        //                else
-        //                    break;
-        //            }
-        //        }
-        //    });
-        //}
+     
+            using (Mat frame = new Mat())
+            using (VideoCapture capture = new VideoCapture(fileName: url))
+            {
+                requestObject.FPS = (int)capture.Get(Emgu.CV.CvEnum.CapProp.Fps);
+                //Trace.WriteLine($"Stream FPS: {requestObject.FPS}");
 
+                //capture.Set(Emgu.CV.CvEnum.CapProp.Buffersize, 1);
+                //capture.Set(Emgu.CV.CvEnum.CapProp.ReadTimeoutMsec, 10);
+
+
+                while (capture.IsOpened)
+                {
+                    
+                    ret = capture.Read(frame);
+
+                    if (!(ret))
+                        break;
+
+                    if (ret && requestObject.PreviewImage == null)
+                        requestObject.PreviewImage = BitmapConvertHandler.ToBitmapSourceFast(frame.ToBitmap());
+
+                    if (ret)
+                        Enqueue(frame, requestObject);
+                    else
+                        break;
+                }
+            }
+
+            Trace.WriteLine("frame is finished");
+
+        }
 
     }
+
+    
+
 }

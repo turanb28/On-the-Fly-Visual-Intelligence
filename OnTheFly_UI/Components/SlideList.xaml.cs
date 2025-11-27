@@ -78,7 +78,7 @@ namespace OnTheFly_UI.Components
             var a = GetScrollViewer(listBox) as ScrollViewer;
 
             if (a == null)
-                MessageBox.Show("this is null");
+                return;
 
 
             a.ScrollToHorizontalOffset(a.HorizontalOffset - (Math.Sign(e.Delta)));

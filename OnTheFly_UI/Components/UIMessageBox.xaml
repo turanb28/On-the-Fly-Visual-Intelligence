@@ -10,6 +10,7 @@
         Background="{DynamicResource Background_Dark}"
         WindowStyle="None"
         MouseDown="Window_MouseDown"
+        Topmost="True"
         >
     <Window.Resources>
         <Style TargetType="Path" x:Key="svg">

@@ -32,8 +32,8 @@ namespace OnTheFly_UI.Modules
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public TimeSpan Timeout = TimeSpan.FromMilliseconds(2000);
-        
+        public TimeSpan Timeout = TimeSpan.FromMilliseconds(2000); //Change messagebox it is block tihs thread
+
         public YoloMetadata Metadata = null;
         
         public ConcurrentQueue<ProcessObject> PostProcessingBuffer;
@@ -64,15 +64,30 @@ namespace OnTheFly_UI.Modules
             }
         }
 
+        private RequestObject _currentRequest = null;
+        public RequestObject CurrentRequest
+        {
+            get => _currentRequest;
+            set
+            {
+                if (_currentRequest != value)
+                {
+                    _currentRequest = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentRequest)));
+                }
+            }
+        }
+
+
         private ProcessObject LastProcessObject;
 
-
+        
         public VisualizationModule(ConcurrentQueue<ProcessObject> ProcessingBuffer, YoloMetadata metadata)
         {
             if (ProcessingBuffer == null)
                 throw new Exception("Processing buffer cannot be null");
             PostProcessingBuffer = ProcessingBuffer;
-
+            
             Metadata = metadata;
         }
 
@@ -113,17 +128,20 @@ namespace OnTheFly_UI.Modules
                     else
                         continue;
                 }
+                CurrentRequest = processObject.Request;
+
                 processObject.Request.Status = RequestStatus.OnRendering; // Think of making it a property of the process object
 
                 LastProcessObject = processObject; // Save the last process object for re-showing just for image type requests
+
 
                 BitmapSource bitmapSource = null;
 
                 var hiddenNames = CurrentResultTable.Where(x => x.IsHidden).Select(x => x.Name).ToHashSet();
 
-
-
-                if (processObject.Result.GetType() == typeof(YoloResult<Detection>))
+                if (processObject.Result == null)
+                    bitmapSource = PlotHandler.Plot(processObject.Frame);
+                else if (processObject.Result.GetType() == typeof(YoloResult<Detection>))
                         bitmapSource = PlotHandler.PlotDetection(processObject.Frame, (YoloResult<Detection>)processObject.Result,hiddenNames: hiddenNames);
                 else if (processObject.Result.GetType() == typeof(YoloResult<Segmentation>))
                     bitmapSource = PlotHandler.PlotSegmentatation(processObject.Frame, (YoloResult<Segmentation>)processObject.Result, hiddenNames: hiddenNames);
@@ -133,7 +151,6 @@ namespace OnTheFly_UI.Modules
                     bitmapSource = PlotHandler.PlotPose(processObject.Frame, (YoloResult<Pose>)processObject.Result, hiddenNames: hiddenNames);
                 else
                     bitmapSource = PlotHandler.Plot(processObject.Frame);
-
 
 
                 if (bitmapSource == null)
@@ -150,10 +167,11 @@ namespace OnTheFly_UI.Modules
                 Thread.Sleep(waitTime);
                 try
                 {
-                //Trace.WriteLine(sw.ElapsedMilliseconds.ToString());
-                //Trace.WriteLine("FPS= " + (1000/sw.ElapsedMilliseconds).ToString());
+                    //Trace.WriteLine(sw.ElapsedMilliseconds.ToString());
+                    //Trace.WriteLine("FPS= " + (1000 / sw.ElapsedMilliseconds).ToString());
 
-                }catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     Trace.WriteLine("Error in Visualization Module: " + ex.Message);
                     processObject.Request.Status = RequestStatus.Failed;

@@ -18,10 +18,10 @@
 
         <DataTemplate x:Key="videoTemplate" DataType="dto:RequestObject" >
                 <Canvas Name="canvas" Width="{Binding ElementName=testimage, Path=ActualWidth}" >
-                 <Image Canvas.Left="0" Canvas.Top="0" Source="{Binding ., Converter={StaticResource previewConverter}}"
+                 <Image Canvas.Left="0" Canvas.Top="0" Source="{Binding PreviewImage}"
                     x:Name="testimage"  Height="{Binding ElementName=canvas, Path=ActualHeight}"
                  ></Image>
-
+                <!--., Converter={StaticResource previewConverter}-->
                 <Ellipse Width="{Binding ElementName=canvas, Path=ActualWidth,Converter={StaticResource doubleConverter},ConverterParameter=0.3}"
                     Height="{Binding ElementName=canvas, Path=ActualWidth,Converter={StaticResource doubleConverter},ConverterParameter=0.3}"
                     Fill="{StaticResource Background_Dark}" Opacity="0.75" x:Name="elp" Stroke="{StaticResource Background_Light}" StrokeThickness="10">

@@ -174,6 +174,8 @@ namespace OnTheFly_UI.Modules
         {
             ProcessObject processObject;
             var sw = new Stopwatch();
+            var lastWarnedId = Guid.Empty;
+
             while (true)
             {
 
@@ -209,17 +211,22 @@ namespace OnTheFly_UI.Modules
 
                 processObject.Request.Status = RequestStatus.OnProcessing;
                 processObject.Request.TaskType = TaskType; // Set the task type for the request
-                Trace.WriteLine(Thread.CurrentThread.ManagedThreadId.ToString());
+                //Trace.WriteLine(Thread.CurrentThread.ManagedThreadId.ToString());
 
                 YoloResult? result = null;
 
-                if(Model == null)
+
+                if (Model == null)
                 {
-                    ProcessingException?.Invoke("The model is not loaded.");
+                    if ( processObject.Request.Id != lastWarnedId )
+                        ProcessingException?.Invoke("The model is not loaded.");
                     PostProcessingBuffer.Enqueue(processObject);
+                    lastWarnedId = processObject.Request.Id;
                     continue;
                 }
-                //var newDict = new Dictionary<string, int>();
+
+                lastWarnedId = Guid.Empty;
+                
                 var newDict = new List<ResultTableItem>();
                 switch (TaskType)
                 {

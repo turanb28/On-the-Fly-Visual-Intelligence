@@ -48,8 +48,8 @@ namespace OnTheFly_UI.Components
         {
             App.Current.Dispatcher.Invoke(() => {
                 var msgBox = new UIMessageBox(message,informationType);
-                msgBox.ShowDialog();
-            });
+                msgBox.Show();
+            },System.Windows.Threading.DispatcherPriority.ApplicationIdle);
             
         }
         public string Message { get; set; } = "string.Empty";
