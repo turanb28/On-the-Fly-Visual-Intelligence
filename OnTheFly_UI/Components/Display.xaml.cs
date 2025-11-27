@@ -46,7 +46,6 @@ namespace OnTheFly_UI.Components
         private System.Windows.Point panStart;
         private System.Windows.Point currentTransform;
         private System.Windows.Point maxBorderPan = new System.Windows.Point(900, 300);
-
         public ImageSource Source
         {
             get { return (ImageSource)GetValue(SourceProperty); }
