@@ -159,7 +159,10 @@ namespace OnTheFly_UI.Modules
                     continue;
                 }
 
-                int waitTime = (1000 / processObject.Request.FPS) - ((int)sw.ElapsedMilliseconds);
+                int waitTime = 0;
+                
+                if (processObject.Request.FPS !=0 )
+                    waitTime = (1000 / processObject.Request.FPS) - ((int)sw.ElapsedMilliseconds);
                 
                 if (waitTime < 0) 
                     waitTime = 0;

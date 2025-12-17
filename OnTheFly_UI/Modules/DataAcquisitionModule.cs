@@ -31,7 +31,7 @@ namespace OnTheFly_UI.Modules
         
         private ConcurrentQueue<Guid> RequestQueue = new ConcurrentQueue<Guid>();
 
-        public int BufferLimit = 500;
+        public int BufferLimit = 50;
         public CancellationTokenSource CancellationTokenSource { get; set; } = new CancellationTokenSource();
         public DataAcquisitionModule() { }
         bool IsInterrupt = false;
@@ -201,12 +201,10 @@ namespace OnTheFly_UI.Modules
                     if (IsInterrupt)
                         break;
 
-                    var ret = SpinWait.SpinUntil(() => { return capture.Read(frame) && !CancellationTokenSource.IsCancellationRequested; }, TimeSpan.FromMilliseconds(1000));
-
+                    var ret = SpinWait.SpinUntil(() => { return capture.Read(frame) && !CancellationTokenSource.IsCancellationRequested; }, TimeSpan.FromMilliseconds(2000));
 
                     if(ret &&  requestObject.PreviewImage == null)
                         requestObject.PreviewImage = BitmapConvertHandler.ToBitmapSourceFast(frame.ToBitmap());
-
 
                     if (ret)
                     {
@@ -229,8 +227,8 @@ namespace OnTheFly_UI.Modules
         {
             var ppo = new ProcessObject(frame);
             ppo.Request = requestObject;
-            if(result != null)
-                ppo.Result = result;
+            //if(result != null)
+            //    ppo.Result = result;
 
             if((requestObject.SourceType == RequestSourceType.Stream) && (PreprocessingBuffer.Count >= BufferLimit))
                 PreprocessingBuffer.TryDequeue(out var discard);
@@ -246,27 +244,18 @@ namespace OnTheFly_UI.Modules
         private void ReadUDPStream(string url,RequestObject requestObject)
         {
             DataAcquired?.Invoke();
-            var test = true;
             var ret = true;
+            using (Mat frame = new Mat()) {
 
-     
-            using (Mat frame = new Mat())
-            using (VideoCapture capture = new VideoCapture(fileName: url))
-            {
+                var capture = new VideoCapture(url,captureProperties:new Tuple<CapProp, int>(CapProp.ReadTimeoutMsec, 1000));
+            
                 requestObject.FPS = (int)capture.Get(Emgu.CV.CvEnum.CapProp.Fps);
-                //Trace.WriteLine($"Stream FPS: {requestObject.FPS}");
-
-                //capture.Set(Emgu.CV.CvEnum.CapProp.Buffersize, 1);
-                //capture.Set(Emgu.CV.CvEnum.CapProp.ReadTimeoutMsec, 10);
-
-
-                while (capture.IsOpened)
+                
+                while (capture.IsOpened) 
                 {
-                    
-                    ret = capture.Read(frame);
-
-                    if (!(ret))
-                        break;
+                    ret = capture.Grab();
+      
+                    ret = capture.Retrieve(frame);
 
                     if (ret && requestObject.PreviewImage == null)
                         requestObject.PreviewImage = BitmapConvertHandler.ToBitmapSourceFast(frame.ToBitmap());
@@ -275,10 +264,16 @@ namespace OnTheFly_UI.Modules
                         Enqueue(frame, requestObject);
                     else
                         break;
+
                 }
+
+                capture.Stop();
+                capture.Release();
+
             }
 
-            Trace.WriteLine("frame is finished");
+                Trace.WriteLine("frame is finished");
+
 
         }
 
