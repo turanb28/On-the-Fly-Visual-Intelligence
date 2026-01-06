@@ -3,6 +3,7 @@ using Compunet.YoloSharp.Data;
 using Compunet.YoloSharp.Metadata;
 using Emgu.CV;
 using Emgu.CV.Dnn;
+using OnTheFly_UI.Components;
 using OnTheFly_UI.Modules.DTOs;
 using OnTheFly_UI.Modules.Enums;
 using System;
@@ -21,7 +22,7 @@ namespace OnTheFly_UI.Modules
     public class ProcessingModule
     {
         public YoloPredictor Model = null;
-        public TimeSpan Timeout = TimeSpan.FromMilliseconds(2000);
+        public TimeSpan Timeout = TimeSpan.FromMilliseconds(20000);
         public YoloMetadata Metadata;
         public int BufferLimit = 5;
         public CancellationToken CancellationToken;
@@ -33,7 +34,7 @@ namespace OnTheFly_UI.Modules
                         return RequestTaskType.None;
                     }
             }
-        public List<string> Names = new List<string>();
+        public List<string> Names { get; set; } = new List<string>();
         public ObservableCollection<ModelObject> Models { get; set; } = new ObservableCollection<ModelObject>();
   
         public ConcurrentQueue<ProcessObject> PreProcessingBuffer;
@@ -74,7 +75,7 @@ namespace OnTheFly_UI.Modules
                 Configuration = new YoloConfiguration(),
             };
 
-            b.Configuration.Confidence = 0.1f;
+            b.Configuration.Confidence = 0.01f;
 
             Model = new YoloPredictor(model,b);
             Metadata = Model.Metadata;
@@ -123,12 +124,10 @@ namespace OnTheFly_UI.Modules
                 Model = new YoloPredictor(modelPath);
                 var modelname = Path.GetFileName(modelPath);
                 Metadata = Model.Metadata;
-
                 Names.Clear();
+
                 foreach (var yoloname in Model.Metadata.Names)
-                {
                     Names.Add(yoloname.Name);
-                }
 
                 ModelLoaded?.Invoke(modelname);
                 foreach(var item in Models)
@@ -226,8 +225,16 @@ namespace OnTheFly_UI.Modules
                 }
 
                 lastWarnedId = Guid.Empty;
-                
+
                 var newDict = new List<ResultTableItem>();
+
+                var tempDict = new Dictionary<string, int>();
+
+
+
+                foreach (var name in Names)
+                    tempDict[name] = 0;
+
                 switch (TaskType)
                 {
                     case RequestTaskType.Detect:
@@ -236,9 +243,7 @@ namespace OnTheFly_UI.Modules
                         if (result == null)
                             return;
 
-                        ((YoloResult<Detection>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => newDict.Add( new ResultTableItem(x.Key, x.Count() ) ) ) ; 
-                        processObject.ResultTable = newDict;
-
+                        ((YoloResult<Detection>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => { tempDict[x.Key] = x.Count(); });
                         break;
                     case RequestTaskType.Classify:
                         result = Model.Classify(processObject.Frame);
@@ -246,39 +251,38 @@ namespace OnTheFly_UI.Modules
                             return;
 
 
-                        var a = ((YoloResult<Classification>)result).ToList();
-                        a.ForEach(x =>
-                        {
-                            float value = x.Confidence * 100;
-                            newDict.Add(new ResultTableItem(x.Name.Name, (int)value));
-                        });
-                        processObject.ResultTable = newDict;
+                        ((YoloResult<Classification>)result).ToList().ForEach(x => { tempDict[x.Name.Name] = (int)(x.Confidence * 100); });
+                      
                         break;
                     case RequestTaskType.Segment:
                         result = Model.Segment(processObject.Frame);
                         if (result == null)
                             return;
-                        ((YoloResult<Segmentation>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => newDict.Add(new ResultTableItem(x.Key, x.Count())));
-                        processObject.ResultTable = newDict;
-                        break;
+                        ((YoloResult<Segmentation>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => { tempDict[x.Key] = x.Count(); });
+                            break;
                     case RequestTaskType.Obb:
                         result = Model.DetectObb(processObject.Frame);
                         if (result == null)
                             return;
-                        ((YoloResult<ObbDetection>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => newDict.Add(new ResultTableItem(x.Key, x.Count())));
-                        processObject.ResultTable = newDict;
-                        break;
+                        ((YoloResult<ObbDetection>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => { tempDict[x.Key] = x.Count(); });
+                            break;
                     case RequestTaskType.Pose:
                         result = Model.Pose(processObject.Frame); 
                         if (result == null)
                             return;
-                        ((YoloResult<Pose>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => newDict.Add(new ResultTableItem(x.Key, x.Count())));
-                        processObject.ResultTable = newDict;
-                        break;
+                        ((YoloResult<Pose>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => { tempDict[x.Key] = x.Count(); });
+                            break;
                     default:
-                        return; // Unsupported task
+                        UIMessageBox.Show("Unsupported Task",UIMessageBox.InformationType.Error);
+                        return; 
+
                 }
 
+
+                foreach (var x in tempDict.Keys)
+                    newDict.Add(new ResultTableItem(x, tempDict[x]));
+
+                processObject.Request.ResultTables.Add(newDict);
 
                 //processObject.Request.Result.Add(result); 
 

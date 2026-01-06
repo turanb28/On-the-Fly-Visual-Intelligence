@@ -23,6 +23,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using System.Xml.Linq;
 
 namespace OnTheFly_UI.Modules
@@ -32,7 +33,7 @@ namespace OnTheFly_UI.Modules
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public TimeSpan Timeout = TimeSpan.FromMilliseconds(2000); //Change messagebox it is block tihs thread
+        public TimeSpan Timeout = TimeSpan.FromMilliseconds(20000); //Change messagebox it is block tihs thread
 
         public YoloMetadata Metadata = null;
         
@@ -168,27 +169,13 @@ namespace OnTheFly_UI.Modules
                     waitTime = 0;
 
                 Thread.Sleep(waitTime);
-                try
-                {
-                    //Trace.WriteLine(sw.ElapsedMilliseconds.ToString());
-                    //Trace.WriteLine("FPS= " + (1000 / sw.ElapsedMilliseconds).ToString());
 
-                }
-                catch (Exception ex)
-                {
-                    Trace.WriteLine("Error in Visualization Module: " + ex.Message);
-                    processObject.Request.Status = RequestStatus.Failed;
-                }
+                if(processObject.Request.ResultTables.Count > processObject.Index)
+                    ShowFrame(bitmapSource, processObject.Request.ResultTables[processObject.Index]);
+                else
+                    ShowFrame(bitmapSource, new List<ResultTableItem>());
 
-
-
-
-                ShowFrame(bitmapSource,processObject.ResultTable);
-                
-                
-                //Trace.WriteLine($"Visualization Module = {sw.ElapsedMilliseconds}");
                 processObject.Request.Status = RequestStatus.Sucess;
-
             }
         }
 
@@ -208,7 +195,41 @@ namespace OnTheFly_UI.Modules
         public void ShowFrame(BitmapSource bitmap, List<ResultTableItem> ResultTable)
         {
             CurrentImage = bitmap;
-            CurrentResultTable = new ObservableCollection<ResultTableItem>(ResultTable);
+
+            var currentItemsDict = CurrentResultTable.ToDictionary(i => i.Name);
+
+            var namesInNewResult = new HashSet<string>();
+            var itemsToAdd = new List<ResultTableItem>();
+            var itemsToRemove = new List<ResultTableItem>();
+
+            foreach (var newItem in ResultTable)
+            {
+                namesInNewResult.Add(newItem.Name);
+
+                if (currentItemsDict.TryGetValue(newItem.Name, out var existingItem))
+                    existingItem.Count = newItem.Count;
+                else
+                    itemsToAdd.Add(newItem);
+            }
+
+            foreach (var currentItem in CurrentResultTable)
+            {
+                if (!namesInNewResult.Contains(currentItem.Name))
+                    itemsToRemove.Add(currentItem);
+            }
+
+            if (itemsToAdd.Any() || itemsToRemove.Any())
+            {
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    foreach (var item in itemsToRemove)
+                        CurrentResultTable.Remove(item);
+
+                    foreach (var item in itemsToAdd)
+                        CurrentResultTable.Add(item);
+                },DispatcherPriority.Background);
+            }
+
         }
 
 

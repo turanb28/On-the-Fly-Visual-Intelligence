@@ -157,7 +157,7 @@ namespace OnTheFly_UI.Modules
                         break;
 
                     case RequestSourceType.Stream:
-                        ReadUDPStream(requestObject.Source, requestObject); 
+                        ReadStream(requestObject.Source, requestObject); 
                         break;
 
                     default:
@@ -185,6 +185,7 @@ namespace OnTheFly_UI.Modules
         private void ReadVideo(string path, RequestObject requestObject)
         {
             DataAcquired?.Invoke();
+            int index = 0;
             using (Mat frame = new Mat())
             using (VideoCapture capture = new VideoCapture(path))
             {
@@ -209,10 +210,11 @@ namespace OnTheFly_UI.Modules
                     if (ret)
                     {
                         if (requestObject.Result.Count > requestObject.VideoPosition)
-                            Enqueue(frame, requestObject, requestObject.Result[(int)requestObject.VideoPosition]);
+                            Enqueue(frame, requestObject, requestObject.Result[index],index:index); 
                         else
-                            Enqueue(frame, requestObject);
+                            Enqueue(frame, requestObject, index: index);
                         requestObject.VideoPosition = capture.Get(Emgu.CV.CvEnum.CapProp.PosFrames);
+                        index++;
 
                     }
                     else
@@ -223,15 +225,16 @@ namespace OnTheFly_UI.Modules
         }
 
 
-        private void Enqueue(Mat frame,RequestObject requestObject,YoloResult? result = null)
+        private void Enqueue(Mat frame,RequestObject requestObject,YoloResult? result = null,int index=0)
         {
             var ppo = new ProcessObject(frame);
             ppo.Request = requestObject;
+            ppo.Index = index;
             //if(result != null)
             //    ppo.Result = result;
 
-            if((requestObject.SourceType == RequestSourceType.Stream) && (PreprocessingBuffer.Count >= BufferLimit))
-                PreprocessingBuffer.TryDequeue(out var discard);
+            //if((requestObject.SourceType == RequestSourceType.Stream) && (PreprocessingBuffer.Count >= BufferLimit))
+            //    PreprocessingBuffer.TryDequeue(out var discard);
 
 
             SpinWait.SpinUntil(() => { 
@@ -241,17 +244,18 @@ namespace OnTheFly_UI.Modules
 
         }
 
-        private void ReadUDPStream(string url,RequestObject requestObject)
+        private void ReadStream(string url,RequestObject requestObject)
         {
             DataAcquired?.Invoke();
             var ret = true;
+            var index = 0;
             using (Mat frame = new Mat()) {
 
                 var capture = new VideoCapture(url,captureProperties:new Tuple<CapProp, int>(CapProp.ReadTimeoutMsec, 1000));
             
                 requestObject.FPS = (int)capture.Get(Emgu.CV.CvEnum.CapProp.Fps);
                 
-                while (capture.IsOpened) 
+                while (capture.IsOpened && !CancellationTokenSource.IsCancellationRequested) 
                 {
                     ret = capture.Grab();
       
@@ -260,11 +264,16 @@ namespace OnTheFly_UI.Modules
                     if (ret && requestObject.PreviewImage == null)
                         requestObject.PreviewImage = BitmapConvertHandler.ToBitmapSourceFast(frame.ToBitmap());
 
+                    
+                    SpinWait.SpinUntil(() => { return PreprocessingBuffer.Count < BufferLimit; });
+
                     if (ret)
-                        Enqueue(frame, requestObject);
+                        Enqueue(frame, requestObject,index:index);
                     else
                         break;
 
+                    requestObject.VideoPosition = capture.Get(Emgu.CV.CvEnum.CapProp.PosFrames);
+                    index ++;
                 }
 
                 capture.Stop();

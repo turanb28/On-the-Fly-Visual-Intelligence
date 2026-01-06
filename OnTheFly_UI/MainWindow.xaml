@@ -86,7 +86,8 @@
 
         <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="10" Background="Black" Opacity="0.1"></Border>
 
-        <Components:Display x:Name="Display" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="14" Source="{Binding VisualizationModule.CurrentImage}" ResultTable="{Binding VisualizationModule.CurrentResultTable}" 
+        <Components:Display x:Name="Display" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="14" Source="{Binding VisualizationModule.CurrentImage}" 
+        ResultTable="{Binding VisualizationModule.CurrentResultTable}"
                             ></Components:Display>
         <ProgressBar x:Name="videoProgessBar" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="14" Margin="3" Height="20" VerticalAlignment="Bottom"  Minimum="0"  Visibility="Hidden" 
                      Background="{DynamicResource Background_Dark}" Foreground="{DynamicResource Foreground_Dark}" BorderThickness="1" BorderBrush="{DynamicResource Background_Light}" Width="720" HorizontalAlignment="Center"

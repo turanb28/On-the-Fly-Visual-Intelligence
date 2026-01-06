@@ -28,6 +28,9 @@ namespace OnTheFly_UI.Modules.DTOs
             }
         }
 
+        public List<List<ResultTableItem>> ResultTables { get; set; } = new List<List<ResultTableItem>>();
+
+
         public Guid Id { get; private set; } = Guid.NewGuid();
         public string Source {  get; set; } = string.Empty;
         public int FPS { get; set; } = int.MaxValue; 

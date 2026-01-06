@@ -14,6 +14,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -58,6 +59,9 @@ namespace OnTheFly_UI
 
             sidebar.Values = DataAcquisitionModule.Requests;
 
+
+
+
             var a = RecentFileHandler.GetRecentFiles();
 
             foreach (var item in a)
@@ -99,7 +103,8 @@ namespace OnTheFly_UI
         {
             //UIMessageBox.Show("This feature is coming soon!");
 
-            DataAcquisitionModule.RequestStream("udp://127.0.0.1:23000");
+            //DataAcquisitionModule.RequestStream("udp://127.0.0.1:23000"); //@"https://www.pexels.com/download/video/35217602/"); 
+            DataAcquisitionModule.RequestStream(@"https://www.pexels.com/download/video/35217602/"); 
         }
 
         private void AddTestStream_Click(object sender, RoutedEventArgs e)
@@ -230,7 +235,7 @@ namespace OnTheFly_UI
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _testing = false;
+
         }
     }
 }

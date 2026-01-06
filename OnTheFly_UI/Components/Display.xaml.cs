@@ -60,11 +60,12 @@ namespace OnTheFly_UI.Components
 
 
 
-        public ObservableCollection<ResultTableItem> ResultTable 
+        public ObservableCollection<ResultTableItem> ResultTable
         {
             get { return (ObservableCollection<ResultTableItem>)GetValue(ResultTableProperty); }
-            set { 
-                SetValue(ResultTableProperty, value); 
+            set
+            {
+                SetValue(ResultTableProperty, value);
             }
         }
 
@@ -193,7 +194,7 @@ namespace OnTheFly_UI.Components
 
             ResultTable.Where(x => x.Name == className).Select(x => x.IsHidden = !x.IsHidden).First();
 
-            
+
             DisplayUserInteraction?.Invoke();
 
 

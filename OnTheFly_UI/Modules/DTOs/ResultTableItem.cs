@@ -10,7 +10,7 @@ namespace OnTheFly_UI.Modules.DTOs
 {
     public class ResultTableItem: INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
       
         private string name = "undefined";
         public  string Name
@@ -48,6 +48,11 @@ namespace OnTheFly_UI.Modules.DTOs
         public override string ToString()
         {
             return $"{Name}: {Count}";
+        }
+
+        public static implicit operator ResultTableItem(string dt)
+        {
+            return new ResultTableItem() { Name = dt };
         }
 
         protected void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
