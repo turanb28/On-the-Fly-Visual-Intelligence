@@ -46,11 +46,7 @@ namespace OnTheFly_UI.Modules.DTOs
                 _videoPosition = value;
             }
         }
-
-        public RequestStatus Status { get; set; } = RequestStatus.Failed; 
         private RequestTaskType _taskType = RequestTaskType.None;
-
-
         public RequestTaskType TaskType { get { return _taskType; } 
                                           set { 
                                                 if((Result != null) && (_taskType != value))
@@ -66,13 +62,5 @@ namespace OnTheFly_UI.Modules.DTOs
             SourceType = sourceType;
         }
     }
-    public enum RequestStatus
-    {
-        Failed = -1,
-        OnWaiting,
-        OnLoading,
-        OnProcessing,
-        OnRendering, 
-        Sucess
-    }
+  
 }

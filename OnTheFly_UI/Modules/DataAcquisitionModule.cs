@@ -47,7 +47,6 @@ namespace OnTheFly_UI.Modules
         private void AddRequest(RequestObject request)
         {
             Requests.Add(request);
-            request.Status = RequestStatus.OnWaiting;
 
         }
 
@@ -144,7 +143,6 @@ namespace OnTheFly_UI.Modules
                     if (!SpinWait.SpinUntil(() => { return NextItem(out requestObject) && !CancellationTokenSource.IsCancellationRequested; }, Timeout))
                         break;
                 }
-                requestObject.Status = RequestStatus.OnLoading;
                 IsInterrupt = false;
                 switch (requestObject.SourceType)
                 {

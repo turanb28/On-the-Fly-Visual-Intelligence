@@ -208,7 +208,6 @@ namespace OnTheFly_UI.Modules
 
 
 
-                processObject.Request.Status = RequestStatus.OnProcessing;
                 processObject.Request.TaskType = TaskType; // Set the task type for the request
                 //Trace.WriteLine(Thread.CurrentThread.ManagedThreadId.ToString());
 

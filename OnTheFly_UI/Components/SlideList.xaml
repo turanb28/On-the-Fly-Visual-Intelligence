@@ -21,7 +21,6 @@
                  <Image Canvas.Left="0" Canvas.Top="0" Source="{Binding PreviewImage}"
                     x:Name="testimage"  Height="{Binding ElementName=canvas, Path=ActualHeight}"
                  ></Image>
-                <!--., Converter={StaticResource previewConverter}-->
                 <Ellipse Width="{Binding ElementName=canvas, Path=ActualWidth,Converter={StaticResource doubleConverter},ConverterParameter=0.3}"
                     Height="{Binding ElementName=canvas, Path=ActualWidth,Converter={StaticResource doubleConverter},ConverterParameter=0.3}"
                     Fill="{StaticResource Background_Dark}" Opacity="0.75" x:Name="elp" Stroke="{StaticResource Background_Light}" StrokeThickness="10">
@@ -64,7 +63,7 @@
         </DataTemplate>
 
         <DataTemplate x:Key="imgTemplate"  DataType="dto:RequestObject" >
-            <Image Source="{Binding ., Converter={StaticResource previewConverter}}"></Image>
+                <Image x:Name="image" Canvas.Left="0" Canvas.Top="0" Source="{Binding ., Converter={StaticResource previewConverter}}" Height="{Binding ElementName=canvas, Path=ActualHeight}"></Image>
         </DataTemplate>
 
         <converters:SlidebarDataTemplateSelector x:Key="slidebarDataTemplateSelector" ImageTemplate="{StaticResource imgTemplate}" VideoTemplate="{StaticResource videoTemplate}"/>
@@ -132,7 +131,7 @@
                                          BorderBrush="{TemplateBinding BorderBrush}"
                                             Background="Transparent">
 
-                                        <ContentPresenter  x:Name="content" />
+                                            <ContentPresenter  x:Name="content" />
 
                                     </Border>
                                     <ControlTemplate.Triggers>

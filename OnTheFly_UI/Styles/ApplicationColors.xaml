@@ -14,5 +14,19 @@
     <Color x:Key="Color_Foreground_Dark">#9F49C6</Color>
     <Color x:Key="Color_Debug_Color">Red</Color>
 
+    <SolidColorBrush x:Key="Color_RequestStatus_Failed">Red</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_RequestStatus_OnWaiting">Orange</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_RequestStatus_OnLoading">Yellow</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_RequestStatus_OnProcessing">Blue</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_RequestStatus_OnRendering">LimeGreen</SolidColorBrush>
+    <SolidColorBrush x:Key="Color_RequestStatus_Success">Green</SolidColorBrush>
+
+
+    
+    
+    
+    
+    
+
 
 </ResourceDictionary>

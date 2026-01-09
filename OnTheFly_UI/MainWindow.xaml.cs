@@ -235,6 +235,7 @@ namespace OnTheFly_UI
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
+            var a = App.Current.Resources["Color_Background_Light"];
 
         }
     }

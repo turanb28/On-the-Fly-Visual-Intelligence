@@ -131,7 +131,6 @@ namespace OnTheFly_UI.Modules
                 }
                 CurrentRequest = processObject.Request;
 
-                processObject.Request.Status = RequestStatus.OnRendering; // Think of making it a property of the process object
 
                 LastProcessObject = processObject; // Save the last process object for re-showing just for image type requests
 
@@ -155,10 +154,7 @@ namespace OnTheFly_UI.Modules
 
 
                 if (bitmapSource == null)
-                {
-                    processObject.Request.Status = RequestStatus.Failed;
                     continue;
-                }
 
                 int waitTime = 0;
                 
@@ -174,8 +170,6 @@ namespace OnTheFly_UI.Modules
                     ShowFrame(bitmapSource, processObject.Request.ResultTables[processObject.Index]);
                 else
                     ShowFrame(bitmapSource, new List<ResultTableItem>());
-
-                processObject.Request.Status = RequestStatus.Sucess;
             }
         }
 
