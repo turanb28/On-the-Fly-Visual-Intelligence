@@ -15,12 +15,14 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Diagnostics.Eventing.Reader;
+using System.Drawing;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using static Emgu.CV.Structure.MCvMatND;
 
 namespace OnTheFly_UI
 {
@@ -72,6 +74,8 @@ namespace OnTheFly_UI
                 
             }
 
+
+            //AddStream_Click(this, null);
         }
 
         private async void AddImage_Click(object sender, RoutedEventArgs e)
@@ -99,12 +103,22 @@ namespace OnTheFly_UI
         }
 
 
-        private void AddStream_Click(object sender, RoutedEventArgs e)
+        private async void AddStream_Click(object sender, RoutedEventArgs e)
         {
-            //UIMessageBox.Show("This feature is coming soon!");
+            var a = await UIUserEntry.Show("Test");
 
-            //DataAcquisitionModule.RequestStream("udp://127.0.0.1:23000"); //@"https://www.pexels.com/download/video/35217602/"); 
-            DataAcquisitionModule.RequestStream(@"https://www.pexels.com/download/video/35217602/"); 
+            MessageBox.Show(a);
+            //var entry = new UIUserEntry("Test Message");
+            //var r = entry.ShowDialog();
+
+            //if (r == true)
+            //    MessageBox.Show(entry.entry.Text);
+            //else
+            //    //return;
+            //    MessageBox.Show("You closed.");
+
+            //DataAcquisitionModule.RequestStream(@"https://www.pexels.com/download/video/35217602/"); 
+            //DataAcquisitionModule.RequestStream(entry.entry.Text);
         }
 
         private void AddTestStream_Click(object sender, RoutedEventArgs e)
@@ -130,11 +144,7 @@ namespace OnTheFly_UI
                 cmd.StartInfo.UseShellExecute = false;
                 var a = $"""-re -i "{file.FileName}" -v 0 -vcodec mpeg4 -f mpegts udp://127.0.0.1:23000""";
                 cmd.StartInfo.Arguments = a;
-                //cmd.StartInfo.Arguments = """-re -i "C:\Users\PC\Projects\Visdrone Dataset -Yolo 11\Training\Test Files\cut.mp4" -v 0 -vcodec mpeg4 -f mpegts udp://127.0.0.1:23000""";
                 cmd.Start();
-
-                //cmd.Exited += (s, e) => { 
-                //    _testing = true; };
 
                 SpinWait.SpinUntil(() => { return !_testing ;  });
                 cmd.Kill( );
@@ -238,5 +248,7 @@ namespace OnTheFly_UI
             var a = App.Current.Resources["Color_Background_Light"];
 
         }
+
+        
     }
 }

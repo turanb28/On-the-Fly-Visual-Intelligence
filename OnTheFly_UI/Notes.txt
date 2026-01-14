@@ -1,8 +1,4 @@
-﻿2 - Show selected model.
-
-6 - Think again states of processing.
-
-8 - Video duration and jumping.
+﻿8 - Video duration and jumping.
 
 15 - UI cannot response when screen resizes.
 

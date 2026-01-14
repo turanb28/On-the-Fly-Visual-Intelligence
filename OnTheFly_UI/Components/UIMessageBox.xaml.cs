@@ -52,7 +52,7 @@ namespace OnTheFly_UI.Components
             },System.Windows.Threading.DispatcherPriority.ApplicationIdle);
             
         }
-        public string Message { get; set; } = "string.Empty";
+        public string Message { get; set; } = string.Empty;
 
         public UIMessageBox(string message, InformationType informationType)
         {
