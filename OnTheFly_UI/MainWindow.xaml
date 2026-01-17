@@ -50,7 +50,6 @@
                 <MenuItem Header="Open Image" Click="AddImage_Click" ></MenuItem>
                 <MenuItem Header="Open Video" Click="AddVideo_Click" ></MenuItem>
                 <MenuItem Header="Open Stream"  Click="AddStream_Click"    ></MenuItem>
-                <MenuItem Header="Open Stream Test"  Click="AddTestStream_Click"    ></MenuItem>
                 <MenuItem Header="Save All" Click="MenuItem_Click"  ></MenuItem>
 
             </MenuItem>

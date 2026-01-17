@@ -28,7 +28,6 @@ namespace OnTheFly_UI.Components
         {
             InitializeComponent();
             DataContext = this;
-            entry.Text = "https://www.pexels.com/download/video/35217602/";
         }
 
         public UIUserEntry(string message)

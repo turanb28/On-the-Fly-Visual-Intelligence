@@ -35,7 +35,6 @@ namespace OnTheFly_UI
         public DataAcquisitionModule DataAcquisitionModule { get; set; }
         public ProcessingModule ProcessingModule { get; set; }
         public VisualizationModule VisualizationModule { get; set; }
-        public bool _testing { get; set; } = false;
         public MainWindow()
         {
             InitializeComponent();
@@ -74,11 +73,9 @@ namespace OnTheFly_UI
                 
             }
 
-
-            //AddStream_Click(this, null);
         }
 
-        private async void AddImage_Click(object sender, RoutedEventArgs e)
+        private void AddImage_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog file = new OpenFileDialog();
             file.InitialDirectory = "C:\\Desktop";
@@ -105,56 +102,13 @@ namespace OnTheFly_UI
 
         private async void AddStream_Click(object sender, RoutedEventArgs e)
         {
-            var a = await UIUserEntry.Show("Test");
+            var link = await UIUserEntry.Show("Enter the live stream or video URL to start processing");
 
-            MessageBox.Show(a);
-            //var entry = new UIUserEntry("Test Message");
-            //var r = entry.ShowDialog();
-
-            //if (r == true)
-            //    MessageBox.Show(entry.entry.Text);
-            //else
-            //    //return;
-            //    MessageBox.Show("You closed.");
-
-            //DataAcquisitionModule.RequestStream(@"https://www.pexels.com/download/video/35217602/"); 
-            //DataAcquisitionModule.RequestStream(entry.entry.Text);
-        }
-
-        private void AddTestStream_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog file = new OpenFileDialog();
-            file.InitialDirectory = "C:\\Desktop";
-            file.Filter = "Video |*.mp4";
-            file.FilterIndex = 0;
-            file.Multiselect = false;
-            file.ShowDialog();
-            if (string.IsNullOrEmpty(file.FileName))
+            if (string.IsNullOrEmpty(link))
                 return;
 
-            _testing = true;
-            var thread = new Thread(() => {
-                Process cmd = new Process();
-                cmd.StartInfo.FileName = "ffmpeg";
-                cmd.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
-                cmd.StartInfo.WorkingDirectory = @"C:\Users\PC";
-                cmd.StartInfo.RedirectStandardInput = true;
-                cmd.StartInfo.RedirectStandardOutput = true;
-                cmd.StartInfo.CreateNoWindow = false;
-                cmd.StartInfo.UseShellExecute = false;
-                var a = $"""-re -i "{file.FileName}" -v 0 -vcodec mpeg4 -f mpegts udp://127.0.0.1:23000""";
-                cmd.StartInfo.Arguments = a;
-                cmd.Start();
-
-                SpinWait.SpinUntil(() => { return !_testing ;  });
-                cmd.Kill( );
-            });
-
-            thread.IsBackground = true;
-
-            thread.Start();
-
-            AddStream_Click(sender, e);
+            // https://www.pexels.com/download/video/35217602/ 
+            DataAcquisitionModule.RequestStream(link);
         }
 
         private void Add_Model(object sender, RoutedEventArgs e)
@@ -211,7 +165,6 @@ namespace OnTheFly_UI
 
         private void CloseApp_Click(object sender, RoutedEventArgs e)
         {
-            _testing = false;
             this.Close();
         }
 
@@ -245,7 +198,7 @@ namespace OnTheFly_UI
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var a = App.Current.Resources["Color_Background_Light"];
+            
 
         }
 
