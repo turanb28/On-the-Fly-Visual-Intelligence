@@ -13,8 +13,9 @@
 
 ## 📸 Demo
 
-![Project Screenshot](https://private-user-images.githubusercontent.com/98922140/417639137-a3be601a-e976-4e38-807c-a024b6909dd7.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3Njg2ODEyODYsIm5iZiI6MTc2ODY4MDk4NiwicGF0aCI6Ii85ODkyMjE0MC80MTc2MzkxMzctYTNiZTYwMWEtZTk3Ni00ZTM4LTgwN2MtYTAyNGI2OTA5ZGQ3LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjAxMTclMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYwMTE3VDIwMTYyNlomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTU0N2RjYWYxODA5YTliYmU3Njg2MGQwNzFiNjM1Y2UzYjRmM2QzYjU2ZTBiYWY2OTYzMDhlZWNkZDEwMTExMDgmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.ViDgToW_QO3PfiQ9W6uT3GlxXuQXhJfIEtM1_swB2Es)
-*(Replace the link above with a GIF or new screenshot of your latest UI)*
+<img width="1437" height="997" alt="Review" src="https://github.com/user-attachments/assets/0626b283-7914-4a3e-9568-886a731ffee2" />
+
+
 
 ---
 
@@ -114,10 +115,4 @@ Contributions are welcome! If you have ideas for new features (e.g., OCR integra
 
 ## 📄 License
 
-Distributed under the MIT License. See `LICENSE` for more information.
-
----
-
-## 📬 Contact
-
-Project Link: [https://github.com/turanb28/On-the-Fly-Visual-Intelligence](https://github.com/turanb28/On-the-Fly-Visual-Intelligence)
+Distributed under the MIT License.
