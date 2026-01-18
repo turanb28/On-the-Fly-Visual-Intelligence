@@ -1,81 +1,123 @@
-# On the Fly Visual Intelligence
+# 👁️ On-the-Fly Visual Intelligence
 
-![Project Demo](https://private-user-images.githubusercontent.com/98922140/417639137-a3be601a-e976-4e38-807c-a024b6909dd7.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3Njg2ODEyODYsIm5iZiI6MTc2ODY4MDk4NiwicGF0aCI6Ii85ODkyMjE0MC80MTc2MzkxMzctYTNiZTYwMWEtZTk3Ni00ZTM4LTgwN2MtYTAyNGI2OTA5ZGQ3LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjAxMTclMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYwMTE3VDIwMTYyNlomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTU0N2RjYWYxODA5YTliYmU3Njg2MGQwNzFiNjM1Y2UzYjRmM2QzYjU2ZTBiYWY2OTYzMDhlZWNkZDEwMTExMDgmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.ViDgToW_QO3PfiQ9W6uT3GlxXuQXhJfIEtM1_swB2Es)
+![GitHub License](https://img.shields.io/github/license/turanb28/On-the-Fly-Visual-Intelligence)
+![.NET Version](https://img.shields.io/badge/.NET-8.0-purple)
+![Platform](https://img.shields.io/badge/Platform-Windows-blue)
+![Status](https://img.shields.io/badge/Status-Active%20Development-green)
 
-> **Real-time computer vision powered by YOLO and .NET.**
+> **Real-time, high-performance visual analysis powered by YOLO and .NET.**
 
-**On the Fly Visual Intelligence** is a high-performance C# application designed to execute YOLO (You Only Look Once) models for real-time visual analysis. Whether you are processing static images, video files, or live streams, this tool provides immediate inference results for object detection and segmentation tasks.
+**On the Fly Visual Intelligence** is a robust C# application designed for seamless object detection, segmentation, and visual data analysis. Built on the latest .NET ecosystem, it allows users to perform inference on static images, video files, and live camera feeds with low latency.
+
+---
+
+## 📸 Demo
+
+![Project Screenshot](https://private-user-images.githubusercontent.com/98922140/417639137-a3be601a-e976-4e38-807c-a024b6909dd7.png)
+*(Replace the link above with a GIF or new screenshot of your latest UI)*
+
+---
+
+## ✨ What's New?
+
+The project has undergone significant updates to improve performance and usability:
+- **Expanded Model Support:** Now supports **YOLOv8 / YOLOv9 / YOLOv10** models.
+- **Advanced Tasks:** Added support for **Oriented Bounding Boxes (OBB)** and **Pose Estimation**.
+- **UI Overhaul:** A completely redesigned user interface for easier model swapping and parameter tuning.
+- **GPU Acceleration:** Enhanced CUDA support for faster real-time inference.
+
+---
 
 ## 🚀 Features
 
-*   **Real-Time Processing**: optimized for low-latency inference on video streams.
-*   **Multiple Input Sources**: 
-    *   📂 **Images**: Analyze single or batch images.
-    *   🎥 **Videos**: Process pre-recorded video files.
-    *   📡 **Live Streams**: Support for webcams and RTSP/HTTP streams.
-*   **Model Support**: Currently supports standard Object Detection and Instance Segmentation.
-*   **C# Native**: Built entirely in C# for seamless integration with the .NET ecosystem.
+### 🔍 Core Capabilities
+*   **Real-Time Inference:** Optimized for high FPS on live video streams (Webcam / RTSP).
+*   **Multi-Tasking:** Switch between Object Detection, Instance Segmentation, and Pose Estimation on the fly.
+*   **Universal Input:** Drag-and-drop support for images and videos, plus auto-detection for connected cameras.
 
-## 🗺️ Roadmap
+### 🛠️ Advanced Tools
+*   **Model Hot-Swapping:** Load custom `.pt` or `.onnx` models instantly without restarting the app.
+*   **Adjustable Thresholds:** Fine-tune **Confidence** and **IoU (Intersection over Union)** sliders in real-time to filter noise.
+*   **Visual Analytics:** View bounding boxes, class labels, and confidence scores overlaid directly on the feed.
+*   **Export Results:** (Optional) Save inference results or snapshots to your local drive.
 
-We are actively developing this project. Upcoming features include:
+---
 
-- [ ] **Oriented Bounding Box (OBB)**: Detection for rotated objects.
-- [ ] **Pose Estimation**: Skeleton keypoint detection for human pose analysis.
-- [ ] **Classification**: Whole-image image classification support.
-- [ ] **Model Export/Import**: Easier swapping of custom-trained YOLO models.
+## 💻 Tech Stack
 
-## 🛠️ Prerequisites
+*   **Language:** C# (.NET 8.0)
+*   **Framework:** WPF / WinForms (depending on your specific UI implementation)
+*   **Computer Vision:** OpenCVSharp, YoloDotNet (or Ultralytics wrappers)
+*   **Acceleration:** CUDA (NVIDIA GPU support recommended)
 
-Before you begin, ensure you have the following installed:
+---
 
-*   [.NET SDK](https://dotnet.microsoft.com/download) (Version 8.0 or later recommended)
-*   [Visual Studio 2022](https://visualstudio.microsoft.com/) or [VS Code](https://code.visualstudio.com/)
+## 🛠️ Installation & Setup
 
-## 📥 Installation
+### Prerequisites
+1.  **[.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)** or higher.
+2.  **Visual Studio 2022** (Community/Professional).
+3.  *(Optional for GPU)* **NVIDIA CUDA Toolkit** and **cuDNN** compatible with your GPU drivers.
 
-1.  **Clone the repository:**
+### Steps
+1.  **Clone the Repository**
     ```bash
     git clone https://github.com/turanb28/On-the-Fly-Visual-Intelligence.git
     cd On-the-Fly-Visual-Intelligence
     ```
 
-2.  **Open the project:**
-    Open `OnTheFly_UI.sln` in Visual Studio.
+2.  **Open in Visual Studio**
+    Double-click the `OnTheFly_UI.sln` file.
 
-3.  **Restore Dependencies:**
-    Visual Studio should automatically restore the necessary NuGet packages. If not, run:
+3.  **Restore Dependencies**
+    Visual Studio should handle this automatically. If not, run:
     ```bash
     dotnet restore
     ```
 
-## ▶️ Usage
+4.  **Download Models**
+    Ensure you have your YOLO weights (e.g., `yolov8n.pt`, `yolov8s-seg.pt`) ready.
+    > *Tip: Place your default models in a `models/` folder within the project directory for easier access.*
 
-1.  **Build the Solution:**
-    Press `Ctrl + Shift + B` or navigate to **Build > Build Solution**.
-
-2.  **Run the Application:**
-    Press `F5` to start the application with debugging.
-
-3.  **Select Source & Model:**
-    *   Use the UI to select your input source (Camera, Video File, or Image).
-    *   Load your desired YOLO model weights (e.g., `yolov8n.pt` or ONNX format if applicable).
-    *   Click **Start** to begin inference.
-
-## 🤝 Contributing
-
-Contributions are welcome! This project is in its early stages, and we appreciate help with new features, bug fixes, and documentation.
-
-1.  Fork the repository.
-2.  Create your feature branch (`git checkout -b feature/AmazingFeature`).
-3.  Commit your changes (`git commit -m 'Add some AmazingFeature'`).
-4.  Push to the branch (`git push origin feature/AmazingFeature`).
-5.  Open a Pull Request.
-
-## 📄 License
-
-Distributed under the MIT License. See `LICENSE` for more information. (If a license file is not yet present, please refer to the repository owner).
+5.  **Build & Run**
+    Press `F5` or click **Start** in Visual Studio.
 
 ---
 
-*Stay tuned for updates!* 🚀
+## 🎮 Usage Guide
+
+1.  **Select Input Source:**
+    *   **Camera:** Choose your webcam from the dropdown list.
+    *   **Media:** Click "Open File" to load a video (`.mp4`, `.avi`) or image.
+2.  **Load Model:**
+    *   Click "Load Model" and select your `.pt` or `.onnx` file.
+    *   Select the task type (Detection, Segmentation, Pose) if not auto-detected.
+3.  **Tune Parameters:**
+    *   Adjust the **Confidence Threshold** slider (default: 0.50).
+    *   Adjust the **NMS / IoU** slider to reduce overlapping boxes.
+4.  **Start Inference:**
+    *   Click the **Start/Stop** button to toggle processing.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! If you have ideas for new features (e.g., OCR integration, Classification, or specific export formats), feel free to fork the repo.
+
+1.  Fork the Project.
+2.  Create your Feature Branch (`git checkout -b feature/NewFeature`).
+3.  Commit your Changes (`git commit -m 'Add NewFeature'`).
+4.  Push to the Branch (`git push origin feature/NewFeature`).
+5.  Open a Pull Request.
+
+---
+
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+---
+
+## 📬 Contact
+
+Project Link: [https://github.com/turanb28/On-the-Fly-Visual-Intelligence](https://github.com/turanb28/On-the-Fly-Visual-Intelligence)
