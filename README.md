@@ -78,7 +78,6 @@ The project has undergone significant updates to improve performance and usabili
 
 4.  **Download Models**
     Ensure you have your YOLO weights (e.g., `yolov8n.pt`, `yolov8s-seg.pt`) ready.
-    > *Tip: Place your default models in a `models/` folder within the project directory for easier access.*
 
 5.  **Build & Run**
     Press `F5` or click **Start** in Visual Studio.
