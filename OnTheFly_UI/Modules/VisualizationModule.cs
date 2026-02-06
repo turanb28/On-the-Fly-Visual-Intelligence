@@ -1,6 +1,7 @@
 ﻿using Compunet.YoloSharp.Data;
 using Compunet.YoloSharp.Metadata;
 using Emgu.CV;
+using Emgu.CV.Dnn;
 using Emgu.CV.Reg;
 using Emgu.CV.Util;
 using OnTheFly_UI.Modules.DTOs;
@@ -80,9 +81,15 @@ namespace OnTheFly_UI.Modules
         }
 
 
-        private ProcessObject LastProcessObject;
+        private double _index = 0;
 
-        
+        public double Index { get { return _index; } set { _index = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Index)));
+            }
+        }
+
+        private ProcessObject LastProcessObject;
+        public float Confidence { get; set; } = 0.0f;
         public VisualizationModule(ConcurrentQueue<ProcessObject> ProcessingBuffer, YoloMetadata metadata)
         {
             if (ProcessingBuffer == null)
@@ -134,21 +141,27 @@ namespace OnTheFly_UI.Modules
 
                 LastProcessObject = processObject; // Save the last process object for re-showing just for image type requests
 
+                Index = processObject.Index;
 
                 BitmapSource bitmapSource = null;
 
                 var hiddenNames = CurrentResultTable.Where(x => x.IsHidden).Select(x => x.Name).ToHashSet();
 
+                var configuration = new PlotConfiguration
+                {
+                    MinimumConfidence = Confidence,
+                };
+
                 if (processObject.Result == null)
                     bitmapSource = PlotHandler.Plot(processObject.Frame);
                 else if (processObject.Result.GetType() == typeof(YoloResult<Detection>))
-                        bitmapSource = PlotHandler.PlotDetection(processObject.Frame, (YoloResult<Detection>)processObject.Result,hiddenNames: hiddenNames);
+                        bitmapSource = PlotHandler.PlotDetection(processObject.Frame, (YoloResult<Detection>)processObject.Result,configuration: configuration, hiddenNames: hiddenNames);
                 else if (processObject.Result.GetType() == typeof(YoloResult<Segmentation>))
-                    bitmapSource = PlotHandler.PlotSegmentatation(processObject.Frame, (YoloResult<Segmentation>)processObject.Result, hiddenNames: hiddenNames);
+                    bitmapSource = PlotHandler.PlotSegmentatation(processObject.Frame, (YoloResult<Segmentation>)processObject.Result, configuration: configuration, hiddenNames: hiddenNames);
                 else if (processObject.Result.GetType() == typeof(YoloResult<ObbDetection>))
-                    bitmapSource = PlotHandler.PlotObbDetection(processObject.Frame, (YoloResult<ObbDetection>)processObject.Result, hiddenNames: hiddenNames);
+                    bitmapSource = PlotHandler.PlotObbDetection(processObject.Frame, (YoloResult<ObbDetection>)processObject.Result, configuration: configuration, hiddenNames: hiddenNames);
                 else if (processObject.Result.GetType() == typeof(YoloResult<Pose>))
-                    bitmapSource = PlotHandler.PlotPose(processObject.Frame, (YoloResult<Pose>)processObject.Result, hiddenNames: hiddenNames);
+                    bitmapSource = PlotHandler.PlotPose(processObject.Frame, (YoloResult<Pose>)processObject.Result,configuration: configuration, hiddenNames: hiddenNames);
                 else
                     bitmapSource = PlotHandler.Plot(processObject.Frame);
 
@@ -221,7 +234,7 @@ namespace OnTheFly_UI.Modules
 
                     foreach (var item in itemsToAdd)
                         CurrentResultTable.Add(item);
-                },DispatcherPriority.Background);
+                },DispatcherPriority.Render);
             }
 
         }

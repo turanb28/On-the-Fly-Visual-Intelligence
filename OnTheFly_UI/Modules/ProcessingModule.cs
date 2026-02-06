@@ -35,6 +35,14 @@ namespace OnTheFly_UI.Modules
                     }
             }
         public List<string> Names { get; set; } = new List<string>();
+        public float Confidence { get { 
+                if(Model is null)
+                    return 0.0f;
+                
+                return Model.Configuration.Confidence; } 
+            set {
+                if (Model is not null)
+                    Model.Configuration.Confidence = value; } }
         public ObservableCollection<ModelObject> Models { get; set; } = new ObservableCollection<ModelObject>();
   
         public ConcurrentQueue<ProcessObject> PreProcessingBuffer;
@@ -75,15 +83,14 @@ namespace OnTheFly_UI.Modules
                 Configuration = new YoloConfiguration(),
             };
 
-            b.Configuration.Confidence = 0.01f;
+            
 
             Model = new YoloPredictor(model,b);
             Metadata = Model.Metadata;
 
 
-            
 
-            if(ProcessingBuffer == null) // make it first
+            if (ProcessingBuffer == null) // make it first
                 throw new Exception("Processing buffer cannot be null");
 
             PreProcessingBuffer = ProcessingBuffer;
@@ -188,7 +195,7 @@ namespace OnTheFly_UI.Modules
 
                 if (!ret)
                 {
-                    if (!SpinWait.SpinUntil(() => { return PreProcessingBuffer.Count > 0 && !CancellationToken.IsCancellationRequested; }, Timeout)) // Tp keep the thread alive while there is no data
+                    if (!SpinWait.SpinUntil(() => { return PreProcessingBuffer.Count > 0 && !CancellationToken.IsCancellationRequested; }, Timeout)) 
                         break;
                     else
                         continue;
@@ -209,7 +216,6 @@ namespace OnTheFly_UI.Modules
 
 
                 processObject.Request.TaskType = TaskType; // Set the task type for the request
-                //Trace.WriteLine(Thread.CurrentThread.ManagedThreadId.ToString());
 
                 YoloResult? result = null;
 
@@ -240,7 +246,10 @@ namespace OnTheFly_UI.Modules
 
                         result = Model.Detect(processObject.Frame);
                         if (result == null)
+                        {
+                            processObject.Result = null;
                             return;
+                        }
 
                         ((YoloResult<Detection>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => { tempDict[x.Key] = x.Count(); });
                         break;
@@ -282,9 +291,6 @@ namespace OnTheFly_UI.Modules
                     newDict.Add(new ResultTableItem(x, tempDict[x]));
 
                 processObject.Request.ResultTables.Add(newDict);
-
-                //processObject.Request.Result.Add(result); 
-
 
                 processObject.Result = result;
                 PostProcessingBuffer.Enqueue(processObject);

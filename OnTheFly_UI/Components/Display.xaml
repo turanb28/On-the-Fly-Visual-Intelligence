@@ -78,21 +78,58 @@
         </Style>
 
         <converters:DoubleConverter x:Key="doubleConverter"/>
+        <converters:FloatConverter x:Key="floatConverter"/>
         <converters:PleasantStringConverter x:Key="pleasantStringConverter"/>
-       
+        <converters:NumberToString x:Key="NumberToString"/>
 
     </UserControl.Resources>
 
          <Grid x:Name="border"  ClipToBounds="True" MouseMove="main_MouseMove"  MouseWheel="main_MouseWheel" MouseLeftButtonDown="main_MouseLeftButtonDown" MouseLeftButtonUp="border_MouseLeftButtonUp" MouseRightButtonDown="border_MouseRightButtonDown" Width="{Binding ElementName=main, Path=ActualWidth}" Height="{Binding ElementName=main, Path=ActualHeight}" Background="Transparent">
              <Canvas x:Name="objectCanvas" RenderTransformOrigin="0.5,0.5" >
-            <Image  x:Name="displayImage" Width="{Binding ElementName=objectCanvas, Path=ActualWidth}" Height="{Binding ElementName=objectCanvas, Path=ActualHeight}"  Source="{Binding ElementName=main, Path=Source, UpdateSourceTrigger=PropertyChanged}" Canvas.Top="0" Canvas.Left="0" ></Image>
-        </Canvas>
-             
-             
-        <ListBox Name="resultTableListbox"  VerticalAlignment="Top" HorizontalAlignment="Left" ItemContainerStyle="{StaticResource styleListBoxItem}"
-                 BorderThickness="0"   Margin="5" Style="{StaticResource ResultTableListBoxStyle}"  Background="{StaticResource Foreground_Light}"
-                 ItemsSource="{Binding ElementName=main, Path=ResultTable}">
-     
+                <Image  x:Name="displayImage" Width="{Binding ElementName=objectCanvas, Path=ActualWidth}" Height="{Binding ElementName=objectCanvas, Path=ActualHeight}"  Source="{Binding ElementName=main, Path=Source, UpdateSourceTrigger=PropertyChanged}" Canvas.Top="0" Canvas.Left="0" ></Image>
+            </Canvas>
+
+                <Grid x:Name="sliderGrid"  Height="{Binding ElementName=border, Path=ActualHeight, Converter={StaticResource doubleConverter},ConverterParameter=0.05}"  Background="{DynamicResource Foreground_Light}" 
+                    Width="{Binding ElementName=border, Path=ActualWidth, Converter={StaticResource doubleConverter},ConverterParameter=0.3}"  VerticalAlignment="Top"  HorizontalAlignment="Right">
+
+                    <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+                    <TextBlock VerticalAlignment="Center" Text="Confidence" Grid.Column="0" HorizontalAlignment="Center"  Margin="5" Foreground="White"></TextBlock>
+                    <Slider x:Name="confidenceSlider" Grid.Column="1" VerticalAlignment="Center" Minimum="0" Maximum="100" ValueChanged="confidenceSlider_ValueChanged"></Slider>
+                    <TextBlock Grid.Column="2" Text="{Binding ElementName=confidenceSlider, Path=Value,Converter={StaticResource NumberToString }}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Margin="5"></TextBlock>
+
+                    <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Opacity" Value="0.4"></Setter>
+                    <Style.Triggers>
+                        <EventTrigger RoutedEvent="Grid.MouseEnter">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.1" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="Grid.MouseLeave">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.4" Duration="0:0:0.1" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+                
+                </Grid>
+
+
+            <ListBox x:Name="resultTableListbox"   ItemContainerStyle="{StaticResource styleListBoxItem}" SizeChanged="resultTableListbox_SizeChanged"
+                BorderThickness="0"  Style="{StaticResource ResultTableListBoxStyle}"  Background="{StaticResource Foreground_Light}"
+                ItemsSource="{Binding ElementName=main, Path=ResultTable}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5">
+
             <ListBox.ItemTemplate>
                 <DataTemplate >
 
@@ -106,7 +143,7 @@
                         <TextBlock Grid.Column="1" Text="{Binding Count,UpdateSourceTrigger=PropertyChanged}"  TextAlignment="Center"  Style="{StaticResource listitemTextBlock}" />
 
                         <Button Grid.Column="2" VerticalAlignment="Center" Click="Button_Click"  
-                                Width="{Binding ElementName=border, Path=ActualWidth, Converter={StaticResource doubleConverter},ConverterParameter=0.015}" Height="{Binding ElementName=border, Path=ActualWidth, Converter={StaticResource doubleConverter},ConverterParameter=0.015}" >
+                            Width="{Binding ElementName=border, Path=ActualWidth, Converter={StaticResource doubleConverter},ConverterParameter=0.015}" Height="{Binding ElementName=border, Path=ActualWidth, Converter={StaticResource doubleConverter},ConverterParameter=0.015}" >
 
                             <Button.Style>
                                 <Style TargetType="Button">
@@ -149,9 +186,9 @@
                                     </Setter>
                                 </Style>
                             </Button.Style>
-                            
-                            
-                            
+
+
+
                         </Button>
                     </Grid>
                 </DataTemplate>
@@ -159,6 +196,9 @@
 
         </ListBox>
 
+             
+            
+             
         </Grid>
 
     <!--<CombinedGeometry>

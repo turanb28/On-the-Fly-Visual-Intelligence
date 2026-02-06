@@ -22,7 +22,7 @@ namespace OnTheFly_UI.Modules.Handlers
     public static class PlotHandler
     {
 
-        public static BitmapSource PlotDetection(byte[] frame, YoloResult<Detection> result,PlotConfiguration? configuration = null,HashSet<string> hiddenNames = null)
+        public static BitmapSource PlotDetection(byte[] frame, YoloResult<Detection> result,PlotConfiguration? configuration = null, HashSet<string>? hiddenNames = null)
         {
             if(result == null)
                 return BitmapConvertHandler.FromByteArray(frame);
@@ -33,7 +33,7 @@ namespace OnTheFly_UI.Modules.Handlers
                 return PlotDetection(bitmap, result,configuration,hiddenNames);
             }
         }
-        public static BitmapSource PlotDetection(Bitmap frame, YoloResult<Detection> result, PlotConfiguration? configuration = null, HashSet<string> hiddenNames = null)
+        public static BitmapSource PlotDetection(Bitmap frame, YoloResult<Detection> result, PlotConfiguration? configuration = null, HashSet<string>? hiddenNames=null)
         {
             if (result.Count == 0)
                 return BitmapConvertHandler.ToBitmapSourceFast(frame);
@@ -52,7 +52,7 @@ namespace OnTheFly_UI.Modules.Handlers
 
             foreach (var obj in result)
             {
-                if (hiddenNames != null && hiddenNames.Contains(obj.Name.Name))
+                if ((hiddenNames is not null && hiddenNames.Contains(obj.Name.Name)) || (obj.Confidence < configuration.MinimumConfidence))
                     continue;
 
                 rect.Width  = obj.Bounds.Width;
@@ -62,7 +62,6 @@ namespace OnTheFly_UI.Modules.Handlers
 
                 string text = $"{obj.Name.Name} %{Math.Round(obj.Confidence * 100, 1)}";
 
-
                 DrawDetectionRectangle(frame, rect, text, configuration.ObjectColors[obj.Name.Id], configuration.Font, configuration.FontColor, ratio);
 
             }
@@ -71,7 +70,7 @@ namespace OnTheFly_UI.Modules.Handlers
             return bitmapSource;
         }
 
-        public static BitmapSource PlotObbDetection(byte[] frame, YoloResult<ObbDetection> result, PlotConfiguration? configuration = null, HashSet<string> hiddenNames = null)
+        public static BitmapSource PlotObbDetection(byte[] frame, YoloResult<ObbDetection> result, PlotConfiguration? configuration = null, HashSet<string>? hiddenNames = null)
         {
             if (result == null)
                 return BitmapConvertHandler.FromByteArray(frame);
@@ -83,7 +82,7 @@ namespace OnTheFly_UI.Modules.Handlers
             }
         }
 
-        public static BitmapSource PlotObbDetection(Bitmap frame, YoloResult<ObbDetection> result, PlotConfiguration? configuration = null, HashSet<string> hiddenNames = null)
+        public static BitmapSource PlotObbDetection(Bitmap frame, YoloResult<ObbDetection> result, PlotConfiguration? configuration = null, HashSet<string>? hiddenNames = null)
         {
             if (result.Count == 0)
                 return BitmapConvertHandler.ToBitmapSourceFast(frame);
@@ -100,7 +99,7 @@ namespace OnTheFly_UI.Modules.Handlers
 
             foreach (var obj in result)
             {
-                if (hiddenNames != null && hiddenNames.Contains(obj.Name.Name))
+                if ((hiddenNames is not null && hiddenNames.Contains(obj.Name.Name)) || (obj.Confidence < configuration.MinimumConfidence))
                     continue;
               
 
@@ -124,7 +123,7 @@ namespace OnTheFly_UI.Modules.Handlers
         }
 
 
-        public static BitmapSource PlotSegmentatation(byte[] frame, YoloResult<Segmentation> result, PlotConfiguration? configuration = null, double alpha = 0.3, HashSet<string> hiddenNames = null)
+        public static BitmapSource PlotSegmentatation(byte[] frame, YoloResult<Segmentation> result, PlotConfiguration? configuration = null, double alpha = 0.3, HashSet<string>? hiddenNames = null)
         {
             if (result == null)
                 return BitmapConvertHandler.FromByteArray(frame);
@@ -135,7 +134,7 @@ namespace OnTheFly_UI.Modules.Handlers
                 return PlotSegmentatation(bitmap, result, configuration, alpha, hiddenNames);
             }
         }
-        public static BitmapSource PlotSegmentatation(Bitmap frame, YoloResult<Segmentation> result, PlotConfiguration? configuration = null,double alpha = 0.3, HashSet<string> hiddenNames = null)
+        public static BitmapSource PlotSegmentatation(Bitmap frame, YoloResult<Segmentation> result, PlotConfiguration? configuration = null,double alpha = 0.3, HashSet<string>? hiddenNames = null)
         {
             var sw = new Stopwatch();
             sw.Restart();
@@ -164,16 +163,12 @@ namespace OnTheFly_UI.Modules.Handlers
                 bitmapData = frame.LockBits(frameRect, System.Drawing.Imaging.ImageLockMode.ReadWrite, frame.PixelFormat);
 
 
-                if (hiddenNames != null && hiddenNames.Contains(obj.Name.Name))
+                if ((hiddenNames is not null && hiddenNames.Contains(obj.Name.Name)) || (obj.Confidence < configuration.MinimumConfidence))
                 { 
                     frame.UnlockBits(bitmapData);
                     continue;
                 }
-                if (obj.Confidence < configuration.MinimumConfidence)
-                {
-                    frame.UnlockBits(bitmapData);
-                    continue;
-                }
+              
 
                 if (obj.Name.Id > configuration.ObjectColors.Count)
                     pen.Color = System.Drawing.Color.Gray;
@@ -226,7 +221,7 @@ namespace OnTheFly_UI.Modules.Handlers
 
         }
 
-        public static BitmapSource PlotPose(byte[] frame, YoloResult<Pose> result, PlotConfiguration? configuration = null, HashSet<string> hiddenNames = null)
+        public static BitmapSource PlotPose(byte[] frame, YoloResult<Pose> result, PlotConfiguration? configuration = null, HashSet<string>? hiddenNames = null)
         {
             if (result == null)
                 return BitmapConvertHandler.FromByteArray(frame);
@@ -238,7 +233,7 @@ namespace OnTheFly_UI.Modules.Handlers
             }
         }
 
-        public static BitmapSource PlotPose(Bitmap frame, YoloResult<Pose> result, PlotConfiguration? configuration = null, HashSet<string> hiddenNames = null) // Make it adaptive
+        public static BitmapSource PlotPose(Bitmap frame, YoloResult<Pose> result, PlotConfiguration? configuration = null, HashSet<string>? hiddenNames = null) // Make it adaptive
 
         { 
             // YOLO11 pose models use the -pose suffix, i.e. yolo11n-pose.pt.
@@ -269,7 +264,7 @@ namespace OnTheFly_UI.Modules.Handlers
 
             foreach (var obj in result)
             {
-                if (hiddenNames != null && hiddenNames.Contains(obj.Name.Name))
+                if ((hiddenNames is not null && hiddenNames.Contains(obj.Name.Name)) || (obj.Confidence < configuration.MinimumConfidence))
                     continue;
 
                 var keypoints = obj;

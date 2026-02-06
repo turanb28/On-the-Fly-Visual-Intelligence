@@ -12,8 +12,8 @@ namespace OnTheFly_UI.Components.Converters
 {
     public class SlidebarDataTemplateSelector : DataTemplateSelector
     {
-        public   DataTemplate ImageTemplate { get; set; }
-        public  DataTemplate VideoTemplate { get; set; }
+        public required DataTemplate ImageTemplate { get; set; }
+        public required DataTemplate VideoTemplate { get; set; }
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
             var request = item as RequestObject;

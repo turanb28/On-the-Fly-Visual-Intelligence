@@ -63,9 +63,9 @@
         </DataTemplate>
 
         <DataTemplate x:Key="imgTemplate"  DataType="dto:RequestObject" >
-                <Image x:Name="image" Canvas.Left="0" Canvas.Top="0" Source="{Binding ., Converter={StaticResource previewConverter}}" Height="{Binding ElementName=canvas, Path=ActualHeight}"></Image>
+                <Image x:Name="image" Source="{Binding ., Converter={StaticResource previewConverter}}" ></Image>
         </DataTemplate>
-
+        <!-- Canvas.Left="0" Canvas.Top="0"   Height="{Binding ElementName=canvas, Path=ActualHeight}"-->
         <converters:SlidebarDataTemplateSelector x:Key="slidebarDataTemplateSelector" ImageTemplate="{StaticResource imgTemplate}" VideoTemplate="{StaticResource videoTemplate}"/>
 
 

@@ -31,13 +31,13 @@ namespace OnTheFly_UI.Components
     /// <summary>
     /// Interaction logic for Display.xaml
     /// </summary>
-    public partial class Display : UserControl
+    public partial class Display : UserControl, INotifyPropertyChanged
     {
 
         public delegate void DisplayUserInteractionHandler();
 
         public event DisplayUserInteractionHandler DisplayUserInteraction;
-
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private TransformGroup displayImageTransformGroup = new TransformGroup();
         private TranslateTransform displayImageTranslateTransform = new TranslateTransform();
@@ -73,6 +73,28 @@ namespace OnTheFly_UI.Components
         public static readonly DependencyProperty ResultTableProperty =
             DependencyProperty.Register("ResultTable", typeof(ObservableCollection<ResultTableItem>), typeof(Display));
 
+        //private double _confidence = 0.0;
+        //public double Confidence { get { return _confidence; } set { _confidence = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Confidence))); } }
+
+
+
+
+        public float Confidence
+        {
+            get { return (float)GetValue(ConfidenceProperty) / 100; }
+            set { 
+
+                SetValue(ConfidenceProperty, value);
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Confidence)));
+            }
+        }
+
+        // Using a DependencyProperty as the backing store for Confidence.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ConfidenceProperty =
+            DependencyProperty.Register("Confidence", typeof(float), typeof(Display));
+
+
+
 
         public Display()
         {
@@ -84,7 +106,7 @@ namespace OnTheFly_UI.Components
 
         private void main_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.Source.GetType() == typeof(ListBox) )
+            if (((FrameworkElement)e.Source).Name != "border")
                 return;
 
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -112,8 +134,7 @@ namespace OnTheFly_UI.Components
 
         private void main_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-
-            if (e.Source.GetType() == typeof(ListBox))
+            if (((FrameworkElement)e.Source).Name != "border")
                 return;
 
             var pos = e.GetPosition(border);
@@ -181,8 +202,6 @@ namespace OnTheFly_UI.Components
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            // Add change action
-
             var button = sender as Button;
 
             var item = button.DataContext;
@@ -198,6 +217,21 @@ namespace OnTheFly_UI.Components
             DisplayUserInteraction?.Invoke();
 
 
+        }
+
+        private void confidenceSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Confidence = (float)confidenceSlider.Value / 100;
+            DisplayUserInteraction?.Invoke();
+        }
+
+        private void resultTableListbox_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if(resultTableListbox.ActualWidth <= 5)
+                sliderGrid.Visibility = Visibility.Hidden;
+            else
+                sliderGrid.Visibility = Visibility.Visible;
+          
         }
     }
 }

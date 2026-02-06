@@ -115,7 +115,7 @@ namespace OnTheFly_UI.Components
                     return result;
                 }
             }
-            return null;
+            return new DependencyObject();
         }
     }
 }

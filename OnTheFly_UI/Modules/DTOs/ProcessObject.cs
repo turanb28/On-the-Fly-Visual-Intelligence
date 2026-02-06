@@ -12,13 +12,12 @@ namespace OnTheFly_UI.Modules.DTOs
 {
     public sealed class ProcessObject
     {
-        public byte[] Frame { get; set; } = null;
+        public byte[] Frame { get; set; } = [0];
         public int Index { get; set; } = 0;
         public string ModelName { get; set; } = string.Empty;
-        public RequestTaskType Task { get => Request.TaskType; }// Think making it a new class to obtain more information about the task
-        public RequestObject Request { get; set; }
-        public YoloResult Result { get; set; } = null; // make it a new class to obtain more information about the result and add them processing modeule.
-        //public List<ResultTableItem> ResultTable { get; set; } = new List<ResultTableItem>();   
+        public RequestTaskType Task { get => Request.TaskType; }
+        public RequestObject Request { get; set; } = new RequestObject();
+        public YoloResult? Result { get; set; } = null; 
         public ProcessObject() { }
         public ProcessObject(byte[] frame)
         {

@@ -37,7 +37,6 @@ namespace OnTheFly_UI.Modules.DTOs
         public int FrameCount { get; set; } = 1;
 
         private double _videoPosition = 0;
-
         public double VideoPosition
         {
             get { return _videoPosition; }
@@ -46,6 +45,7 @@ namespace OnTheFly_UI.Modules.DTOs
                 _videoPosition = value;
             }
         }
+
         private RequestTaskType _taskType = RequestTaskType.None;
         public RequestTaskType TaskType { get { return _taskType; } 
                                           set { 

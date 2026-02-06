@@ -55,11 +55,9 @@ namespace OnTheFly_UI
             {
                 UIMessageBox.Show($"{m} is unloaded");
             };
-            ProcessingModule.ProcessingException += (e) => { UIMessageBox.Show(e, UIMessageBox.InformationType.Error); };
             Display.DisplayUserInteraction += VisualizationModule.InteractionEventHnadler;
 
             sidebar.Values = DataAcquisitionModule.Requests;
-
 
 
 
@@ -132,18 +130,30 @@ namespace OnTheFly_UI
         {
             CancellationTokenSource.Cancel();
             CancellationTokenSource = new CancellationTokenSource();
+            DataAcquisitionModule.PreprocessingBuffer.Clear();
+            ProcessingModule.PostProcessingBuffer.Clear();
             VisualizationModule.PostProcessingBuffer.Clear();
 
-            var index = DataAcquisitionModule.Requests.IndexOf(e.AddedItems[0] as RequestObject);
+          
+            var request = e.AddedItems[0] as RequestObject;
+
+            if (request == null)
+                return;
+
+            var index = DataAcquisitionModule.Requests.IndexOf(request);
             if (index < 0)
                 return;
             var a = DataAcquisitionModule.Requests[index];
             if (a.SourceType == Modules.Enums.RequestSourceType.Video) /// Make it better
             {
-                videoProgessBar.Visibility = Visibility.Visible;  
+                videoProgessBar.Visibility = Visibility.Visible;
+                videoDurationProgessBar.Visibility = Visibility.Visible;
             }
             else
+            {
                 videoProgessBar.Visibility = Visibility.Hidden;
+                videoDurationProgessBar.Visibility = Visibility.Hidden;
+            }    
 
             DataAcquisitionModule.RequestWithID(a.Id);
 
@@ -156,7 +166,7 @@ namespace OnTheFly_UI
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.Source is Display)
+            if ((e.Source is Display) || (e.Source is ProgressBar))
                 return;
 
             if (e.ChangedButton == MouseButton.Left)
@@ -175,7 +185,15 @@ namespace OnTheFly_UI
 
         private void MenuItem_Checked(object sender, RoutedEventArgs e)
         {
+
+            if (sender is not MenuItem)
+                return;
+
             var modelPath = ((MenuItem)sender).ToolTip.ToString();
+
+
+            if (string.IsNullOrEmpty(modelPath))
+                return;
 
             var model = ProcessingModule.GetModel(modelPath);
 
@@ -202,6 +220,6 @@ namespace OnTheFly_UI
 
         }
 
-        
+       
     }
 }

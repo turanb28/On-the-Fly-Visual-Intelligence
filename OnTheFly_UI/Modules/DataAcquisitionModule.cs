@@ -31,7 +31,7 @@ namespace OnTheFly_UI.Modules
         
         private ConcurrentQueue<Guid> RequestQueue = new ConcurrentQueue<Guid>();
 
-        public int BufferLimit = 50;
+        public int BufferLimit = 5;
         public CancellationTokenSource CancellationTokenSource { get; set; } = new CancellationTokenSource();
         public DataAcquisitionModule() { }
         bool IsInterrupt = false;
@@ -195,7 +195,10 @@ namespace OnTheFly_UI.Modules
                 while (capture.IsOpened)
                 {
                     if (CancellationTokenSource.IsCancellationRequested)
+                    {
+                        PreprocessingBuffer.Clear();
                         return;
+                    }
 
                     if (IsInterrupt)
                         break;
