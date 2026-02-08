@@ -35,14 +35,6 @@ namespace OnTheFly_UI.Modules
                     }
             }
         public List<string> Names { get; set; } = new List<string>();
-        public float Confidence { get { 
-                if(Model is null)
-                    return 0.0f;
-                
-                return Model.Configuration.Confidence; } 
-            set {
-                if (Model is not null)
-                    Model.Configuration.Confidence = value; } }
         public ObservableCollection<ModelObject> Models { get; set; } = new ObservableCollection<ModelObject>();
   
         public ConcurrentQueue<ProcessObject> PreProcessingBuffer;

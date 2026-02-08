@@ -105,7 +105,6 @@ namespace OnTheFly_UI
             if (string.IsNullOrEmpty(link))
                 return;
 
-            // https://www.pexels.com/download/video/35217602/ 
             DataAcquisitionModule.RequestStream(link);
         }
 
@@ -144,7 +143,7 @@ namespace OnTheFly_UI
             if (index < 0)
                 return;
             var a = DataAcquisitionModule.Requests[index];
-            if (a.SourceType == Modules.Enums.RequestSourceType.Video) /// Make it better
+            if (a.SourceType == Modules.Enums.RequestSourceType.Video) 
             {
                 videoProgessBar.Visibility = Visibility.Visible;
                 videoDurationProgessBar.Visibility = Visibility.Visible;

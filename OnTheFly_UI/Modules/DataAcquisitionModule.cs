@@ -20,10 +20,10 @@ namespace OnTheFly_UI.Modules
 {
     public class DataAcquisitionModule
     {
-        public delegate void DataFlowtHandler();
+        public delegate void DataFlowHandler();
         public TimeSpan Timeout = TimeSpan.FromMilliseconds(2000);
 
-        public DataFlowtHandler? DataAcquired;
+        public DataFlowHandler? DataAcquired;
 
         public ConcurrentQueue<ProcessObject> PreprocessingBuffer = new ConcurrentQueue<ProcessObject>();
 
@@ -231,12 +231,6 @@ namespace OnTheFly_UI.Modules
             var ppo = new ProcessObject(frame);
             ppo.Request = requestObject;
             ppo.Index = index;
-            //if(result != null)
-            //    ppo.Result = result;
-
-            //if((requestObject.SourceType == RequestSourceType.Stream) && (PreprocessingBuffer.Count >= BufferLimit))
-            //    PreprocessingBuffer.TryDequeue(out var discard);
-
 
             SpinWait.SpinUntil(() => { 
                 return PreprocessingBuffer.Count < BufferLimit; 

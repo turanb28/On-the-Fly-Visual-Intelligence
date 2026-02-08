@@ -17,7 +17,6 @@ namespace OnTheFly_UI.Components.Converters
 
             return (float)value;
 
-            //return Binding.DoNothing; // Ensures safe failure instead of throwing an exception.
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
