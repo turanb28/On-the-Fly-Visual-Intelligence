@@ -18,6 +18,9 @@ namespace OnTheFly_UI.Components.Converters
         {
             var request = item as RequestObject;
 
+            if (request is null)
+                return ImageTemplate;
+
             return request.SourceType == RequestSourceType.Image ? ImageTemplate : VideoTemplate;
         }   
     }

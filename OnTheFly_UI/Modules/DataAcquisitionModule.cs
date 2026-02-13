@@ -134,7 +134,7 @@ namespace OnTheFly_UI.Modules
                     break;
 
                 
-                RequestObject requestObject = new RequestObject();
+                RequestObject? requestObject = new RequestObject();
 
                 var ret = NextItem(out requestObject);
 
@@ -144,6 +144,10 @@ namespace OnTheFly_UI.Modules
                         break;
                 }
                 IsInterrupt = false;
+
+                if (requestObject == null)
+                    continue;
+
                 switch (requestObject.SourceType)
                 {
                     case RequestSourceType.Image:
@@ -159,7 +163,7 @@ namespace OnTheFly_UI.Modules
                         break;
 
                     default:
-                        throw new NotSupportedException();
+                        continue;
                 }
             }
         }

@@ -34,11 +34,11 @@ namespace OnTheFly_UI.Modules
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public TimeSpan Timeout = TimeSpan.FromMilliseconds(20000); //Change messagebox it is block tihs thread
+        public TimeSpan Timeout = TimeSpan.FromMilliseconds(200);
 
-        public YoloMetadata Metadata = null;
+        public required YoloMetadata? Metadata = null;
         
-        public ConcurrentQueue<ProcessObject> PostProcessingBuffer;
+        public required ConcurrentQueue<ProcessObject> PostProcessingBuffer;
 
         private ObservableCollection<ResultTableItem> _CurrentResultTable = new ObservableCollection<ResultTableItem>();
 
@@ -52,8 +52,8 @@ namespace OnTheFly_UI.Modules
             }
         }
 
-        private BitmapSource _currentImage = null;
-        public BitmapSource CurrentImage
+        private BitmapSource? _currentImage = null;
+        public BitmapSource? CurrentImage
         {
             get => _currentImage;
             set
@@ -66,7 +66,7 @@ namespace OnTheFly_UI.Modules
             }
         }
 
-        private RequestObject _currentRequest = null;
+        private RequestObject _currentRequest = new RequestObject();
         public RequestObject CurrentRequest
         {
             get => _currentRequest;
@@ -80,7 +80,6 @@ namespace OnTheFly_UI.Modules
             }
         }
 
-
         private double _index = 0;
 
         public double Index { get { return _index; } set { _index = value;
@@ -88,17 +87,12 @@ namespace OnTheFly_UI.Modules
             }
         }
 
-        private ProcessObject LastProcessObject;
+        private ProcessObject? LastProcessObject=null;
         public float Confidence { get; set; } = 0.0f;
-        public VisualizationModule(ConcurrentQueue<ProcessObject> ProcessingBuffer, YoloMetadata metadata)
+        public VisualizationModule()
         {
-            if (ProcessingBuffer == null)
-                throw new Exception("Processing buffer cannot be null");
-            PostProcessingBuffer = ProcessingBuffer;
-            
-            Metadata = metadata;
-        }
 
+        }
 
         bool isThreadAlive = false;
         
@@ -119,7 +113,7 @@ namespace OnTheFly_UI.Modules
         private void Plot()
         {
             var sw = new Stopwatch();
-            ProcessObject processObject = new ProcessObject();
+            ProcessObject? processObject = new ProcessObject();
             var ret = true;
             while (true)
             {
@@ -136,6 +130,10 @@ namespace OnTheFly_UI.Modules
                     else
                         continue;
                 }
+
+                if(processObject == null)
+                    continue;
+
                 CurrentRequest = processObject.Request;
 
 
@@ -143,7 +141,7 @@ namespace OnTheFly_UI.Modules
 
                 Index = processObject.Index;
 
-                BitmapSource bitmapSource = null;
+                BitmapSource? bitmapSource = null;
 
                 var hiddenNames = CurrentResultTable.Where(x => x.IsHidden).Select(x => x.Name).ToHashSet();
 
@@ -189,6 +187,9 @@ namespace OnTheFly_UI.Modules
 
         public void InteractionEventHnadler()
         {
+            if (LastProcessObject == null)
+                return;
+
             if (LastProcessObject.Request.SourceType != RequestSourceType.Image)
                 return;
 

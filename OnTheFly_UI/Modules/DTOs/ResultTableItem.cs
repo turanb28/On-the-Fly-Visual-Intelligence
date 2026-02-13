@@ -55,7 +55,7 @@ namespace OnTheFly_UI.Modules.DTOs
             return new ResultTableItem() { Name = dt };
         }
 
-        protected void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
+        protected void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

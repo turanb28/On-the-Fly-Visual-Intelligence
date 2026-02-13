@@ -27,33 +27,35 @@ namespace OnTheFly_UI.Components
         {
             get 
             {
-                var index = -1;
-                Dispatcher.BeginInvoke(() => 
-                {
-                    index = listBox.SelectedIndex;
-                }).Wait();
-                return index;
+                //var index = -1;
+                //Dispatcher.BeginInvoke(() => 
+                //{
+                //    index = listBox.SelectedIndex;
+                //}).Wait();
+                //return index;
+                
+                return (int)Dispatcher.Invoke(() => listBox.SelectedIndex);
             }
         }
 
-        private ObservableCollection<RequestObject> _values;
+        private ObservableCollection<RequestObject> _objects = new ObservableCollection<RequestObject>();
 
-        public ObservableCollection<RequestObject> Values
+        public ObservableCollection<RequestObject> Objects
         {
-            get => _values;
+            get => _objects;
             set
             {
-                if (_values != null)
-                    _values.CollectionChanged -= Value_CollectionChanged;
-                _values = value;
-                if (_values != null)
-                    _values.CollectionChanged += Value_CollectionChanged;
+                if (_objects != null)
+                    _objects.CollectionChanged -= Objects_CollectionChanged;
+                _objects = value;
+                if (_objects != null)
+                    _objects.CollectionChanged += Objects_CollectionChanged;
             }
         }
 
-        private void Value_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        private void Objects_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
-            listBox.Dispatcher.BeginInvoke(   /// Configurate this part
+            listBox.Dispatcher.BeginInvoke(
             new Action(
                 () =>
                 {
@@ -64,7 +66,7 @@ namespace OnTheFly_UI.Components
                         );
         }
 
-        public event SelectionChangedEventHandler SelectionChanged;
+        public event SelectionChangedEventHandler? SelectionChanged;
         public SlideList()
         {
             InitializeComponent();
@@ -97,7 +99,7 @@ namespace OnTheFly_UI.Components
             
         }
 
-        public static DependencyObject GetScrollViewer(DependencyObject o)
+        public static DependencyObject? GetScrollViewer(DependencyObject o)
         {
             // Return the DependencyObject if it is a ScrollViewer
             if (o is ScrollViewer)
@@ -115,7 +117,7 @@ namespace OnTheFly_UI.Components
                     return result;
                 }
             }
-            return new DependencyObject();
+            return null;
         }
     }
 }

@@ -15,18 +15,16 @@ namespace OnTheFly_UI.Components.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value.GetType() != typeof(string))
-                throw new InvalidCastException();
+                return string.Empty;
 
 
             string text = (string)value;
-
 
             string[] text_parts = text.Split(_splitters);
 
             int spaceCount = text_parts.Length - 1;
 
             string[] new_parts = new string[text_parts.Length + spaceCount]; // text_parts.Length - 1 for seperation with space
-
 
             string new_part = string.Empty;
             int index = 0;

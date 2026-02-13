@@ -21,9 +21,9 @@ namespace OnTheFly_UI.Modules
 {
     public class ProcessingModule
     {
-        public YoloPredictor Model = null;
+        public YoloPredictor? Model = null;
         public TimeSpan Timeout = TimeSpan.FromMilliseconds(20000);
-        public YoloMetadata Metadata;
+        public YoloMetadata? Metadata;
         public int BufferLimit = 5;
         public CancellationToken CancellationToken;
         public RequestTaskType TaskType { 
@@ -37,7 +37,7 @@ namespace OnTheFly_UI.Modules
         public List<string> Names { get; set; } = new List<string>();
         public ObservableCollection<ModelObject> Models { get; set; } = new ObservableCollection<ModelObject>();
   
-        public ConcurrentQueue<ProcessObject> PreProcessingBuffer;
+        public required ConcurrentQueue<ProcessObject> PreProcessingBuffer;
 
         public ConcurrentQueue<ProcessObject> PostProcessingBuffer = new ConcurrentQueue<ProcessObject>();
 
@@ -53,40 +53,9 @@ namespace OnTheFly_UI.Modules
 
         #endregion
 
-        public ProcessingModule( ConcurrentQueue<ProcessObject> ProcessingBuffer)
+        public ProcessingModule( )
         {
-           
-            if (ProcessingBuffer == null)
-                throw new Exception("Processing buffer cannot be null");
 
-            PreProcessingBuffer = ProcessingBuffer;
-           
-           
-        }
-
-        public ProcessingModule(string model, ConcurrentQueue<ProcessObject> ProcessingBuffer) 
-        {
-            if (!File.Exists(model))
-                throw new Exception($"The model, {model}, does not exist.");
-
-
-            var b = new YoloPredictorOptions()
-            {
-                Configuration = new YoloConfiguration(),
-            };
-
-            
-
-            Model = new YoloPredictor(model,b);
-            Metadata = Model.Metadata;
-
-
-
-            if (ProcessingBuffer == null) // make it first
-                throw new Exception("Processing buffer cannot be null");
-
-            PreProcessingBuffer = ProcessingBuffer;
-        
         }
 
         public void AddModel(string model)
@@ -155,11 +124,6 @@ namespace OnTheFly_UI.Modules
         bool isThreadAlive = false;
         public void StartProcess()
         {
-            //if(Model == null)
-            //{
-            //    return;
-            //}
-
             if (!isThreadAlive)
             {
                 isThreadAlive = true;
@@ -170,7 +134,7 @@ namespace OnTheFly_UI.Modules
 
         private void Process()
         {
-            ProcessObject processObject;
+            ProcessObject? processObject;
             var sw = new Stopwatch();
             var lastWarnedId = Guid.Empty;
 
@@ -184,6 +148,9 @@ namespace OnTheFly_UI.Modules
                     break;
 
                 var ret = PreProcessingBuffer.TryDequeue(out processObject);
+
+                if(processObject is null)
+                    continue;
 
                 if (!ret)
                 {

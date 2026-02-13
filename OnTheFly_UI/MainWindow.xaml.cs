@@ -41,8 +41,13 @@ namespace OnTheFly_UI
 
             this.DataContext = this;
             DataAcquisitionModule = new DataAcquisitionModule();
-            ProcessingModule = new ProcessingModule(DataAcquisitionModule.PreprocessingBuffer);
-            VisualizationModule = new VisualizationModule(ProcessingModule.PostProcessingBuffer, ProcessingModule.Metadata);
+            ProcessingModule = new ProcessingModule()
+            {
+                PreProcessingBuffer = DataAcquisitionModule.PreprocessingBuffer
+            };
+            VisualizationModule = new VisualizationModule() {
+                PostProcessingBuffer= ProcessingModule.PostProcessingBuffer, 
+                Metadata= ProcessingModule.Metadata };
 
             DataAcquisitionModule.DataAcquired += () => { ProcessingModule.StartProcess(); VisualizationModule.StartProcess(); }; 
             ProcessingModule.ModelLoaded += (string m) => { 
@@ -57,7 +62,7 @@ namespace OnTheFly_UI
             };
             Display.DisplayUserInteraction += VisualizationModule.InteractionEventHnadler;
 
-            sidebar.Values = DataAcquisitionModule.Requests;
+            sidebar.Objects = DataAcquisitionModule.Requests;
 
 
 

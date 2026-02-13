@@ -22,10 +22,13 @@ namespace OnTheFly_UI.Components.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is not RequestObject)
-                return 0;
+            if ((value is not RequestObject) )
+                return new BitmapImage();
             
             var requestObject = value as RequestObject;
+
+            if ( requestObject == null )
+                return new BitmapImage();
 
             if (requestObject.SourceType == RequestSourceType.Image)
                 return BitmapConvertHandler.ToBitmapSourceFast(new Bitmap(requestObject.Source));

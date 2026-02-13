@@ -23,14 +23,12 @@ namespace OnTheFly_UI.Modules.DTOs
             get { return _previewImage; }
             set
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PreviewImage)));
                 _previewImage = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PreviewImage)));
             }
         }
 
         public List<List<ResultTableItem>> ResultTables { get; set; } = new List<List<ResultTableItem>>();
-
-
         public Guid Id { get; private set; } = Guid.NewGuid();
         public string Source {  get; set; } = string.Empty;
         public int FPS { get; set; } = int.MaxValue; 
@@ -41,8 +39,8 @@ namespace OnTheFly_UI.Modules.DTOs
         {
             get { return _videoPosition; }
             set { 
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(VideoPosition)));
                 _videoPosition = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(VideoPosition)));
             }
         }
 
@@ -51,10 +49,13 @@ namespace OnTheFly_UI.Modules.DTOs
                                           set { 
                                                 if((Result != null) && (_taskType != value))
                                                     Result.Clear();
-                                                _taskType = value; } 
-                                         }
+                                                _taskType = value;
+                                                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TaskType)));
+
+                                                }
+                                            }
         public RequestSourceType SourceType {  get; set; } = RequestSourceType.None;
-        public List<YoloResult> Result { get; set; } = new  List<YoloResult>(); // Think of making it Span in case of peak memory while adding new items
+        public List<YoloResult> Result { get; set; } = [];
         public RequestObject() { }
         public RequestObject(string source,RequestSourceType sourceType) 
         {

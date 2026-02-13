@@ -36,7 +36,7 @@ namespace OnTheFly_UI.Components
 
         public delegate void DisplayUserInteractionHandler();
 
-        public event DisplayUserInteractionHandler DisplayUserInteraction;
+        public event DisplayUserInteractionHandler? DisplayUserInteraction;
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private TransformGroup displayImageTransformGroup = new TransformGroup();
@@ -134,7 +134,7 @@ namespace OnTheFly_UI.Components
 
         private void main_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (((FrameworkElement)e.Source).Name != "border")
+            if (((FrameworkElement)e.Source).Name != "displayImage")
                 return;
 
             var pos = e.GetPosition(border);
@@ -202,10 +202,14 @@ namespace OnTheFly_UI.Components
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+          
             var button = sender as Button;
 
+            if (button is null)
+                return;
+
             var item = button.DataContext;
-            
+
             var className = item.GetType()?.GetProperty("Name")?.GetValue(item,null)?.ToString();
 
             if (className == null)
