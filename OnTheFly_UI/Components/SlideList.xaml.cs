@@ -27,13 +27,6 @@ namespace OnTheFly_UI.Components
         {
             get 
             {
-                //var index = -1;
-                //Dispatcher.BeginInvoke(() => 
-                //{
-                //    index = listBox.SelectedIndex;
-                //}).Wait();
-                //return index;
-                
                 return (int)Dispatcher.Invoke(() => listBox.SelectedIndex);
             }
         }

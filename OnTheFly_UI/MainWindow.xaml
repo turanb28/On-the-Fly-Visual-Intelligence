@@ -16,7 +16,7 @@
         >
     <Window.Resources>
         <Converter:DoubleConverter x:Key="doubleConverter"></Converter:DoubleConverter>
-        <Converter:NameMultiValueConverter x:Key="multi"></Converter:NameMultiValueConverter>
+        <Converter:FindMiddleValue x:Key="multi"></Converter:FindMiddleValue>
 
 
         <Style  TargetType="Button">

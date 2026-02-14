@@ -3,7 +3,7 @@ using System.Windows.Data;
 
 namespace OnTheFly_UI.Components.Converters
 {
-    public class NameMultiValueConverter : IMultiValueConverter // Change this name.
+    public class FindMiddleValue : IMultiValueConverter // Change this name.
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {

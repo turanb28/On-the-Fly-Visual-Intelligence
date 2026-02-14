@@ -14,7 +14,7 @@
     <UserControl.Resources>
         <converters:DoubleConverter x:Key="doubleConverter"/>
         <converters:PreviewConverter x:Key="previewConverter"/>
-        <converters:NameMultiValueConverter x:Key="multi"/>
+        <converters:FindMiddleValue x:Key="multi"/>
 
         <DataTemplate x:Key="videoTemplate" DataType="dto:RequestObject" >
                 <Canvas Name="canvas" Width="{Binding ElementName=testimage, Path=ActualWidth}" >

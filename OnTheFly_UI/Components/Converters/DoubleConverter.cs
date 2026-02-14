@@ -18,7 +18,7 @@ namespace OnTheFly_UI.Components.Converters
             {
                 return number * factor;
             }
-            return Binding.DoNothing; // Ensures safe failure instead of throwing an exception.
+            return Binding.DoNothing;
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

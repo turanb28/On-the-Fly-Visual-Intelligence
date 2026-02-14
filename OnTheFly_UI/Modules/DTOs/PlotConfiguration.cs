@@ -15,7 +15,7 @@ namespace OnTheFly_UI.Modules.DTOs
             System.Drawing.Color.Purple,         // Pure purple
             System.Drawing.Color.Green,          // Pure green
             System.Drawing.Color.Blue,           // Pure blue
-            System.Drawing.Color.YellowGreen,         // Pure yellow
+            System.Drawing.Color.YellowGreen,    // Pure yellow
             System.Drawing.Color.Cyan,           // Pure cyan
             System.Drawing.Color.Magenta,        // Pure magenta
             System.Drawing.Color.Orange,         // Strong warm orange

@@ -34,7 +34,7 @@ namespace OnTheFly_UI.Modules
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public TimeSpan Timeout = TimeSpan.FromMilliseconds(200);
+        public TimeSpan Timeout = TimeSpan.FromMilliseconds(2000);
 
         public required YoloMetadata? Metadata = null;
         

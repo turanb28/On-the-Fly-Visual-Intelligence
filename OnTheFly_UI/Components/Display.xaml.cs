@@ -54,7 +54,6 @@ namespace OnTheFly_UI.Components
             }
         }
 
-        // Using a DependencyProperty as the backing store for Source.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SourceProperty =
             DependencyProperty.Register("Source", typeof(ImageSource), typeof(Display));
 
@@ -69,13 +68,8 @@ namespace OnTheFly_UI.Components
             }
         }
 
-        // Using a DependencyProperty as the backing store for ResultTable.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ResultTableProperty =
             DependencyProperty.Register("ResultTable", typeof(ObservableCollection<ResultTableItem>), typeof(Display));
-
-        //private double _confidence = 0.0;
-        //public double Confidence { get { return _confidence; } set { _confidence = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Confidence))); } }
-
 
 
 
@@ -89,7 +83,6 @@ namespace OnTheFly_UI.Components
             }
         }
 
-        // Using a DependencyProperty as the backing store for Confidence.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ConfidenceProperty =
             DependencyProperty.Register("Confidence", typeof(float), typeof(Display));
 

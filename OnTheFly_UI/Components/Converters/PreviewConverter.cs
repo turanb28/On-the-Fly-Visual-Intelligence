@@ -24,8 +24,8 @@ namespace OnTheFly_UI.Components.Converters
         {
             if ((value is not RequestObject) )
                 return new BitmapImage();
-            
-            var requestObject = value as RequestObject;
+
+            RequestObject? requestObject = value as RequestObject;
 
             if ( requestObject == null )
                 return new BitmapImage();
