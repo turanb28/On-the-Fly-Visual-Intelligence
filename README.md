@@ -13,9 +13,7 @@
 
 ## 📸 Demo
 
-<img width="1437" height="997" alt="Review" src="https://github.com/user-attachments/assets/0626b283-7914-4a3e-9568-886a731ffee2" />
-
-
+<img width="1439" height="997" alt="Review" src="https://github.com/user-attachments/assets/2a7a8608-dfaa-48e9-bdfe-50f795a2c69c" />
 
 ---
 
@@ -40,14 +38,13 @@ The project has undergone significant updates to improve performance and usabili
 *   **Model Hot-Swapping:** Load custom `.onnx` models instantly without restarting the app.
 *   **Adjustable Thresholds:** Fine-tune **Confidence** and **IoU (Intersection over Union)** sliders in real-time to filter noise.
 *   **Visual Analytics:** View bounding boxes, class labels, and confidence scores overlaid directly on the feed.
-*   **Export Results:** (Optional) Save inference results or snapshots to your local drive.
 
 ---
 
 ## 💻 Tech Stack
 
 *   **Language:** C# (.NET 8.0)
-*   **Framework:** WPF / WinForms (depending on your specific UI implementation)
+*   **Framework:** WPF 
 *   **Computer Vision:** OpenCVSharp, YoloDotNet (or Ultralytics wrappers)
 *   **Acceleration:** CUDA (NVIDIA GPU support recommended)
 
@@ -88,13 +85,12 @@ The project has undergone significant updates to improve performance and usabili
 
 1.  **Select Input Source:**
     *   **Camera:** Choose your webcam from the dropdown list.
-    *   **Media:** Click "Open File" to load a video (`.mp4`, `.avi`) or image.
+    *   **Media:** Click "Open File" to load a video (`.mp4`) or image.
 2.  **Load Model:**
     *   Click "Load Model" and select your `.onnx` file.
     *   Select the task type (Detection, Segmentation, Pose) if not auto-detected.
 3.  **Tune Parameters:**
     *   Adjust the **Confidence Threshold** slider (default: 0.50).
-    *   Adjust the **NMS / IoU** slider to reduce overlapping boxes.
 4.  **Start Inference:**
     *   Click the **Start/Stop** button to toggle processing.
 
