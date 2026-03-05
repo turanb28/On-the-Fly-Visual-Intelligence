@@ -13,6 +13,7 @@
         Background="{StaticResource Background_Light}"
         WindowStyle="None"
         MouseDown="Window_MouseDown"
+        x:Name="mainPage"
         >
     <Window.Resources>
         <Converter:DoubleConverter x:Key="doubleConverter"></Converter:DoubleConverter>
@@ -25,7 +26,32 @@
             <Setter Property="Margin" Value="5"></Setter>
             <Setter Property="BorderThickness" Value="0"></Setter>
         </Style>
-      
+
+
+        <!--<Style TargetType="{x:Type ContextMenu}">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="Grid.IsSharedSizeScope" Value="true" />
+            <Setter Property="HasDropShadow" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ContextMenu}">
+                        <Border
+                            x:Name="Border"
+                            BorderThickness="0"
+                            Padding="0"
+                            Margin="0"
+                            Background="{StaticResource Background_Dark}">
+                            <StackPanel
+                                ClipToBounds="True"
+                                IsItemsHost="True"
+                                KeyboardNavigation.DirectionalNavigation="Cycle"
+                                Orientation="Vertical" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>-->
 
     </Window.Resources>
     <Grid>
@@ -54,15 +80,29 @@
 
             </MenuItem>
             <MenuItem Header="Model" FontSize="13"  Height="{Binding ElementName=menubar, Path=ActualHeight}" >
-                <MenuItem Header="Add Model" Click="Add_Model"  ></MenuItem>
-                <MenuItem Header="Select Model "  ItemsSource="{Binding ProcessingModule.Models}" >
+                <MenuItem Header="Add Model" Click="Add_Model" ></MenuItem>
+            <MenuItem Header="Select Model " ItemsSource="{Binding ProcessingModule.Models}" >
+                
                     <MenuItem.ItemContainerStyle>
-                        <Style TargetType="MenuItem">
+                        <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}" >
                             <Setter Property="Header" Value="{Binding Name}"></Setter>
                             <Setter Property="IsCheckable" Value="True"></Setter>
                             <Setter Property="IsChecked" Value="{Binding IsSelected, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></Setter>
                             <Setter Property="ToolTip" Value="{Binding Path}"></Setter>
-                            <EventSetter Event="Click" Handler="MenuItem_Checked"></EventSetter>
+                            <EventSetter Event="Checked" Handler="MenuItem_Checked"></EventSetter>
+                            <Setter   Property="ContextMenu">
+                                <Setter.Value>
+                                    <ContextMenu >
+                                      <ContextMenu.Resources>
+                                        <Style TargetType="MenuItem">
+                                          <EventSetter Event="Click" Handler="MenuItem_Click"/>
+                                            </Style>
+                                      </ContextMenu.Resources>
+                        
+                                      <MenuItem Header="Remove Model" ToolTip="{Binding Path}" />
+                                    </ContextMenu>
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </MenuItem.ItemContainerStyle>
                 </MenuItem>

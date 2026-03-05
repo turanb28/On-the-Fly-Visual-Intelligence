@@ -22,7 +22,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using static Emgu.CV.Structure.MCvMatND;
 
 namespace OnTheFly_UI
 {
@@ -138,7 +137,15 @@ namespace OnTheFly_UI
             ProcessingModule.PostProcessingBuffer.Clear();
             VisualizationModule.PostProcessingBuffer.Clear();
 
-          
+
+
+            if (e.AddedItems.Count <= 0)
+            {
+                VisualizationModule.CurrentImage = null;
+                return;
+            }
+
+
             var request = e.AddedItems[0] as RequestObject;
 
             if (request == null)
@@ -170,11 +177,15 @@ namespace OnTheFly_UI
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
+
             if ((e.Source is Display) || (e.Source is ProgressBar))
                 return;
 
             if (e.ChangedButton == MouseButton.Left)
                 this.DragMove();
+          
+
+
         }
 
         private void CloseApp_Click(object sender, RoutedEventArgs e)
@@ -216,14 +227,28 @@ namespace OnTheFly_UI
 
         }
 
+
         #endregion
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            
+            if (sender is not MenuItem) return;
+
+            var menuItem = sender as MenuItem;
+
+            if (menuItem == null) return;
+
+            var a = ProcessingModule.Models.FirstOrDefault(m => m.Path == menuItem.ToolTip.ToString());
+
+            if (a == null) return;
+
+            if (a.IsSelected)
+                ProcessingModule.UnselectModel(a.Path);
+
+            ProcessingModule.Models.Remove(a);
+
+            RecentFileHandler.RemoveRecentFile(a.Path);
 
         }
-
-       
     }
 }

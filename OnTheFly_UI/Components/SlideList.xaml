@@ -15,7 +15,7 @@
         <converters:DoubleConverter x:Key="doubleConverter"/>
         <converters:PreviewConverter x:Key="previewConverter"/>
         <converters:FindMiddleValue x:Key="multi"/>
-
+    
         <DataTemplate x:Key="videoTemplate" DataType="dto:RequestObject" >
                 <Canvas Name="canvas" Width="{Binding ElementName=testimage, Path=ActualWidth}" >
                  <Image Canvas.Left="0" Canvas.Top="0" Source="{Binding PreviewImage}"
@@ -59,11 +59,26 @@
                         </Canvas.Top>
 
                     </Path>
-                </Canvas>
+
+
+                <Canvas.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Foreground="{StaticResource Foreground_Light}" Header="Delete" Click="MenuItem_Click" ></MenuItem>
+                    </ContextMenu>
+                </Canvas.ContextMenu>
+
+            </Canvas>
         </DataTemplate>
 
         <DataTemplate x:Key="imgTemplate"  DataType="dto:RequestObject" >
-                <Image x:Name="image" Source="{Binding ., Converter={StaticResource previewConverter}}" ></Image>
+                <Image x:Name="image" Source="{Binding ., Converter={StaticResource previewConverter}}" >
+                <Image.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Foreground="{StaticResource Foreground_Light}" Header="Delete" Click="MenuItem_Click" ></MenuItem>
+                        <!--<MenuItem Foreground="{StaticResource Foreground_Light}" Header="Show All" ></MenuItem>-->
+                    </ContextMenu>
+                </Image.ContextMenu>
+            </Image>
         </DataTemplate>
         <!-- Canvas.Left="0" Canvas.Top="0"   Height="{Binding ElementName=canvas, Path=ActualHeight}"-->
         <converters:SlidebarDataTemplateSelector x:Key="slidebarDataTemplateSelector" ImageTemplate="{StaticResource imgTemplate}" VideoTemplate="{StaticResource videoTemplate}"/>

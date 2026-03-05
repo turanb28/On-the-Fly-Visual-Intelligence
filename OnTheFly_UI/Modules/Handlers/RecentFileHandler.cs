@@ -28,5 +28,15 @@ namespace OnTheFly_UI.Modules.Handlers
            
             System.IO.File.WriteAllLines(RecentFilesPath, recentFiles);
         }
+
+        public static void RemoveRecentFile(string filePath)
+        {
+            var recentFiles = GetRecentFiles();
+            if (recentFiles.Contains(filePath))
+            {
+                recentFiles.Remove(filePath);
+                System.IO.File.WriteAllLines(RecentFilesPath, recentFiles);
+            }
+        }
     }
 }

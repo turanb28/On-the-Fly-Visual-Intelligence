@@ -53,7 +53,8 @@ namespace OnTheFly_UI.Components
                 () =>
                 {
                     listBox.SelectedIndex = listBox.Items.Count - 1;
-                    listBox.ScrollIntoView(listBox.Items[listBox.Items.Count - 1]);
+                    if (listBox.Items.Count > 0)
+                        listBox.ScrollIntoView(listBox.Items[listBox.Items.Count - 1]);
                 }),
                         System.Windows.Threading.DispatcherPriority.Input
                         );
@@ -111,6 +112,13 @@ namespace OnTheFly_UI.Components
                 }
             }
             return null;
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var a = (sender as MenuItem).DataContext;
+
+            Objects.Remove(a as RequestObject);
         }
     }
 }

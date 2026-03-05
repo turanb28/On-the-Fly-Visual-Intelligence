@@ -35,6 +35,7 @@ namespace OnTheFly_UI.Modules
                     }
             }
         public List<string> Names { get; set; } = new List<string>();
+        public ModelObject? SelectedModel { get { return Models.Where(x => x.IsSelected).FirstOrDefault(); } }
         public ObservableCollection<ModelObject> Models { get; set; } = new ObservableCollection<ModelObject>();
   
         public required ConcurrentQueue<ProcessObject> PreProcessingBuffer;
