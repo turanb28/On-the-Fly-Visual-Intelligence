@@ -198,10 +198,19 @@
 
         </ListBox>
 
-             
-            
-             
-        </Grid>
+
+        <ProgressBar x:Name="videoProgessBar" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="14" Margin="3" Height="20" VerticalAlignment="Bottom"  Minimum="0"  
+                  Background="{DynamicResource Background_Dark}" Foreground="{DynamicResource Background_Light}" BorderThickness="1" BorderBrush="{DynamicResource Background_Dark}" Width="720" HorizontalAlignment="Center"
+                  Value="{Binding VisualizationModule.CurrentRequest.VideoPosition, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Maximum="{Binding VisualizationModule.CurrentRequest.FrameCount}" ></ProgressBar>
+
+        <ProgressBar  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="14" Margin="3" Height="20" VerticalAlignment="Bottom"  Minimum="0"  Visibility="{Binding ElementName=videoProgessBar, Path=Visibility}"
+              Background="Transparent" Foreground="{DynamicResource Foreground_Dark}" BorderThickness="1" BorderBrush="{DynamicResource Background_Light}" Width="720" HorizontalAlignment="Center" 
+              Value="{Binding VisualizationModule.Index, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Maximum="{Binding VisualizationModule.CurrentRequest.FrameCount}" ></ProgressBar>
+
+
+
+
+    </Grid>
 
     <!--<CombinedGeometry>
     <CombinedGeometry.Geometry1>

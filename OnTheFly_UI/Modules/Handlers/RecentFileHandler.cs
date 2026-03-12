@@ -22,7 +22,8 @@ namespace OnTheFly_UI.Modules.Handlers
             var recentFiles = GetRecentFiles();
             if (recentFiles.Contains(filePath))
             {
-                recentFiles.Remove(filePath);
+                return;
+                //recentFiles.Remove(filePath);
             }
             recentFiles.Insert(0, filePath);
            

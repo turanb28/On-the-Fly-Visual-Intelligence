@@ -49,16 +49,19 @@ namespace OnTheFly_UI
                 Metadata= ProcessingModule.Metadata };
 
             DataAcquisitionModule.DataAcquired += () => { ProcessingModule.StartProcess(); VisualizationModule.StartProcess(); }; 
+
             ProcessingModule.ModelLoaded += (string m) => { 
                     UIMessageBox.Show($"{m} is loaded");
                 if (DataAcquisitionModule.Requests.Count <= 0)
                     return;
                 DataAcquisitionModule.RequestWithID(DataAcquisitionModule.Requests[sidebar.SelectedIndex].Id);
             };
+            
             ProcessingModule.ModelUnloaded += (string m) =>
             {
                 UIMessageBox.Show($"{m} is unloaded");
             };
+
             Display.DisplayUserInteraction += VisualizationModule.InteractionEventHnadler;
 
             sidebar.Objects = DataAcquisitionModule.Requests;
@@ -118,13 +121,20 @@ namespace OnTheFly_UI
             file.InitialDirectory = "C:\\Desktop";
             file.Filter = "Model File |*.onnx";
             file.FilterIndex = 0;
-            file.Multiselect = false;
+            file.Multiselect = true;
             file.ShowDialog();
 
             if (string.IsNullOrEmpty(file.FileName))
                 return;
-            RecentFileHandler.AddRecentFile(file.FileName);
-            ProcessingModule.AddModel(file.FileName);
+
+            foreach (var item in file.FileNames)
+            {
+                RecentFileHandler.AddRecentFile(item);
+                ProcessingModule.AddModel(item);
+                
+            }
+
+
         }
 
 
@@ -155,16 +165,7 @@ namespace OnTheFly_UI
             if (index < 0)
                 return;
             var a = DataAcquisitionModule.Requests[index];
-            if (a.SourceType == Modules.Enums.RequestSourceType.Video) 
-            {
-                videoProgessBar.Visibility = Visibility.Visible;
-                videoDurationProgessBar.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                videoProgessBar.Visibility = Visibility.Hidden;
-                videoDurationProgessBar.Visibility = Visibility.Hidden;
-            }    
+             
 
             DataAcquisitionModule.RequestWithID(a.Id);
 
@@ -198,7 +199,7 @@ namespace OnTheFly_UI
             this.WindowState = WindowState.Minimized;
         }
 
-        private void MenuItem_Checked(object sender, RoutedEventArgs e)
+        private void AddModelClick(object sender, RoutedEventArgs e)
         {
 
             if (sender is not MenuItem)
@@ -230,7 +231,7 @@ namespace OnTheFly_UI
 
         #endregion
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void RemoveModelClick(object sender, RoutedEventArgs e)
         {
             if (sender is not MenuItem) return;
 

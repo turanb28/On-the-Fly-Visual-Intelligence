@@ -76,7 +76,7 @@
                 <MenuItem Header="Open Image" Click="AddImage_Click" ></MenuItem>
                 <MenuItem Header="Open Video" Click="AddVideo_Click" ></MenuItem>
                 <MenuItem Header="Open Stream"  Click="AddStream_Click"    ></MenuItem>
-                <MenuItem Header="Save All" Click="MenuItem_Click"  ></MenuItem>
+                <MenuItem Header="Save All"   ></MenuItem>
 
             </MenuItem>
             <MenuItem Header="Model" FontSize="13"  Height="{Binding ElementName=menubar, Path=ActualHeight}" >
@@ -89,13 +89,13 @@
                             <Setter Property="IsCheckable" Value="True"></Setter>
                             <Setter Property="IsChecked" Value="{Binding IsSelected, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></Setter>
                             <Setter Property="ToolTip" Value="{Binding Path}"></Setter>
-                            <EventSetter Event="Checked" Handler="MenuItem_Checked"></EventSetter>
+                            <EventSetter Event="Click" Handler="AddModelClick"></EventSetter>
                             <Setter   Property="ContextMenu">
                                 <Setter.Value>
                                     <ContextMenu >
                                       <ContextMenu.Resources>
                                         <Style TargetType="MenuItem">
-                                          <EventSetter Event="Click" Handler="MenuItem_Click"/>
+                                                <EventSetter Event="Click" Handler="RemoveModelClick"/>
                                             </Style>
                                       </ContextMenu.Resources>
                         
@@ -125,19 +125,11 @@
 
         <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="10" Background="Black" Opacity="0.1"></Border>
 
-        <Components:Display x:Name="Display" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="14" Source="{Binding VisualizationModule.CurrentImage}" 
+        <Components:Display x:Name="Display" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="14" Source="{Binding VisualizationModule.CurrentImage}" CurrentRequest="{Binding VisualizationModule.CurrentRequest, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
         ResultTable="{Binding VisualizationModule.CurrentResultTable}" Confidence="{Binding VisualizationModule.Confidence, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                             ></Components:Display>
-        <ProgressBar x:Name="videoProgessBar" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="14" Margin="3" Height="20" VerticalAlignment="Bottom"  Minimum="0"  Visibility="Hidden"  
-                     Background="{DynamicResource Background_Dark}" Foreground="{DynamicResource Background_Light}" BorderThickness="1" BorderBrush="{DynamicResource Background_Dark}" Width="720" HorizontalAlignment="Center"
-                     Value="{Binding VisualizationModule.CurrentRequest.VideoPosition, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Maximum="{Binding VisualizationModule.CurrentRequest.FrameCount}" ></ProgressBar>
 
-        <ProgressBar x:Name="videoDurationProgessBar" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="14" Margin="3" Height="20" VerticalAlignment="Bottom"  Minimum="0"  Visibility="Hidden" 
-             Background="Transparent" Foreground="{DynamicResource Foreground_Dark}" BorderThickness="1" BorderBrush="{DynamicResource Background_Light}" Width="720" HorizontalAlignment="Center" 
-             Value="{Binding VisualizationModule.Index, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Maximum="{Binding VisualizationModule.CurrentRequest.FrameCount}" ></ProgressBar>
-
-        
-    <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="14" Background="{StaticResource Background_Dark}">
+        <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="14" Background="{StaticResource Background_Dark}">
         </Border>
         <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" x:Name="UIMessage" Text="" HorizontalAlignment="Left" VerticalAlignment="Center" TextAlignment="Center" FontSize="15" Foreground="{StaticResource Foreground_Light}" ></TextBlock>
 

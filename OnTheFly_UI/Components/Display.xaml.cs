@@ -3,6 +3,7 @@ using Compunet.YoloSharp.Metadata;
 using Emgu.CV;
 using Emgu.CV.Rapid;
 using OnTheFly_UI.Modules.DTOs;
+using OnTheFly_UI.Modules.Enums;
 using OnTheFly_UI.Modules.Handlers;
 using System;
 using System.Collections.Generic;
@@ -85,6 +86,50 @@ namespace OnTheFly_UI.Components
 
         public static readonly DependencyProperty ConfidenceProperty =
             DependencyProperty.Register("Confidence", typeof(float), typeof(Display));
+
+
+
+
+        public RequestObject CurrentRequest
+        {
+            get { return (RequestObject)GetValue(CurrentRequestProperty); }
+            set { 
+                SetValue(CurrentRequestProperty, value);
+                }
+        }
+
+        // Using a DependencyProperty as the backing store for CurrentRequest.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CurrentRequestProperty =
+            DependencyProperty.Register("CurrentRequest", typeof(RequestObject), typeof(Display), new PropertyMetadata(null, RequestChanged));
+
+        private static void RequestChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var display = (Display)d;
+
+            if (display.CurrentRequest.SourceType == RequestSourceType.Video)
+                display.videoProgessBar.Visibility = Visibility.Visible;
+            else
+                display.videoProgessBar.Visibility = Visibility.Hidden;
+
+
+        }
+
+
+        //public RequestSourceType SourceType
+        //{
+        //    get { return (RequestSourceType)GetValue(SourceTypeProperty); }
+        //    set { SetValue(SourceTypeProperty, value);
+        //        if (value == RequestSourceType.Video)
+        //            videoProgessBar.Visibility = Visibility.Visible;
+        //        else
+        //            videoProgessBar.Visibility = Visibility.Hidden;
+
+        //    }
+        //}
+
+        //// Using a DependencyProperty as the backing store for SourceType.  This enables animation, styling, binding, etc...
+        //public static readonly DependencyProperty SourceTypeProperty =
+        //    DependencyProperty.Register("SourceType", typeof(RequestSourceType), typeof(Display), new PropertyMetadata(RequestSourceType.None));
 
 
 
@@ -230,5 +275,7 @@ namespace OnTheFly_UI.Components
                 sliderGrid.Visibility = Visibility.Visible;
           
         }
+
+       
     }
 }

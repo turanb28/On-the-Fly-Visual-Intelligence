@@ -90,7 +90,7 @@ namespace OnTheFly_UI.Components
         {
 
             SelectionChanged?.Invoke(this,e);
-            
+
         }
 
         public static DependencyObject? GetScrollViewer(DependencyObject o)
