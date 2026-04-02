@@ -162,18 +162,27 @@ namespace OnTheFly_UI.Modules
                 }
                 sw.Restart();
 
-
-
-
-                if (((processObject.Result != null)) && (processObject.Request.TaskType == TaskType))
+                if (processObject.Request.TaskType != TaskType)
                 {
-                    PostProcessingBuffer.Enqueue(processObject);
-                    continue;
-
+                    processObject.Request.ResultTables.Clear();
+                    processObject.Request.Result.Clear();
                 }
 
 
+                if (processObject.Request.ResultTables.Where(r => r.Index == processObject.Index).Any() && (processObject.Request.TaskType == TaskType))
+                {
 
+                    var nullableprocessObject = processObject.Request.Result.ElementAtOrDefault(processObject.Index);
+                    
+                    if (nullableprocessObject != null)
+                    {
+                        processObject.Result = nullableprocessObject;
+                        PostProcessingBuffer.Enqueue(processObject);
+                        continue;
+                    }
+
+                    
+                }
 
                 processObject.Request.TaskType = TaskType; // Set the task type for the request
 
@@ -191,7 +200,7 @@ namespace OnTheFly_UI.Modules
 
                 lastWarnedId = Guid.Empty;
 
-                var newDict = new List<ResultTableItem>();
+                var newDict = new ResultTable();
 
                 var tempDict = new Dictionary<string, int>();
 
@@ -248,11 +257,14 @@ namespace OnTheFly_UI.Modules
 
 
                 foreach (var x in tempDict.Keys)
-                    newDict.Add(new ResultTableItem(x, tempDict[x]));
+                    newDict.AddItem(new ResultTableItem(x, tempDict[x]));
 
+                newDict.Index = processObject.Index;
                 processObject.Request.ResultTables.Add(newDict);
 
+
                 processObject.Result = result;
+                processObject.Request.Result.Add(result);
                 PostProcessingBuffer.Enqueue(processObject);
 
 

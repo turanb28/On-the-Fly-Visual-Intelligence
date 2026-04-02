@@ -13,8 +13,11 @@ namespace OnTheFly_UI.Modules.DTOs
 {
     public sealed class RequestObject: INotifyPropertyChanged
     {
+        public delegate void VideoPositionJumpedEventHandler(object sender, double newPosition);
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        // This event is only triggered when the user jumps to a new position in the video, not when the video position is updated by the video player. 
+        public event VideoPositionJumpedEventHandler? VideoPositionJumped;
 
         private BitmapSource? _previewImage = null;
 
@@ -28,7 +31,7 @@ namespace OnTheFly_UI.Modules.DTOs
             }
         }
 
-        public List<List<ResultTableItem>> ResultTables { get; set; } = new List<List<ResultTableItem>>();
+        public List<ResultTable> ResultTables { get; set; } = new List<ResultTable>(); // You dont clear the result tables when you change the task type, 
         public Guid Id { get; private set; } = Guid.NewGuid();
         public string Source {  get; set; } = string.Empty;
         public int FPS { get; set; } = int.MaxValue; 
@@ -61,6 +64,12 @@ namespace OnTheFly_UI.Modules.DTOs
         {
             Source = source;
             SourceType = sourceType;
+        }
+
+        public void JumpVideoToPosition(double position)
+        {
+            VideoPosition = position;
+            VideoPositionJumped?.Invoke(this, position);
         }
     }
   

@@ -136,7 +136,6 @@ namespace OnTheFly_UI.Modules
 
                 CurrentRequest = processObject.Request;
 
-
                 LastProcessObject = processObject; // Save the last process object for re-showing just for image type requests
 
                 Index = processObject.Index;
@@ -177,10 +176,11 @@ namespace OnTheFly_UI.Modules
 
                 Thread.Sleep(waitTime);
 
-                if(processObject.Request.ResultTables.Count > processObject.Index)
-                    ShowFrame(bitmapSource, processObject.Request.ResultTables[processObject.Index]);
+
+                if (processObject.Request.ResultTables.Where(r => r.Index == processObject.Index ).Any() )
+                    ShowFrame(bitmapSource, processObject.Request.ResultTables.Where(r => r.Index == processObject.Index).First()); 
                 else
-                    ShowFrame(bitmapSource, new List<ResultTableItem>());
+                    ShowFrame(bitmapSource, new ResultTable());
             }
         }
 
@@ -200,40 +200,40 @@ namespace OnTheFly_UI.Modules
 
 
 
-        public void ShowFrame(BitmapSource bitmap, List<ResultTableItem> ResultTable)
+        public void ShowFrame(BitmapSource bitmap, ResultTable ResultTable)
         {
             CurrentImage = bitmap;
 
             var currentItemsDict = CurrentResultTable.ToDictionary(i => i.Name);
 
             var namesInNewResult = new HashSet<string>();
-            var itemsToAdd = new List<ResultTableItem>();
-            var itemsToRemove = new List<ResultTableItem>();
+            var itemsToAdd = new ResultTable();
+            var itemsToRemove = new ResultTable();
 
-            foreach (var newItem in ResultTable)
+            foreach (var newItem in ResultTable.Items)
             {
                 namesInNewResult.Add(newItem.Name);
 
                 if (currentItemsDict.TryGetValue(newItem.Name, out var existingItem))
                     existingItem.Count = newItem.Count;
                 else
-                    itemsToAdd.Add(newItem);
+                    itemsToAdd.AddItem(newItem);
             }
 
             foreach (var currentItem in CurrentResultTable)
             {
                 if (!namesInNewResult.Contains(currentItem.Name))
-                    itemsToRemove.Add(currentItem);
+                    itemsToRemove.AddItem(currentItem);
             }
 
-            if (itemsToAdd.Any() || itemsToRemove.Any())
+            if (itemsToAdd.Items.Any() || itemsToRemove.Items.Any())
             {
                 App.Current.Dispatcher.Invoke(() =>
                 {
-                    foreach (var item in itemsToRemove)
+                    foreach (var item in itemsToRemove.Items)
                         CurrentResultTable.Remove(item);
 
-                    foreach (var item in itemsToAdd)
+                    foreach (var item in itemsToAdd.Items)
                         CurrentResultTable.Add(item);
                 },DispatcherPriority.Render);
             }

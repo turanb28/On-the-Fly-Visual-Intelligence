@@ -115,24 +115,7 @@ namespace OnTheFly_UI.Components
         }
 
 
-        //public RequestSourceType SourceType
-        //{
-        //    get { return (RequestSourceType)GetValue(SourceTypeProperty); }
-        //    set { SetValue(SourceTypeProperty, value);
-        //        if (value == RequestSourceType.Video)
-        //            videoProgessBar.Visibility = Visibility.Visible;
-        //        else
-        //            videoProgessBar.Visibility = Visibility.Hidden;
-
-        //    }
-        //}
-
-        //// Using a DependencyProperty as the backing store for SourceType.  This enables animation, styling, binding, etc...
-        //public static readonly DependencyProperty SourceTypeProperty =
-        //    DependencyProperty.Register("SourceType", typeof(RequestSourceType), typeof(Display), new PropertyMetadata(RequestSourceType.None));
-
-
-
+        
 
         public Display()
         {
@@ -276,6 +259,18 @@ namespace OnTheFly_UI.Components
           
         }
 
-       
+        private void ProgressBar_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                var pos = e.GetPosition(videoProgessBar);
+                var ratio = pos.X / videoProgessBar.ActualWidth;
+                if (ratio < 0)
+                    ratio = 0;
+                else if (ratio > 1)
+                    ratio = 1;
+                CurrentRequest.JumpVideoToPosition(ratio * CurrentRequest.FrameCount);
+            }
+        }
     }
 }

@@ -186,15 +186,25 @@ namespace OnTheFly_UI.Modules
 
         private void ReadVideo(string path, RequestObject requestObject)
         {
+            var sw = Stopwatch.StartNew();
             DataAcquired?.Invoke();
             int index = 0;
+            requestObject.VideoPosition = 1;
+            bool _jumpedEvent = false;
+            bool ret = false;
             using (Mat frame = new Mat())
             using (VideoCapture capture = new VideoCapture(path))
             {
+
+                
                 requestObject.FPS = (int)capture.Get(Emgu.CV.CvEnum.CapProp.Fps);
 
                 requestObject.FrameCount = (int)capture.Get(Emgu.CV.CvEnum.CapProp.FrameCount);
-                
+
+                requestObject.VideoPositionJumped += (s, p) =>
+                {
+                    _jumpedEvent = true;
+                };
 
                 while (capture.IsOpened)
                 {
@@ -207,25 +217,42 @@ namespace OnTheFly_UI.Modules
                     if (IsInterrupt)
                         break;
 
-                    var ret = SpinWait.SpinUntil(() => { return capture.Read(frame) && !CancellationTokenSource.IsCancellationRequested; }, TimeSpan.FromMilliseconds(2000));
 
-                    if(ret &&  requestObject.PreviewImage == null)
+
+                    ret = SpinWait.SpinUntil(() => { return capture.Read(frame) && !CancellationTokenSource.IsCancellationRequested; }, TimeSpan.FromMilliseconds(2000));
+
+                    if (_jumpedEvent)
+                    {
+                        _jumpedEvent = false;
+                        capture.Set(Emgu.CV.CvEnum.CapProp.PosFrames, Convert.ToInt32(requestObject.VideoPosition));
+                    }
+                    
+                    if (ret &&  requestObject.PreviewImage == null)
                         requestObject.PreviewImage = BitmapConvertHandler.ToBitmapSourceFast(frame.ToBitmap());
+
+                    index = (int)capture.Get(Emgu.CV.CvEnum.CapProp.PosFrames);
 
                     if (ret)
                     {
                         if (requestObject.Result.Count > requestObject.VideoPosition)
-                            Enqueue(frame, requestObject, requestObject.Result[index],index:index); 
+                        {
+                            if (requestObject.Result.Count >= index)
+                                Enqueue(frame, requestObject, requestObject.Result[index],index:index); 
+                        }
                         else
                             Enqueue(frame, requestObject, index: index);
-                        requestObject.VideoPosition = capture.Get(Emgu.CV.CvEnum.CapProp.PosFrames);
-                        index++;
-
+                        requestObject.VideoPosition++;
                     }
                     else
+                    {
                         break;
+                    }
+
+
 
                 }
+
+
             }
         }
 

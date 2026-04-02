@@ -126,7 +126,7 @@
         <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="10" Background="Black" Opacity="0.1"></Border>
 
         <Components:Display x:Name="Display" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="14" Source="{Binding VisualizationModule.CurrentImage}" CurrentRequest="{Binding VisualizationModule.CurrentRequest, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-        ResultTable="{Binding VisualizationModule.CurrentResultTable}" Confidence="{Binding VisualizationModule.Confidence, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+        ResultTable="{Binding VisualizationModule.CurrentResultTable, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Confidence="{Binding VisualizationModule.Confidence, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                             ></Components:Display>
 
         <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="14" Background="{StaticResource Background_Dark}">

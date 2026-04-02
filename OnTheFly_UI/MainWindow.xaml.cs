@@ -165,7 +165,6 @@ namespace OnTheFly_UI
             if (index < 0)
                 return;
             var a = DataAcquisitionModule.Requests[index];
-             
 
             DataAcquisitionModule.RequestWithID(a.Id);
 
