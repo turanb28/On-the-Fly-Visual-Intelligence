@@ -76,6 +76,7 @@
                 <MenuItem Header="Open Image" Click="AddImage_Click" ></MenuItem>
                 <MenuItem Header="Open Video" Click="AddVideo_Click" ></MenuItem>
                 <MenuItem Header="Open Stream"  Click="AddStream_Click"    ></MenuItem>
+                <MenuItem Header="Open Saved Request"  Click="OpenSavedRequest_Click"    ></MenuItem>
                 <MenuItem Header="Save All"   ></MenuItem>
 
             </MenuItem>
@@ -121,7 +122,7 @@
             </Button>
         </StackPanel>
 
-        <Components:SlideList Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="10" x:Name="sidebar" SelectionChanged="sidebar_SelectionChanged"  ></Components:SlideList>
+        <Components:SlideList Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="10" x:Name="sidebar" SelectionChanged="sidebar_SelectionChanged" SaveResultRequested="sidebar_SaveResultRequest"  ></Components:SlideList>
 
         <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="10" Background="Black" Opacity="0.1"></Border>
 

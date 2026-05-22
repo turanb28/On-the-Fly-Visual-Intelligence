@@ -12,6 +12,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Automation.Provider;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -31,7 +32,7 @@ namespace OnTheFly_UI.Modules
         
         private ConcurrentQueue<Guid> RequestQueue = new ConcurrentQueue<Guid>();
 
-        public int BufferLimit = 5;
+        public int BufferLimit = 50; // 
         public CancellationTokenSource CancellationTokenSource { get; set; } = new CancellationTokenSource();
         public DataAcquisitionModule() { }
         bool IsInterrupt = false;
@@ -43,6 +44,8 @@ namespace OnTheFly_UI.Modules
             RequestQueue.Enqueue(id);
             StartReading();
         }
+
+       
 
         private void AddRequest(RequestObject request)
         {
@@ -173,7 +176,10 @@ namespace OnTheFly_UI.Modules
         {
             using(var frame = CvInvoke.Imread(path)) 
             {
+                requestObject.FrameWidth   = frame.Width;
+                requestObject.FrameHeight  = frame.Height;
                 requestObject.PreviewImage = BitmapConvertHandler.ToBitmapSourceFast(new Bitmap(requestObject.Source));
+
 
                 if (requestObject.Result.Count != 0)
                     Enqueue(frame, requestObject, requestObject.Result[0]);
@@ -196,8 +202,12 @@ namespace OnTheFly_UI.Modules
             using (VideoCapture capture = new VideoCapture(path))
             {
 
-                
+
                 requestObject.FPS = (int)capture.Get(Emgu.CV.CvEnum.CapProp.Fps);
+
+                requestObject.FrameWidth = (int)capture.Get(Emgu.CV.CvEnum.CapProp.FrameWidth);
+
+                requestObject.FrameHeight = (int)capture.Get(Emgu.CV.CvEnum.CapProp.FrameHeight);
 
                 requestObject.FrameCount = (int)capture.Get(Emgu.CV.CvEnum.CapProp.FrameCount);
 
@@ -263,9 +273,15 @@ namespace OnTheFly_UI.Modules
             ppo.Request = requestObject;
             ppo.Index = index;
 
-            SpinWait.SpinUntil(() => { 
-                return PreprocessingBuffer.Count < BufferLimit; 
-            });
+            //if (requestObject.Frames.Count > index)
+            //    requestObject.Frames[index] = frame.Clone();
+            //else
+            //    requestObject.Frames.Add(frame.Clone());
+
+            SpinWait.SpinUntil(() =>
+                    {
+                        return PreprocessingBuffer.Count < BufferLimit;
+                    });
             PreprocessingBuffer.Enqueue(ppo);
 
         }

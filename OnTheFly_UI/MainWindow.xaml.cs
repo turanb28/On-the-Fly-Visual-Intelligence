@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -60,6 +61,11 @@ namespace OnTheFly_UI
             ProcessingModule.ModelUnloaded += (string m) =>
             {
                 UIMessageBox.Show($"{m} is unloaded");
+            };
+
+            ProcessingModule.ProcessingException += (string msg) =>
+            {
+                UIMessageBox.Show($"An error occurred during processing: {msg}");
             };
 
             Display.DisplayUserInteraction += VisualizationModule.InteractionEventHnadler;
@@ -249,6 +255,40 @@ namespace OnTheFly_UI
 
             RecentFileHandler.RemoveRecentFile(a.Path);
 
+        }
+
+        private void sidebar_SaveResultRequest(RequestObject? requestObject)
+        {
+
+            ResultStorageHandler.SaveTest(requestObject);
+          
+        }
+
+        private void OpenSavedRequest_Click(object sender, RoutedEventArgs e)
+        {
+
+
+
+            OpenFileDialog file = new OpenFileDialog();
+            file.InitialDirectory = "C:\\Desktop\\Result";
+            file.Filter = "Model File |*.json";
+            file.FilterIndex = 0;
+            file.Multiselect = true;
+            file.ShowDialog();
+
+            //if (string.IsNullOrEmpty(file.FileName))
+            //    return;
+
+            foreach (var item in file.FileNames)
+            {
+                var request = ResultStorageHandler.LoadTest(item);
+                if (request?.Result == null)
+                {
+                    continue;
+                }
+                DataAcquisitionModule.Requests.Add(request);
+
+            }
         }
     }
 }

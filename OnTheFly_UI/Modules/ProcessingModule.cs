@@ -7,13 +7,19 @@ using OnTheFly_UI.Components;
 using OnTheFly_UI.Modules.DTOs;
 using OnTheFly_UI.Modules.Enums;
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
@@ -128,9 +134,11 @@ namespace OnTheFly_UI.Modules
             if (!isThreadAlive)
             {
                 isThreadAlive = true;
+
                 Task.Run(Process).ContinueWith(continuationAction => {
                     isThreadAlive = false; });
             }
+
         }
 
         private void Process()
@@ -138,7 +146,7 @@ namespace OnTheFly_UI.Modules
             ProcessObject? processObject;
             var sw = new Stopwatch();
             var lastWarnedId = Guid.Empty;
-
+            
             while (true)
             {
 
@@ -219,8 +227,8 @@ namespace OnTheFly_UI.Modules
                             processObject.Result = null;
                             return;
                         }
-
                         ((YoloResult<Detection>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => { tempDict[x.Key] = x.Count(); });
+
                         break;
                     case RequestTaskType.Classify:
                         result = Model.Classify(processObject.Frame);
@@ -229,7 +237,7 @@ namespace OnTheFly_UI.Modules
 
 
                         ((YoloResult<Classification>)result).ToList().ForEach(x => { tempDict[x.Name.Name] = (int)(x.Confidence * 100); });
-                      
+
                         break;
                     case RequestTaskType.Segment:
                         result = Model.Segment(processObject.Frame);
@@ -244,9 +252,11 @@ namespace OnTheFly_UI.Modules
                         ((YoloResult<ObbDetection>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => { tempDict[x.Key] = x.Count(); });
                             break;
                     case RequestTaskType.Pose:
-                        result = Model.Pose(processObject.Frame); 
+                        result = Model.Pose(processObject.Frame);
+
                         if (result == null)
                             return;
+
                         ((YoloResult<Pose>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => { tempDict[x.Key] = x.Count(); });
                             break;
                     default:
@@ -264,6 +274,12 @@ namespace OnTheFly_UI.Modules
 
 
                 processObject.Result = result;
+
+
+
+
+
+
                 processObject.Request.Result.Add(result);
                 PostProcessingBuffer.Enqueue(processObject);
 
@@ -271,6 +287,9 @@ namespace OnTheFly_UI.Modules
             }
 
         }
+
+
+      
 
 
         private static RequestTaskType YoloTasKToRequestTask(YoloTask task)

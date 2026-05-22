@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using Microsoft.Win32;
+using OnTheFly_UI.Modules.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -14,7 +17,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using OnTheFly_UI.Modules.DTOs;
 
 namespace OnTheFly_UI.Components
 {
@@ -23,6 +25,10 @@ namespace OnTheFly_UI.Components
     /// </summary>
     public partial class SlideList : UserControl
     {
+        public delegate void SaveFileDialog(RequestObject? requestObject);
+
+        public event SaveFileDialog? SaveResultRequested;
+
         public int SelectedIndex
         {
             get 
@@ -114,11 +120,22 @@ namespace OnTheFly_UI.Components
             return null;
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void Delete_Click(object sender, RoutedEventArgs e)
         {
             var a = (sender as MenuItem).DataContext;
 
             Objects.Remove(a as RequestObject);
+        }
+
+        private void Save_Result_Click(object sender, RoutedEventArgs e)
+        {
+            var a = (sender as MenuItem).DataContext as RequestObject;
+
+            SaveResultRequested?.Invoke(a);
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

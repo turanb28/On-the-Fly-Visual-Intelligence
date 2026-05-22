@@ -51,6 +51,6 @@ namespace OnTheFly_UI.Modules.DTOs
         public int Width { get; set; } = 1000;
         public System.Drawing.Color KeypointColor { get; set; } = System.Drawing.Color.Yellow;
         public System.Drawing.Color LineColor { get; set; } = System.Drawing.Color.Turquoise;
-        public float MinimumConfidence { get; set; } = 0.6f;
+        public float MinimumConfidence { get; set; } = 0.0f;
     }
 }

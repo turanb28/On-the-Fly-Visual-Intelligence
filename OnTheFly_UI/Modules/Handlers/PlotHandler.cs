@@ -328,6 +328,62 @@ namespace OnTheFly_UI.Modules.Handlers
             return BitmapConvertHandler.ToBitmapSourceFast(frame);
         }
 
+        public static BitmapSource PlotAuto(ProcessObject processObject,  PlotConfiguration? configuration = null, HashSet<string>? hiddenNames = null)
+        {
+            BitmapSource bitmapSource;
+            YoloResult result;
+           
+            if (processObject.Result == null)
+            {
+                bitmapSource = PlotHandler.Plot(processObject.Frame);
+                return bitmapSource;
+            }
+
+            else
+            {          
+
+                switch(processObject.Task)
+                {
+                    case Enums.RequestTaskType.Detect:
+                        bitmapSource = PlotHandler.PlotDetection(processObject.Frame, (YoloResult<Detection>)processObject.Result, configuration: configuration, hiddenNames: hiddenNames);
+                        break;
+                    case Enums.RequestTaskType.Segment:
+                        bitmapSource = PlotHandler.PlotSegmentatation(processObject.Frame, (YoloResult<Segmentation>)processObject.Result, configuration: configuration, hiddenNames: hiddenNames);
+                        break;
+                    case Enums.RequestTaskType.Obb:
+                        bitmapSource = PlotHandler.PlotObbDetection(processObject.Frame, (YoloResult<ObbDetection>)processObject.Result, configuration: configuration, hiddenNames: hiddenNames);
+                        break;
+                    case Enums.RequestTaskType.Pose:
+                        bitmapSource = PlotHandler.PlotPose(processObject.Frame, (YoloResult<Pose>)processObject.Result, configuration: configuration, hiddenNames: hiddenNames);
+                        break;
+                    default:
+                        bitmapSource = PlotHandler.Plot(processObject.Frame);
+                        break;
+                }
+            
+                
+                return bitmapSource;
+
+            }
+
+
+
+
+
+            //if (processObject.Result.GetType() == typeof(YoloResult<Detection>))
+            //    bitmapSource = PlotHandler.PlotDetection(processObject.Frame, (YoloResult<Detection>)processObject.Result, configuration: configuration, hiddenNames: hiddenNames);
+            //else if (processObject.Result.GetType() == typeof(YoloResult<Segmentation>))
+            //    bitmapSource = PlotHandler.PlotSegmentatation(processObject.Frame, (YoloResult<Segmentation>)processObject.Result, configuration: configuration, hiddenNames: hiddenNames);
+            //else if (processObject.Result.GetType() == typeof(YoloResult<ObbDetection>))
+            //    bitmapSource = PlotHandler.PlotObbDetection(processObject.Frame, (YoloResult<ObbDetection>)processObject.Result, configuration: configuration, hiddenNames: hiddenNames);
+            //else if (processObject.Result.GetType() == typeof(YoloResult<Pose>))
+            //    bitmapSource = PlotHandler.PlotPose(processObject.Frame, (YoloResult<Pose>)processObject.Result, configuration: configuration, hiddenNames: hiddenNames);
+            //else
+            //    bitmapSource = PlotHandler.Plot(processObject.Frame);
+
+            //return bitmapSource;
+        }
+
         public static BitmapSource Plot(byte[] frame)
         {
             using (var stream = new MemoryStream(frame))

@@ -6,16 +6,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OnTheFly_UI.Modules.DTOs
 {
     public sealed class ProcessObject
     {
+        [JsonIgnore]
         public byte[] Frame { get; set; } = [0];
         public int Index { get; set; } = 0;
         public string ModelName { get; set; } = string.Empty;
         public RequestTaskType Task { get => Request.TaskType; }
+        [JsonIgnore]
         public RequestObject Request { get; set; } = new RequestObject();
         public YoloResult? Result { get; set; } = null; 
         public ProcessObject() { }
