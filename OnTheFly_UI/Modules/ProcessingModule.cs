@@ -1,11 +1,13 @@
 ﻿using Compunet.YoloSharp;
 using Compunet.YoloSharp.Data;
+using Compunet.YoloSharp.Memory;
 using Compunet.YoloSharp.Metadata;
 using Emgu.CV;
 using Emgu.CV.Dnn;
 using OnTheFly_UI.Components;
 using OnTheFly_UI.Modules.DTOs;
 using OnTheFly_UI.Modules.Enums;
+using SixLabors.ImageSharp.Memory;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -22,6 +24,7 @@ using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace OnTheFly_UI.Modules
 {
@@ -241,6 +244,9 @@ namespace OnTheFly_UI.Modules
                         break;
                     case RequestTaskType.Segment:
                         result = Model.Segment(processObject.Frame);
+                        var te = ((YoloResult<Segmentation>)result).ToArray()[0].Mask;
+                        var te2 = typeof(BitmapBuffer).GetFields();
+
                         if (result == null)
                             return;
                         ((YoloResult<Segmentation>)result).GroupBy(x => x.Name.Name).ToList().ForEach(x => { tempDict[x.Key] = x.Count(); });
@@ -253,7 +259,6 @@ namespace OnTheFly_UI.Modules
                             break;
                     case RequestTaskType.Pose:
                         result = Model.Pose(processObject.Frame);
-
                         if (result == null)
                             return;
 

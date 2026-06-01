@@ -1,5 +1,6 @@
 ﻿using Compunet.YoloSharp;
 using Compunet.YoloSharp.Data;
+using Compunet.YoloSharp.Memory;
 using Compunet.YoloSharp.Metadata;
 using Emgu.CV;
 using Microsoft.ML.OnnxRuntime;
@@ -65,7 +66,7 @@ namespace OnTheFly_UI
 
             ProcessingModule.ProcessingException += (string msg) =>
             {
-                UIMessageBox.Show($"An error occurred during processing: {msg}");
+                UIMessageBox.Show($"{msg}");
             };
 
             Display.DisplayUserInteraction += VisualizationModule.InteractionEventHnadler;
@@ -261,7 +262,7 @@ namespace OnTheFly_UI
         {
 
             ResultStorageHandler.SaveTest(requestObject);
-          
+
         }
 
         private void OpenSavedRequest_Click(object sender, RoutedEventArgs e)

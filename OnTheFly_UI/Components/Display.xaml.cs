@@ -58,7 +58,7 @@ namespace OnTheFly_UI.Components
         public static readonly DependencyProperty SourceProperty =
             DependencyProperty.Register("Source", typeof(ImageSource), typeof(Display));
 
-
+      
 
         public ObservableCollection<ResultTableItem> ResultTable
         {
