@@ -1,12 +1,15 @@
-﻿using Compunet.YoloSharp.Data;
+﻿using Clipper2Lib;
+using Compunet.YoloSharp.Data;
 using Compunet.YoloSharp.Memory;
 using Compunet.YoloSharp.Metadata;
 using Emgu.CV.Cuda;
 using Emgu.CV.ML.MlEnum;
 using OnTheFly_UI.Modules.DTOs;
 using SixLabors.Fonts;
+using SixLabors.ImageSharp.Memory;
 using System;
 using System.CodeDom.Compiler;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -43,6 +46,10 @@ namespace OnTheFly_UI.Modules.Handlers
                     return ResultstoPose(package.Results);
                 case "Segmentation":
                     return ResultstoSegmentation(package.Results);
+                case "Classification":
+                    return ResultstoClassification(package.Results);
+                case "ObbDetection":
+                    return ResultstoObbDetection(package.Results);
                 default:
                     return null;
             }
@@ -75,6 +82,12 @@ namespace OnTheFly_UI.Modules.Handlers
                     break;
                 case "Segmentation":
                     dictList = SegmentationtoResults(value);
+                    break;
+                case "Classification":
+                    dictList = ClassificationtoResult(value);
+                    break;
+                case "ObbDetection":
+                    dictList = ObbDetectiontoResults(value);
                     break;
                 default:
                     return;
@@ -166,14 +179,17 @@ namespace OnTheFly_UI.Modules.Handlers
                 list.Add(item.ToArray());
 
             List<List<Dictionary<string, object>>> dictList = new List<List<Dictionary<string, object>>>();
+
+
+            var bigWidth =  list.Max(x => x.Max(y => y.Bounds.Width));
+            var bigHeight = list.Max(x => x.Max(y => y.Bounds.Height));
+
             foreach (var segArray in list)
             {
-
-                FieldInfo? field = typeof(BitmapBuffer).GetField(
+                 FieldInfo? field = typeof(BitmapBuffer).GetField(
                                 "_buffer",
                                 BindingFlags.NonPublic | BindingFlags.Instance
                             );
-                //var a = te2[0].GetGetMethod()?.Invoke(te,new object[] {0,0});
 
                 if (field == null)
                     return new List<List<Dictionary<string, object>>>();
@@ -185,7 +201,6 @@ namespace OnTheFly_UI.Modules.Handlers
                     tempDict["Bounds"] = seg.Bounds;
                     tempDict["Confidence"] = seg.Confidence;
                     tempDict["Name"] = seg.Name;
-                    //tempDict["Mask"] = field.GetValue(seg.Mask) ?? new Memory<float>();
 
                     var buffer = (Memory<float>)field.GetValue(seg.Mask);
 
@@ -193,23 +208,64 @@ namespace OnTheFly_UI.Modules.Handlers
 
                     Buffer.BlockCopy(buffer.ToArray(), 0, bytearray, 0, bytearray.Length);
 
-                    //var c = Compress(bytearray);
-
-
-                    //var floatarrray = new float[c.Length / sizeof(float)];
-
-                    //Buffer.BlockCopy(c, 0, floatarrray, 0, bytearray.Length);
-
                     tempDict["Mask"] = bytearray;
 
+                    tempList.Add(tempDict);
 
+                }
+                dictList.Add(tempList);
+
+
+            }
+            return dictList;
+
+
+        }
+
+        private List<List<Dictionary<string, object>>> ClassificationtoResult(List<YoloResult> value)
+        {
+            var values = value.Cast<YoloResult<Classification>>();
+            var list = new List<Classification[]>();
+            foreach (var item in values)
+                list.Add(item.ToArray());
+            List<List<Dictionary<string, object>>> dictList = new List<List<Dictionary<string, object>>>();
+            foreach (var classArray in list)
+            {
+                var tempList = new List<Dictionary<string, object>>();
+                foreach (var classification in classArray)
+                {
+                    var tempDict = new Dictionary<string, object?>();
+                    tempDict["Confidence"] = classification.Confidence;
+                    tempDict["Name"] = classification.Name;
                     tempList.Add(tempDict);
                 }
                 dictList.Add(tempList);
             }
             return dictList;
-
-
+        }
+           
+        private List<List<Dictionary<string, object>>> ObbDetectiontoResults(List<YoloResult> value)
+        {
+            var values = value.Cast<YoloResult<ObbDetection>>();
+            var list = new List<ObbDetection[]>();
+            foreach (var item in values)
+                list.Add(item.ToArray());
+            List<List<Dictionary<string, object>>> dictList = new List<List<Dictionary<string, object>>>();
+            foreach (var obbArray in list)
+            {
+                var tempList = new List<Dictionary<string, object>>();
+                foreach (var obb in obbArray)
+                {
+                    var tempDict = new Dictionary<string, object?>();
+                    tempDict["Bounds"] = obb.Bounds;
+                    tempDict["Confidence"] = obb.Confidence;
+                    tempDict["Name"] = obb.Name;
+                    tempDict["Angle"] = obb.Angle;
+                    tempList.Add(tempDict);
+                }
+                dictList.Add(tempList);
+            }
+            return dictList;
         }
 
 
@@ -271,7 +327,6 @@ namespace OnTheFly_UI.Modules.Handlers
             return result;
         }
 
-
         private List<YoloResult> ResultstoSegmentation(List<List<Dictionary<string, object>>> list)
         {
             List<Segmentation[]> segList = new List<Segmentation[]>();
@@ -281,14 +336,26 @@ namespace OnTheFly_UI.Modules.Handlers
                 foreach (var dict in dictArray)
                 {
                     var bound = ((JsonElement)dict["Bounds"]).Deserialize<SixLabors.ImageSharp.Rectangle>();
+
+
+                    dict["Mask"] = ((JsonElement)dict["Mask"]).Deserialize<byte[]>();
+
+                    var bytearray = (byte[])dict["Mask"];
+
+                    var floatarrray = new float[bytearray.Length / sizeof(float)];
+
+                    Buffer.BlockCopy(bytearray.ToArray(), 0, floatarrray, 0, bytearray.Length);
+
+
+
                     tempList.Add(
-                    
+
                     new Segmentation()
                     {
                         Bounds = bound,
                         Confidence = ((JsonElement)dict["Confidence"]).Deserialize<float>(),
                         Name = ((JsonElement)dict["Name"]).Deserialize<YoloName>(),
-                        Mask = new BitmapBuffer(((JsonElement)dict["Mask"]).Deserialize<Memory<float>>(), bound.Width, bound.Height)
+                        Mask = new BitmapBuffer(new Memory<float>(floatarrray), bound.Width, bound.Height) //new BitmapBuffer(((JsonElement)dict["Mask"]).Deserialize<Memory<float>>(), bound.Width, bound.Height)
                     });
                 }
                 segList.Add(tempList.ToArray());
@@ -301,8 +368,63 @@ namespace OnTheFly_UI.Modules.Handlers
             return result;
         }
 
+        private List<YoloResult> ResultstoClassification(List<List<Dictionary<string, object>>> list)
+        {
+            List<Classification[]> classList = new List<Classification[]>();
+            foreach (var dictArray in list)
+            {
+                var tempList = new List<Classification>();
+                foreach (var dict in dictArray)
+                {
+                    tempList.Add(
+                    new Classification()
+                    {
+                        Confidence = ((JsonElement)dict["Confidence"]).Deserialize<float>(),
+                        Name = ((JsonElement)dict["Name"]).Deserialize<YoloName>()
+                    });
+                }
+                classList.Add(tempList.ToArray());
+            }
+            List<YoloResult> result = new List<YoloResult>();
+
+            foreach (var item in classList)
+                result.Add(new YoloResult<Classification>(item.ToArray()) { ImageSize = SixLabors.ImageSharp.Size.Empty, Speed = new SpeedResult() });
+
+            return result;
+        }
+    
+        private List<YoloResult> ResultstoObbDetection(List<List<Dictionary<string, object>>> list)
+        {
+            List<ObbDetection[]> obbList = new List<ObbDetection[]>();
+            foreach (var dictArray in list)
+            {
+                var tempList = new List<ObbDetection>();
+                foreach (var dict in dictArray)
+                {
+                    tempList.Add(
+                    new ObbDetection()
+                    {
+                        Bounds = ((JsonElement)dict["Bounds"]).Deserialize<SixLabors.ImageSharp.Rectangle>(),
+                        Confidence = ((JsonElement)dict["Confidence"]).Deserialize<float>(),
+                        Name = ((JsonElement)dict["Name"]).Deserialize<YoloName>(),
+                        Angle = ((JsonElement)dict["Angle"]).Deserialize<float>()
+                    });
+                }
+                obbList.Add(tempList.ToArray());
+            }
+            List<YoloResult> result = new List<YoloResult>();
+            foreach (var item in obbList)
+                result.Add(new YoloResult<ObbDetection>(item.ToArray()) { ImageSize = SixLabors.ImageSharp.Size.Empty, Speed = new SpeedResult() });
+            return result;
+        }
+
+
+
+
+
 
     }
+
 
 
 

@@ -277,9 +277,6 @@ namespace OnTheFly_UI
             file.Multiselect = true;
             file.ShowDialog();
 
-            //if (string.IsNullOrEmpty(file.FileName))
-            //    return;
-
             foreach (var item in file.FileNames)
             {
                 var request = ResultStorageHandler.LoadTest(item);

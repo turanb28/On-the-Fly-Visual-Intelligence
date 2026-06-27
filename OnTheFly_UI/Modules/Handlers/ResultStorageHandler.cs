@@ -1,6 +1,7 @@
 ﻿using Compunet.YoloSharp.Data;
 using Emgu.CV;
 using Microsoft.Win32;
+using OnTheFly_UI.Components;
 using OnTheFly_UI.Modules.DTOs;
 using OnTheFly_UI.Modules.Enums;
 using System;
@@ -19,15 +20,15 @@ namespace OnTheFly_UI.Modules.Handlers
 {
     static class ResultStorageHandler
     {
-        private static readonly string _basePath = @"C:\Users\PC\Desktop\Result";
+        private static readonly string _basePath = @".\Results";
         public static void SaveTest(RequestObject requestObject) {
 
             var options = new JsonSerializerOptions { WriteIndented = true };
 
-            var b = JsonSerializer.Serialize(requestObject, options);
+            var serialized = JsonSerializer.Serialize(requestObject, options);
 
             Directory.CreateDirectory(_basePath);
-            File.WriteAllText($@"{_basePath}\{requestObject.Id}.json", b); 
+            File.WriteAllText($@"{_basePath}\{requestObject.Id}.json", serialized); 
 
         }
 
@@ -40,8 +41,17 @@ namespace OnTheFly_UI.Modules.Handlers
 
             var resultTest = JsonSerializer.Deserialize<RequestObject>(json);
 
-            return resultTest;
+            if(resultTest != null)
+            {
+                if(File.Exists(resultTest.Source))
+                    return resultTest;
+                else
+                {
+                    UIMessageBox.Show($"Source does not exist");
+                }
+            }
 
+            return null;
         }
 
         
