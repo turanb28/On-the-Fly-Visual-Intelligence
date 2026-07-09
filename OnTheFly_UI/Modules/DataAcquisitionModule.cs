@@ -273,11 +273,6 @@ namespace OnTheFly_UI.Modules
             ppo.Request = requestObject;
             ppo.Index = index;
 
-            //if (requestObject.Frames.Count > index)
-            //    requestObject.Frames[index] = frame.Clone();
-            //else
-            //    requestObject.Frames.Add(frame.Clone());
-
             SpinWait.SpinUntil(() =>
                     {
                         return PreprocessingBuffer.Count < BufferLimit;

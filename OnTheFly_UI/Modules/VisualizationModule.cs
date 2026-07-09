@@ -156,20 +156,6 @@ namespace OnTheFly_UI.Modules
                 bitmapSource = PlotHandler.PlotAuto(processObject, configuration: configuration, hiddenNames: hiddenNames);
 
 
-                //if (processObject.Result == null)
-                //    bitmapSource = PlotHandler.Plot(processObject.Frame);
-                //else if (processObject.Result.GetType() == typeof(YoloResult<Detection>))
-                //    bitmapSource = PlotHandler.PlotDetection(processObject.Frame, (YoloResult<Detection>)processObject.Result, configuration: configuration, hiddenNames: hiddenNames);
-                //else if (processObject.Result.GetType() == typeof(YoloResult<Segmentation>))
-                //    bitmapSource = PlotHandler.PlotSegmentatation(processObject.Frame, (YoloResult<Segmentation>)processObject.Result, configuration: configuration, hiddenNames: hiddenNames);
-                //else if (processObject.Result.GetType() == typeof(YoloResult<ObbDetection>))
-                //    bitmapSource = PlotHandler.PlotObbDetection(processObject.Frame, (YoloResult<ObbDetection>)processObject.Result, configuration: configuration, hiddenNames: hiddenNames);
-                //else if (processObject.Result.GetType() == typeof(YoloResult<Pose>))
-                //    bitmapSource = PlotHandler.PlotPose(processObject.Frame, (YoloResult<Pose>)processObject.Result, configuration: configuration, hiddenNames: hiddenNames);
-                //else
-                //    bitmapSource = PlotHandler.Plot(processObject.Frame);
-
-
                 if (bitmapSource == null)
                     continue;
 
@@ -250,20 +236,6 @@ namespace OnTheFly_UI.Modules
         }
 
 
-
-        private void SaveFrame(RequestObject requestObject)
-        {
-           
-
-        }
-
-
-        //private void SaveVideoTest(RequestObject requestObject)
-        //{
-        //    var videoPath = @"C:\Users\PC\Desktop\test.mp4";
-        //    var capture = new VideoWriter(videoPath, requestObject.FPS, new System.Drawing.Size(requestObject.FrameWidth, requestObject.FrameHeight), true);
-
-        //}
 
     }
 }

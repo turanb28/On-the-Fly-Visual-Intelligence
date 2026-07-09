@@ -52,8 +52,6 @@
                 <MenuItem Header="Open Video" Click="AddVideo_Click" ></MenuItem>
                 <MenuItem Header="Open Stream"  Click="AddStream_Click"    ></MenuItem>
                 <MenuItem Header="Open Saved Request"  Click="OpenSavedRequest_Click"    ></MenuItem>
-                <!--<MenuItem Header="Save All"   ></MenuItem>-->
-                <MenuItem Header="Save as Image" Click="SaveAsImage_Click"></MenuItem>
 
             </MenuItem>
             <MenuItem Header="Model" FontSize="13"  Height="{Binding ElementName=menubar, Path=ActualHeight}" >

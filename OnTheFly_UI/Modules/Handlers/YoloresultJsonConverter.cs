@@ -355,7 +355,7 @@ namespace OnTheFly_UI.Modules.Handlers
                         Bounds = bound,
                         Confidence = ((JsonElement)dict["Confidence"]).Deserialize<float>(),
                         Name = ((JsonElement)dict["Name"]).Deserialize<YoloName>(),
-                        Mask = new BitmapBuffer(new Memory<float>(floatarrray), bound.Width, bound.Height) //new BitmapBuffer(((JsonElement)dict["Mask"]).Deserialize<Memory<float>>(), bound.Width, bound.Height)
+                        Mask = new BitmapBuffer(new Memory<float>(floatarrray), bound.Width, bound.Height) 
                     });
                 }
                 segList.Add(tempList.ToArray());

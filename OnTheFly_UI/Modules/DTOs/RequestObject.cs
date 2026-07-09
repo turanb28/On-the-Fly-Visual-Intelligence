@@ -53,8 +53,6 @@ namespace OnTheFly_UI.Modules.DTOs
         }
 
         public RequestTaskType _taskType = RequestTaskType.None;
-
-        //[JsonIgnore]
         public RequestTaskType TaskType { get { return _taskType; } 
                                           set { 
                                                 if((Result != null) && (_taskType != value))

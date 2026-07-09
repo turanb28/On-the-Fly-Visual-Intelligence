@@ -289,8 +289,5 @@ namespace OnTheFly_UI
             }
         }
 
-        private void SaveAsImage_Click(object sender, RoutedEventArgs e)
-        {
-        }
     }
 }

@@ -23,7 +23,6 @@ namespace OnTheFly_UI.Modules.Handlers
             if (recentFiles.Contains(filePath))
             {
                 return;
-                //recentFiles.Remove(filePath);
             }
             recentFiles.Insert(0, filePath);
            

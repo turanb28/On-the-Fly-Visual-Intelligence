@@ -21,7 +21,7 @@ namespace OnTheFly_UI.Components
     {
         private InformationType _infoType = InformationType.Info;
 
-        public InformationType InfoType { get { return _infoType; } // Make this part more clearer
+        public InformationType InfoType { get { return _infoType; } 
                                           private set { 
                                                 switch(value)
                                                 {
