@@ -1,4 +1,4 @@
-# 👁️ On-the-Fly Visual Intelligence
+# <img width="25" height="25" alt="logo" src="https://github.com/user-attachments/assets/d1257877-52ea-4f1d-8e93-d41c70b726f0" /> On-the-Fly Visual Intelligence
 
 ![GitHub License](https://img.shields.io/github/license/turanb28/On-the-Fly-Visual-Intelligence)
 ![.NET Version](https://img.shields.io/badge/.NET-8.0-purple)
