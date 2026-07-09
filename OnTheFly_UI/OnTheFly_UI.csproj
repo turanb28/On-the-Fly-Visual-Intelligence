@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <None Remove="Resources\logo.png" />
-    <None Remove="Resources\logo_v4.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,7 +27,6 @@
 
   <ItemGroup>
     <Resource Include="Resources\logo.png" />
-    <Resource Include="Resources\logo_v4.png" />
   </ItemGroup>
 
 </Project>
