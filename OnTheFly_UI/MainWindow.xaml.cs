@@ -56,7 +56,7 @@ namespace OnTheFly_UI
                     UIMessageBox.Show($"{m} is loaded");
                 if (DataAcquisitionModule.Requests.Count <= 0)
                     return;
-                DataAcquisitionModule.RequestWithID(DataAcquisitionModule.Requests[sidebar.SelectedIndex].Id);
+                DataAcquisitionModule.RequestWithID(DataAcquisitionModule.Requests[slidelist.SelectedIndex].Id);
             };
             
             ProcessingModule.ModelUnloaded += (string m) =>
@@ -71,7 +71,7 @@ namespace OnTheFly_UI
 
             Display.DisplayUserInteraction += VisualizationModule.InteractionEventHnadler;
 
-            sidebar.Objects = DataAcquisitionModule.Requests;
+            slidelist.Objects = DataAcquisitionModule.Requests;
 
 
 
@@ -146,7 +146,7 @@ namespace OnTheFly_UI
 
 
 
-        private void sidebar_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void slidelist_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             CancellationTokenSource.Cancel();
             CancellationTokenSource = new CancellationTokenSource();
@@ -258,10 +258,10 @@ namespace OnTheFly_UI
 
         }
 
-        private void sidebar_SaveResultRequest(RequestObject? requestObject)
+        private void slidelist_SaveResultRequest(RequestObject? requestObject)
         {
 
-            ResultStorageHandler.SaveTest(requestObject);
+           ResultStorageHandler.SaveTest(requestObject);
 
         }
 
@@ -287,6 +287,10 @@ namespace OnTheFly_UI
                 DataAcquisitionModule.Requests.Add(request);
 
             }
+        }
+
+        private void SaveAsImage_Click(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

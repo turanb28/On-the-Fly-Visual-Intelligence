@@ -64,7 +64,7 @@
                 <Canvas.ContextMenu>
                     <ContextMenu>
                         <MenuItem Foreground="{StaticResource Foreground_Light}" Header="Delete" Click="Delete_Click" ></MenuItem>
-                        <MenuItem Foreground="{StaticResource Foreground_Light}" Header="Save Result" Click="Save_Result_Click" ></MenuItem>
+                        <MenuItem Foreground="{StaticResource Foreground_Light}" Header="Save Request" Click="Save_Result_Click" ></MenuItem>
                     </ContextMenu>
                 </Canvas.ContextMenu>
 
@@ -76,7 +76,7 @@
                 <Image.ContextMenu>
                     <ContextMenu>
                         <MenuItem Foreground="{StaticResource Foreground_Light}" Header="Delete" Click="Delete_Click" ></MenuItem>
-                        <MenuItem Foreground="{StaticResource Foreground_Light}" Header="Show Result" Click="Save_Result_Click" ></MenuItem>
+                        <MenuItem Foreground="{StaticResource Foreground_Light}" Header="Save Request" Click="Save_Result_Click" ></MenuItem>
                     </ContextMenu>
                 </Image.ContextMenu>
             </Image>

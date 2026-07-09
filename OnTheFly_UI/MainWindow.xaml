@@ -28,42 +28,17 @@
         </Style>
 
 
-        <!--<Style TargetType="{x:Type ContextMenu}">
-            <Setter Property="OverridesDefaultStyle" Value="True" />
-            <Setter Property="SnapsToDevicePixels" Value="True" />
-            <Setter Property="Grid.IsSharedSizeScope" Value="true" />
-            <Setter Property="HasDropShadow" Value="True" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ContextMenu}">
-                        <Border
-                            x:Name="Border"
-                            BorderThickness="0"
-                            Padding="0"
-                            Margin="0"
-                            Background="{StaticResource Background_Dark}">
-                            <StackPanel
-                                ClipToBounds="True"
-                                IsItemsHost="True"
-                                KeyboardNavigation.DirectionalNavigation="Cycle"
-                                Orientation="Vertical" />
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>-->
 
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition MaxWidth="{Binding ElementName=topRow, Path=ActualHeight}" ></ColumnDefinition>
-            <!--<ColumnDefinition Width="auto"></ColumnDefinition>-->
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition x:Name="topRow" Height="0.5*"></RowDefinition>
-            <RowDefinition Height="2*"></RowDefinition>
+            <RowDefinition Height="2*"></RowDefinition> 
             <RowDefinition Height="9*"></RowDefinition>
             <RowDefinition Height="0.4*"></RowDefinition>
 
@@ -77,7 +52,8 @@
                 <MenuItem Header="Open Video" Click="AddVideo_Click" ></MenuItem>
                 <MenuItem Header="Open Stream"  Click="AddStream_Click"    ></MenuItem>
                 <MenuItem Header="Open Saved Request"  Click="OpenSavedRequest_Click"    ></MenuItem>
-                <MenuItem Header="Save All"   ></MenuItem>
+                <!--<MenuItem Header="Save All"   ></MenuItem>-->
+                <MenuItem Header="Save as Image" Click="SaveAsImage_Click"></MenuItem>
 
             </MenuItem>
             <MenuItem Header="Model" FontSize="13"  Height="{Binding ElementName=menubar, Path=ActualHeight}" >
@@ -111,6 +87,8 @@
         </Menu>
 
 
+        <Image Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="14" Source="/Resources/logo.png" Width="500" Height="500" Opacity="0.1"></Image>
+
         <StackPanel Grid.Column="3"  Background="{StaticResource Background_Dark}"  Orientation="Horizontal" HorizontalAlignment="Right">
             <Button  x:Name="MinimizeApp" Click="MinimizeApp_Click" HorizontalAlignment="Right" Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"
                 Background="Transparent" ToolTip="Minimize Application" BorderBrush="Transparent"
@@ -122,7 +100,7 @@
             </Button>
         </StackPanel>
 
-        <Components:SlideList Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="10" x:Name="sidebar" SelectionChanged="sidebar_SelectionChanged" SaveResultRequested="sidebar_SaveResultRequest"  ></Components:SlideList>
+        <Components:SlideList Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="10" x:Name="slidelist" SelectionChanged="slidelist_SelectionChanged" SaveResultRequested="slidelist_SaveResultRequest"  ></Components:SlideList>
 
         <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="10" Background="Black" Opacity="0.1"></Border>
 
@@ -134,6 +112,5 @@
         </Border>
         <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" x:Name="UIMessage" Text="" HorizontalAlignment="Left" VerticalAlignment="Center" TextAlignment="Center" FontSize="15" Foreground="{StaticResource Foreground_Light}" ></TextBlock>
 
-        <Button></Button>
     </Grid>
 </Window>
